@@ -6,6 +6,7 @@ import Image from "next/image";
 
 import Footer from "../components/Footer";
 import NewNavbar from "../components/NewNavbar";
+import Navbar from "../components/Navbar";
 
 const Page = () => {
   const cards = [
@@ -34,7 +35,7 @@ const Page = () => {
 
   return (
     <>
-      <NewNavbar />
+    <Navbar/>
       <section className="bg-gradient-to-br from-slate-50 via-white to-green-50 font-['Inter']">
         {/* Hero Section with Video Background */}
         <div className="relative py-24 px-6 md:px-16 lg:px-24 overflow-hidden">
@@ -47,7 +48,7 @@ const Page = () => {
               playsInline
               className="w-full h-full object-cover"
             >
-              <source src="/video/BgNew.mp4" type="video/mp4" />
+              <source src="/video/Access.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
 
@@ -79,15 +80,17 @@ const Page = () => {
             {/* Right Side - Empty space for video to show through */}
             <div className="flex-1 flex justify-center items-center"></div>
           </div>
+        </div>
 
-          {/* Cards Section - Updated with glass effect */}
-          <div className="relative z-10 mt-16 grid gap-8 md:grid-cols-3 max-w-7xl mx-auto">
+       
+        <div className="py-16 px-6 md:px-16 lg:px-24">
+          <div className="grid gap-8 md:grid-cols-3 max-w-7xl mx-auto">
             {cards.map((card, index) => (
               <div
                 key={index}
                 className="group relative transition-all duration-500 hover:scale-105"
               >
-                <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer min-h-[200px] flex flex-col justify-center border border-white/20">
+                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer min-h-[200px] flex flex-col justify-center border border-gray-100">
                   <div className="flex items-center justify-center mb-4">
                     <div
                       className={`bg-gradient-to-r ${card.color} rounded-full p-3`}
