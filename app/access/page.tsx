@@ -5,8 +5,8 @@ import { Layers, Lock, TrendingUp } from "lucide-react";
 import Image from "next/image";
 
 import Footer from "../components/Footer";
-import NewNavbar from "../components/NewNavbar";
 import Navbar from "../components/Navbar";
+
 
 const Page = () => {
   const cards = [
@@ -35,7 +35,7 @@ const Page = () => {
 
   return (
     <>
-    <Navbar/>
+     <Navbar/>
       <section className="bg-gradient-to-br from-slate-50 via-white to-green-50 font-['Inter']">
         {/* Hero Section with Video Background */}
         <div className="relative py-24 px-6 md:px-16 lg:px-24 overflow-hidden">
@@ -82,26 +82,24 @@ const Page = () => {
           </div>
         </div>
 
-       
+        {/* Cards Section - Now outside the video background */}
         <div className="py-16 px-6 md:px-16 lg:px-24">
-          <div className="grid gap-8 md:grid-cols-3 max-w-7xl mx-auto">
+          <div className="flex flex-wrap items-center justify-center gap-8 max-w-8xl mx-auto">
             {cards.map((card, index) => (
               <div
                 key={index}
-                className="group relative transition-all duration-500 hover:scale-105"
+                className="group relative transition-all duration-500 hover:scale-110"
               >
-                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer min-h-[200px] flex flex-col justify-center border border-gray-100">
-                  <div className="flex items-center justify-center mb-4">
-                    <div
-                      className={`bg-gradient-to-r ${card.color} rounded-full p-3`}
-                    >
-                      <card.icon className="w-6 h-6 text-white" />
-                    </div>
+                <div
+                  className={`bg-gradient-to-r ${card.color} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer min-w-[280px] max-w-[280px] min-h-[250px] flex flex-col justify-center`}
+                >
+                  <div className="flex items-center justify-center mb-3">
+                    <card.icon className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-800 text-center mb-4 font-['Inter']">
+                  <h3 className="text-xl font-bold text-white text-center mb-2 font-['Inter']">
                     {card.title}
                   </h3>
-                  <p className="text-sm text-slate-600 text-center leading-relaxed font-['Inter']">
+                  <p className="text-sm text-white/90 text-center leading-relaxed font-['Inter']">
                     {card.description}
                   </p>
                 </div>

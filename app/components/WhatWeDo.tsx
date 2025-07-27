@@ -1,30 +1,12 @@
+//app/components/WhatWeDo.tsx
+
 "use client";
-import React, { useState, useEffect } from "react";
-import {
-  Sparkles,
-  TrendingUp,
-  Users,
-  Globe,
-  Target,
-  Zap,
-  Building,
-  Award,
-  ChevronRight,
-  Brain,
-  Network,
-  Layers,
-  AlertCircle,
-  CheckCircle,
-  ArrowRight,
-  Calculator,
-  Lightbulb,
-  Activity,
-  MapPin,
-} from "lucide-react";
+import React, { useState } from "react";
+import { Target, Lightbulb, Activity, MapPin } from "lucide-react";
 
 const WhatWeDo = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isEquationVisible, setIsEquationVisible] = useState(false);
+
   const [activeEquationPart, setActiveEquationPart] = useState(0);
 
   const equationParts = [
