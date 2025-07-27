@@ -1,46 +1,45 @@
+//app/api/assessment/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/database";
 
 export async function GET(req: NextRequest) {
   try {
+    // Select 3 random questions PER topic, across ALL sections
     const query = `
       SELECT * FROM (
         SELECT 
-          q.id,
-          q.question,
-          q.option_a,
-          q.option_b,
-          q.option_c,
-          q.option_d,
-          q.correct_answer,
+          qb.id,
+          qb.question,
+          qb.option_a,
+          qb.option_b,
+          qb.option_c,
+          qb.option_d,
+          qb.correct_answer,
           t.name AS topic,
           s.name AS section,
           l.name AS level,
-          t.industry_weight,
-          l.difficulty_weight,
+          t.weightage AS topic_weightage,
+          l.weightage AS level_weightage,
           ROW_NUMBER() OVER (
-            PARTITION BY q.topic_id, q.level_id 
+            PARTITION BY s.id, t.id -- Partition by both section and topic!
             ORDER BY RANDOM()
           ) AS row_num
-        FROM questions q
-        JOIN topics t ON q.topic_id = t.id
-        JOIN sections s ON t.section_id = s.id
-        JOIN levels l ON q.level_id = l.id
-        WHERE q.is_active = TRUE
-      ) sub
-      WHERE sub.row_num = 1;
+        FROM question_bank qb
+        JOIN topic t ON qb.topic_id = t.id
+        JOIN section s ON t.section_id = s.id
+        JOIN level l ON qb.level_id = l.id
+        WHERE qb.is_active = TRUE
+      ) AS sub
+      WHERE sub.row_num <= 3
+      ORDER BY section, topic, level, id;
     `;
 
     const result = await pool.query(query);
 
-    // Filter to get every other question (odd row numbers: 1, 3, 5, etc.)
-    const filteredRows = result.rows.filter((row: any) => row.row_num % 2 === 1);
-
-    const formattedQuestions = filteredRows.map((q: any) => {
+    const formattedQuestions = result.rows.map((q: any) => {
       const correctAnswerIndex = { A: 0, B: 1, C: 2, D: 3 }[
         q.correct_answer as "A" | "B" | "C" | "D"
       ];
-
       return {
         id: q.id.toString(),
         topic: q.topic,
