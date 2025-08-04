@@ -44,42 +44,45 @@ export const studentService = {
     return result.rows[0].id;
   },
 
-  createAcademicUser: async (data: StudentRegistrationData & {
-    org_id: number;
-    tenant_id: number;
-    user_type_id: number;
-  }) => {
-    const {
+ createAcademicUser: async (data: StudentRegistrationData & {
+  org_id: number;
+  tenant_id: number;
+  user_type_id: number;
+}) => {
+  const {
+    name,
+    email,
+    phone,
+    registration_number,
+    org_id,
+    tenant_id,
+    user_type_id,
+    password, // Add this
+  } = data;
+
+  const result = await pool.query(
+    `
+    INSERT INTO academic_user (
+      org_id,
+      tenant_id,
+      user_type_id,
       name,
       email,
       phone,
       registration_number,
-      org_id,
-      tenant_id,
-      user_type_id,
-    } = data;
+      password,         -- Add to SQL
+      is_active,
+      create_date
+    )
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, TRUE, NOW())
+    RETURNING id, name, email, create_date
+    `,
+    [org_id, tenant_id, user_type_id, name, email, phone, registration_number, password] // Add password here
+  );
 
-    const result = await pool.query(
-      `
-      INSERT INTO academic_user (
-        org_id,
-        tenant_id,
-        user_type_id,
-        name,
-        email,
-        phone,
-        registration_number,
-        is_active,
-        create_date
-      )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, TRUE, NOW())
-      RETURNING id, name, email, create_date
-      `,
-      [org_id, tenant_id, user_type_id, name, email, phone, registration_number]
-    );
+  return result.rows[0];
+},
 
-    return result.rows[0];
-  },
 
   validateStudentData: async (data: StudentRegistrationData) => {
     const errors: string[] = [];

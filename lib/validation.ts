@@ -4,8 +4,10 @@ export interface StudentRegistrationData {
   email: string;
   phone: string;
   registration_number: string;
-  college_id: string;  // org.id from 'org' table
+  college_id: string;  
+  password: string;    
 }
+
 
 export const validationUtils = {
   isValidEmail: (email: string): boolean => {

@@ -1,4 +1,5 @@
-// app/api/register/route.ts
+//api/register/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import emailService from "@/lib/email";
 import verificationService from "@/lib/verification";
@@ -10,7 +11,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const data = body as StudentRegistrationData;
 
-    // Validate input data format first
+    // Validate input data (should include password)
     const validatedInput = validationUtils.validateRegistrationData(data);
     if (!validatedInput.isValid) {
       return NextResponse.json(
@@ -22,7 +23,6 @@ export async function POST(request: NextRequest) {
     // Validate student data against DB and get foreign keys
     const studentValidation = await studentService.validateStudentData(data);
     if (!studentValidation.isValid) {
-      // 409 Conflict if duplicate exists
       return NextResponse.json(
         {
           error: studentValidation.errors[0],
@@ -36,9 +36,10 @@ export async function POST(request: NextRequest) {
     // Generate verification code
     const verificationCode = verificationService.generateCode();
 
-    // Store verification code + data (including FK ids) for later create
+    // Store verification code + data, including password as plain text (not recommended!)
     verificationService.storeCode(data.email, verificationCode, {
       ...data,
+      password: data.password, // just store as given
       org_id: studentValidation.orgId,
       tenant_id: studentValidation.tenantId,
       user_type_id: studentValidation.userTypeId,
@@ -77,7 +78,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Get stored data for this email
+    // Get stored data for this email (contains plain password)
     const storedData = verificationService.getStoredData(email);
     if (!storedData) {
       return NextResponse.json(
@@ -86,7 +87,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Create academic_user record now
+    // Create academic_user record in DB, password as received
     const createdUser = await studentService.createAcademicUser(storedData.data);
 
     // Delete code from memory after success

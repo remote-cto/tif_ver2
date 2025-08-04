@@ -1,4 +1,4 @@
-// components/AssessmentResultTemplate.tsx
+// components/AssessmentResult.tsx
 "use client";
 
 import React, { useEffect } from "react";
@@ -22,6 +22,8 @@ interface AssessmentResult {
   attempted_at: string;
   total_score?: number;
   readiness_score?: number;
+  foundational_score?: number | null;
+  industrial_score?: number | null;
   status?: string;
 }
 
@@ -44,7 +46,6 @@ const AssessmentResult: React.FC<Props> = ({
   getRecommendationText = (topic: string) =>
     `Focus on improving your ${topic} skills through practice and additional study.`,
 }) => {
-  // Get the latest assessment for readiness score
   const latestAssessment =
     assessments.length > 0
       ? assessments.reduce((latest, current) =>
@@ -56,18 +57,18 @@ const AssessmentResult: React.FC<Props> = ({
 
   const readiness = latestAssessment?.readiness_score || 0;
   const totalScore = latestAssessment?.total_score || 0;
+  const foundationalScore = latestAssessment?.foundational_score;
+  const industrialScore = latestAssessment?.industrial_score;
 
-// Deduplicate topics by topic_name, keeping the first occurrence
-const uniqueTopicsMap = new Map();
-topicScores.forEach((t) => {
-  if (!uniqueTopicsMap.has(t.topic_name)) {
-    uniqueTopicsMap.set(t.topic_name, t);
-  }
-});
-const uniqueTopics = Array.from(uniqueTopicsMap.values());
-const radarLabels = uniqueTopics.map((t) => t.topic_name);
-const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
-
+  const uniqueTopicsMap = new Map();
+  topicScores.forEach((t) => {
+    if (!uniqueTopicsMap.has(t.topic_name)) {
+      uniqueTopicsMap.set(t.topic_name, t);
+    }
+  });
+  const uniqueTopics = Array.from(uniqueTopicsMap.values());
+  const radarLabels = uniqueTopics.map((t) => t.topic_name);
+  const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
 
   // Get strengths and gaps based on classification and scores
   const strengths = topicScores
@@ -191,7 +192,7 @@ const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
 
   return (
     <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-6 sm:p-10 space-y-10">
-      {/* In AssessmentResultTemplate.tsx, update the logout button */}
+      {/* Logout/Back Button */}
       <button
         onClick={() => {
           // Check if accessed from dean dashboard
@@ -211,6 +212,7 @@ const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
           ? "Back to Dashboard"
           : "Logout"}
       </button>
+
       {/* Header */}
       <div className="text-center border-b pb-6">
         <h1 className="text-4xl font-bold text-indigo-700 mb-2">
@@ -220,6 +222,7 @@ const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
           Generated: {new Date().toLocaleDateString()}
         </p>
       </div>
+
       {/* Student Profile */}
       <div className="grid sm:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-lg">
         <div className="space-y-2">
@@ -249,8 +252,9 @@ const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
           </p>
         </div>
       </div>
-      {/* Assessment Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+      {/* Assessment Summary - Updated to include section scores */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="bg-blue-50 p-4 rounded-lg text-center">
           <h3 className="text-lg font-semibold text-blue-700">Basic Score</h3>
           <p
@@ -261,9 +265,13 @@ const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
             {latestAssessment.score}/{latestAssessment.total_questions}
           </p>
           <p className="text-sm text-gray-600">
-            ({latestAssessment.score_percent.toFixed(1)}%)
+            {latestAssessment?.score_percent != null &&
+            !isNaN(Number(latestAssessment.score_percent))
+              ? `(${Number(latestAssessment.score_percent).toFixed(1)}%)`
+              : "(N/A)"}
           </p>
         </div>
+
         {totalScore > 0 && (
           <div className="bg-purple-50 p-4 rounded-lg text-center">
             <h3 className="text-lg font-semibold text-purple-700">
@@ -275,6 +283,7 @@ const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
             <p className="text-sm text-gray-600">Weighted Score</p>
           </div>
         )}
+
         <div className="bg-green-50 p-4 rounded-lg text-center">
           <h3 className="text-lg font-semibold text-green-700">
             Readiness Score
@@ -284,7 +293,130 @@ const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
           </p>
           <p className="text-sm text-gray-600">Industry Ready</p>
         </div>
+
+        {/* Foundational Score */}
+        {foundationalScore !== null && foundationalScore !== undefined && (
+          <div className="bg-orange-50 p-4 rounded-lg text-center">
+            <h3 className="text-lg font-semibold text-orange-700">
+              Foundational
+            </h3>
+            <p
+              className={`text-2xl font-bold ${getScoreColor(
+                foundationalScore
+              )}`}
+            >
+              {foundationalScore.toFixed(1)}%
+            </p>
+            <p className="text-sm text-gray-600">Core Skills</p>
+          </div>
+        )}
+
+        {/* Industrial Score */}
+        {industrialScore !== null && industrialScore !== undefined && (
+          <div className="bg-cyan-50 p-4 rounded-lg text-center">
+            <h3 className="text-lg font-semibold text-cyan-700">Industrial</h3>
+            <p
+              className={`text-2xl font-bold ${getScoreColor(industrialScore)}`}
+            >
+              {industrialScore.toFixed(1)}%
+            </p>
+            <p className="text-sm text-gray-600">Industry Skills</p>
+          </div>
+        )}
       </div>
+
+      {/* Section Analysis - New section */}
+      {(foundationalScore !== null || industrialScore !== null) && (
+        <div className="bg-white p-6 rounded-xl shadow-sm border">
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">
+            📋 Section-wise Analysis
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {foundationalScore !== null && foundationalScore !== undefined && (
+              <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
+                <h3 className="text-lg font-bold text-orange-700 mb-3 flex items-center">
+                  <span className="mr-2">🏗️</span> Foundational Skills
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-orange-800 font-medium">Score:</span>
+                    <span
+                      className={`text-2xl font-bold ${getScoreColor(
+                        foundationalScore
+                      )}`}
+                    >
+                      {foundationalScore.toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-orange-200 rounded-full h-3">
+                    <div
+                      className={`h-3 rounded-full transition-all duration-1000 ease-out ${
+                        foundationalScore >= 80
+                          ? "bg-green-500"
+                          : foundationalScore >= 60
+                          ? "bg-yellow-500"
+                          : "bg-red-500"
+                      }`}
+                      style={{
+                        width: `${Math.min(foundationalScore, 100)}%`,
+                      }}
+                    ></div>
+                  </div>
+                  <p className="text-sm text-orange-700">
+                    {foundationalScore >= 80
+                      ? "Excellent foundation! You have strong core skills."
+                      : foundationalScore >= 60
+                      ? "Good foundation with room for improvement."
+                      : "Focus on strengthening your foundational knowledge."}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {industrialScore !== null && industrialScore !== undefined && (
+              <div className="bg-cyan-50 p-6 rounded-lg border border-cyan-200">
+                <h3 className="text-lg font-bold text-cyan-700 mb-3 flex items-center">
+                  <span className="mr-2">🏭</span> Industrial Skills
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-cyan-800 font-medium">Score:</span>
+                    <span
+                      className={`text-2xl font-bold ${getScoreColor(
+                        industrialScore
+                      )}`}
+                    >
+                      {industrialScore.toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-cyan-200 rounded-full h-3">
+                    <div
+                      className={`h-3 rounded-full transition-all duration-1000 ease-out ${
+                        industrialScore >= 80
+                          ? "bg-green-500"
+                          : industrialScore >= 60
+                          ? "bg-yellow-500"
+                          : "bg-red-500"
+                      }`}
+                      style={{
+                        width: `${Math.min(industrialScore, 100)}%`,
+                      }}
+                    ></div>
+                  </div>
+                  <p className="text-sm text-cyan-700">
+                    {industrialScore >= 80
+                      ? "Outstanding industry readiness! You're well-prepared for the workforce."
+                      : industrialScore >= 60
+                      ? "Good industry skills with some areas to develop."
+                      : "Focus on building practical industry-relevant skills."}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Radar Chart */}
       {topicScores.length > 0 && (
         <div className="bg-white p-6 rounded-xl shadow-sm border">
@@ -296,6 +428,7 @@ const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
           </div>
         </div>
       )}
+
       {/* Topic-wise Breakdown with Progress Bars */}
       {topicScores.length > 0 && (
         <div className="bg-white p-6 rounded-xl shadow-sm border">
@@ -381,6 +514,7 @@ const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
           </div>
         </div>
       )}
+
       {/* Strengths and Gaps */}
       <div className="grid sm:grid-cols-2 gap-6">
         <div className="bg-green-50 p-6 rounded-xl shadow-sm border border-green-200">
@@ -429,6 +563,7 @@ const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
           </div>
         </div>
       </div>
+
       {/* Recommendations */}
       <div className="bg-blue-50 p-6 rounded-xl shadow-sm border border-blue-200">
         <h3 className="text-lg font-bold text-blue-700 mb-4 flex items-center">
@@ -461,7 +596,8 @@ const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
           )}
         </div>
       </div>
-      {/* Assessment History */}
+
+      {/* Assessment History - Updated to show section scores */}
       {assessments.length > 1 && (
         <div className="bg-white p-6 rounded-xl shadow-sm border">
           <h3 className="text-lg font-bold text-gray-700 mb-4">
@@ -475,6 +611,8 @@ const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
                   <th className="text-left p-2">Score</th>
                   <th className="text-left p-2">Total Score</th>
                   <th className="text-left p-2">Readiness</th>
+                  <th className="text-left p-2">Foundational</th>
+                  <th className="text-left p-2">Industrial</th>
                   <th className="text-left p-2">Status</th>
                 </tr>
               </thead>
@@ -485,15 +623,31 @@ const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
                       {new Date(assessment.attempted_at).toLocaleDateString()}
                     </td>
                     <td className="p-2">
-                      <span className={getScoreColor(assessment.score_percent)}>
-                        {assessment.score}/{assessment.total_questions} (
-                        {assessment.score_percent.toFixed(1)}%)
-                      </span>
+                      {assessment.score_percent != null &&
+                      !isNaN(Number(assessment.score_percent)) ? (
+                        <span
+                          className={getScoreColor(
+                            Number(assessment.score_percent)
+                          )}
+                        >
+                          {assessment.score}/{assessment.total_questions} (
+                          {Number(assessment.score_percent).toFixed(1)}%)
+                        </span>
+                      ) : (
+                        <span>
+                          {assessment.score}/{assessment.total_questions} (N/A)
+                        </span>
+                      )}
                     </td>
                     <td className="p-2">
-                      {assessment.total_score ? (
-                        <span className={getScoreColor(assessment.total_score)}>
-                          {assessment.total_score.toFixed(1)}
+                      {assessment.total_score != null &&
+                      !isNaN(Number(assessment.total_score)) ? (
+                        <span
+                          className={getScoreColor(
+                            Number(assessment.total_score)
+                          )}
+                        >
+                          {Number(assessment.total_score).toFixed(1)}
                         </span>
                       ) : (
                         "N/A"
@@ -505,6 +659,32 @@ const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
                           className={getScoreColor(assessment.readiness_score)}
                         >
                           {assessment.readiness_score.toFixed(1)}%
+                        </span>
+                      ) : (
+                        "N/A"
+                      )}
+                    </td>
+                    <td className="p-2">
+                      {assessment.foundational_score !== null &&
+                      assessment.foundational_score !== undefined ? (
+                        <span
+                          className={getScoreColor(
+                            assessment.foundational_score
+                          )}
+                        >
+                          {assessment.foundational_score.toFixed(1)}%
+                        </span>
+                      ) : (
+                        "N/A"
+                      )}
+                    </td>
+                    <td className="p-2">
+                      {assessment.industrial_score !== null &&
+                      assessment.industrial_score !== undefined ? (
+                        <span
+                          className={getScoreColor(assessment.industrial_score)}
+                        >
+                          {assessment.industrial_score.toFixed(1)}%
                         </span>
                       ) : (
                         "N/A"
@@ -530,6 +710,7 @@ const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
           </div>
         </div>
       )}
+
       {/* Final Status */}
       <div className="text-center">
         <div

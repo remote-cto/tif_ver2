@@ -1,105 +1,76 @@
 // app/api/college-students/route.ts
-
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/database";
 
-type Assessment = {
-  id: number | null;
-  score: number;
-  total_questions: number;
-  score_percent: number;
-  attempted_at: string;
-  total_score: number;
-  readiness_score: number;
-  //foundation_score: number;
-  //industrial_score: number;
-  status: string;
-};
-
-
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const college_id = searchParams.get("college_id");
-
-  if (!college_id) {
-    return NextResponse.json({ error: "College ID is required" }, { status: 400 });
-  }
-
   try {
-   
-  const result = await pool.query(
-  `
-  WITH latest_assessments AS (
-    SELECT sa.*
-    FROM student_assessments sa
-    INNER JOIN (
-      SELECT student_id, MAX(started_at) AS max_started
-      FROM student_assessments
-      GROUP BY student_id
-    ) latest ON sa.student_id = latest.student_id AND sa.started_at = latest.max_started
-  )
+    const { searchParams } = new URL(req.url);
+    const college_id = searchParams.get("college_id");
 
-  SELECT 
-    s.id,
-    s.name,
-    s.registration_number,
-    s.email,
-    json_agg(
-      json_build_object(
-        'id', sa.id,
-        'score', COALESCE(
-          (SELECT COUNT(*) FROM student_answers ans 
-           WHERE ans.student_assessment_id = sa.id AND ans.is_correct = true), 0
-        ),
-        'total_questions', COALESCE(
-          (SELECT COUNT(*) FROM student_answers ans 
-           WHERE ans.student_assessment_id = sa.id), 0
-        ),
-        'score_percent', CASE 
-          WHEN (SELECT COUNT(*) FROM student_answers ans WHERE ans.student_assessment_id = sa.id) > 0 
-          THEN (
-            (SELECT COUNT(*) FROM student_answers ans 
-             WHERE ans.student_assessment_id = sa.id AND ans.is_correct = true) * 100.0 / 
-            (SELECT COUNT(*) FROM student_answers ans WHERE ans.student_assessment_id = sa.id)
-          )
-          ELSE 0
-        END,
-        'attempted_at', sa.started_at,
-        'total_score', sa.total_score,
-        'readiness_score', sa.readiness_score,
-        'status', sa.status
-      )
-    ) FILTER (WHERE sa.id IS NOT NULL) AS assessments
-  FROM students s
-  LEFT JOIN latest_assessments sa ON s.id = sa.student_id
-  WHERE s.college_id = $1
-  GROUP BY s.id, s.name, s.registration_number, s.email
-  ORDER BY s.name;
-  `,
-  [college_id]
-);
+    if (!college_id) {
+      return NextResponse.json({ error: "College ID is required" }, { status: 400 });
+    }
 
-    
+    // Get user_type_id for Student role
+    const { rows: userTypeRows } = await pool.query(
+      `SELECT id FROM user_type WHERE user_type_desc = 'Student' AND is_active = TRUE LIMIT 1`
+    );
+    if (!userTypeRows.length) {
+      return NextResponse.json({ error: "User type 'Student' not found" }, { status: 400 });
+    }
+    const studentUserTypeId = userTypeRows[0].id;
 
-    // Clean up the assessments array (remove null values)
-    const students = result.rows.map(student => ({
+    // Get all active students for this college/org
+    const { rows: students } = await pool.query(
+      `SELECT id, name, registration_number, email
+       FROM academic_user
+       WHERE org_id = $1 AND user_type_id = $2 AND is_active = TRUE`,
+      [college_id, studentUserTypeId]
+    );
+
+    if (students.length === 0) {
+      return NextResponse.json({ students: [] });
+    }
+
+    // Get latest assessment_final for all students in a single query (faster!)
+    const studentIds = students.map(s => s.id);
+    const { rows: assessmentRows } = await pool.query(
+      `SELECT DISTINCT ON (academic_user_id)
+        id, academic_user_id,
+        readiness_score, foundational_assessment, industrial_assessment,
+        create_date AS attempted_at
+       FROM academic_assessment_final
+       WHERE academic_user_id = ANY($1) AND is_active = TRUE
+       ORDER BY academic_user_id, create_date DESC
+      `,
+      [studentIds]
+    );
+
+    // Map assessments by student id
+    const assessmentMap = new Map<number, any>();
+    for (const row of assessmentRows) {
+      assessmentMap.set(row.academic_user_id, {
+        id: row.id,
+        readiness_score: row.readiness_score !== null ? Number(row.readiness_score) : null,
+        foundational_assessment: row.foundational_assessment !== null ? Number(row.foundational_assessment) : null,
+        industrial_assessment: row.industrial_assessment !== null ? Number(row.industrial_assessment) : null,
+        attempted_at: row.attempted_at,
+        status: "completed",
+      });
+    }
+
+    // Compose student objects with their assessment
+    const studentsWithAssessments = students.map(student => ({
       ...student,
-      assessments: student.assessments
-        ? student.assessments.filter((assessment: Assessment) => assessment.id !== null)
-        : []
+      assessments: assessmentMap.has(student.id)
+        ? [assessmentMap.get(student.id)]
+        : [],
     }));
 
-    return NextResponse.json({
-      success: true,
-      students: students,
-    });
+    return NextResponse.json({ students: studentsWithAssessments });
+
   } catch (error) {
-    console.error("Error fetching college students:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error("College students error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-
-

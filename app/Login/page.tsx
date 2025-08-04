@@ -27,7 +27,9 @@ const LoginPage: React.FC = () => {
   const [loginType, setLoginType] = useState<"student" | "admin">("student");
 
   const [email, setEmail] = useState("");
-  const [passwordOrRegNo, setPasswordOrRegNo] = useState("");
+  const [registrationNumber, setRegistrationNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
   const [collegeId, setCollegeId] = useState("");
   const [colleges, setColleges] = useState<{ id: string; name: string }[]>([]);
   const [loadingColleges, setLoadingColleges] = useState(true);
@@ -96,8 +98,9 @@ const LoginPage: React.FC = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email,
-          registration_number: passwordOrRegNo,
-          college_id: Number(collegeId), // send org id not name
+          registration_number: registrationNumber,
+          password,
+          college_id: Number(collegeId),
         }),
       });
 
@@ -135,7 +138,7 @@ const LoginPage: React.FC = () => {
       const response = await fetch("/api/college-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password: passwordOrRegNo }),
+        body: JSON.stringify({ email, password: adminPassword }),
       });
 
       const data = await response.json();
@@ -230,7 +233,7 @@ const LoginPage: React.FC = () => {
               <div className="relative group">
                 <Mail
                   className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-all duration-300  ${
-                    focusedField === "email" ? "text-blue-600" : "black"
+                    focusedField === "email" ? "text-blue-600" : "text-gray-400"
                   }`}
                 />
 
@@ -252,50 +255,73 @@ const LoginPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Password / Reg. No */}
+            {/* Registration Number (only for student) */}
+            {loginType === "student" && (
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Registration Number
+                </label>
+                <div className="relative group">
+                  <Hash
+                    className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-all duration-300 ${
+                      focusedField === "registration"
+                        ? "text-blue-600"
+                        : "text-gray-400"
+                    }`}
+                  />
+                  <input
+                    type="text"
+                    value={registrationNumber}
+                    onChange={(e) => setRegistrationNumber(e.target.value)}
+                    onFocus={() => setFocusedField("registration")}
+                    onBlur={() => setFocusedField(null)}
+                    className="w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-0 focus:border-blue-500 border-gray-200 transition-all duration-300 bg-white/70 backdrop-blur-sm hover:bg-white/90 text-gray-900 placeholder-gray-500"
+                    placeholder="Enter your registration number"
+                    required
+                  />
+                  <div
+                    className={`absolute inset-0 rounded-xl transition-all duration-300 pointer-events-none ${
+                      focusedField === "registration" ? "ring-2 ring-blue-500/20" : ""
+                    }`}
+                  ></div>
+                </div>
+              </div>
+            )}
+
+            {/* Password */}
             <div className="space-y-2">
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                {loginType === "student" ? "Registration Number" : "Password"}
+                Password
               </label>
               <div className="relative group">
-                <div
-                  className={`absolute left-4 top-4 w-5 h-5 transition-all duration-300 ${
+                <Lock
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-all duration-300 ${
                     focusedField === "password"
                       ? "text-blue-600"
                       : "text-gray-400"
                   }`}
-                >
-                  {loginType === "student" ? <Hash /> : <Lock />}
-                </div>
+                />
                 <input
-                  type={
-                    loginType === "student"
-                      ? "text"
-                      : showPassword
-                      ? "text"
-                      : "password"
+                  type={showPassword ? "text" : "password"}
+                  value={loginType === "student" ? password : adminPassword}
+                  onChange={(e) => 
+                    loginType === "student" 
+                      ? setPassword(e.target.value)
+                      : setAdminPassword(e.target.value)
                   }
-                  value={passwordOrRegNo}
-                  onChange={(e) => setPasswordOrRegNo(e.target.value)}
                   onFocus={() => setFocusedField("password")}
                   onBlur={() => setFocusedField(null)}
                   className="w-full pl-12 pr-12 py-4 border-2 rounded-xl focus:outline-none focus:ring-0 focus:border-blue-500 border-gray-200 transition-all duration-300 bg-white/70 backdrop-blur-sm hover:bg-white/90 text-gray-900 placeholder-gray-500"
-                  placeholder={
-                    loginType === "student"
-                      ? "Enter your registration number"
-                      : "Enter your password"
-                  }
+                  placeholder="Enter your password"
                   required
                 />
-                {loginType === "admin" && (
-                  <button
-                    type="button"
-                    onClick={togglePasswordVisibility}
-                    className="absolute right-4 top-4 w-5 h-5 text-gray-400 hover:text-blue-600 focus:outline-none transition-all duration-300 transform hover:scale-110"
-                  >
-                    {showPassword ? <EyeOff /> : <Eye />}
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 hover:text-blue-600 focus:outline-none transition-all duration-300 transform hover:scale-110"
+                >
+                  {showPassword ? <EyeOff /> : <Eye />}
+                </button>
                 <div
                   className={`absolute inset-0 rounded-xl transition-all duration-300 pointer-events-none ${
                     focusedField === "password" ? "ring-2 ring-blue-500/20" : ""
@@ -312,7 +338,7 @@ const LoginPage: React.FC = () => {
                 </label>
                 <div className="relative group">
                   <GraduationCap
-                    className={`absolute left-4 top-4 w-5 h-5 transition-all duration-300 ${
+                    className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-all duration-300 ${
                       focusedField === "college"
                         ? "text-blue-600"
                         : "text-gray-400"

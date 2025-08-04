@@ -1,41 +1,74 @@
-//app/api/assessment/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/database";
 
+// GET: /api/assessment?assessment_type_id=1
 export async function GET(req: NextRequest) {
+  const url = new URL(req.url || "");
+  const assessmentTypeId = url.searchParams.get("assessment_type_id") || "1";
+
   try {
-    // Select 3 random questions PER topic, across ALL sections
     const query = `
-      SELECT * FROM (
-        SELECT 
-          qb.id,
-          qb.question,
-          qb.option_a,
-          qb.option_b,
-          qb.option_c,
-          qb.option_d,
-          qb.correct_answer,
-          t.name AS topic,
-          s.name AS section,
-          l.name AS level,
-          t.weightage AS topic_weightage,
-          l.weightage AS level_weightage,
-          ROW_NUMBER() OVER (
-            PARTITION BY s.id, t.id -- Partition by both section and topic!
-            ORDER BY RANDOM()
-          ) AS row_num
-        FROM question_bank qb
-        JOIN topic t ON qb.topic_id = t.id
-        JOIN section s ON t.section_id = s.id
-        JOIN level l ON qb.level_id = l.id
-        WHERE qb.is_active = TRUE
-      ) AS sub
-      WHERE sub.row_num <= 3
-      ORDER BY section, topic, level, id;
-    `;
+        -- Foundation section
+    (
+  SELECT 
+    qb.id,
+    qb.question,
+    qb.option_a,
+    qb.option_b,
+    qb.option_c,
+    qb.option_d,
+    qb.correct_answer,
+    t.name AS topic,
+    s.name AS section,
+    l.name AS level,
+    t.weightage AS topic_weightage,
+    l.weightage AS level_weightage
+  FROM question_bank qb
+  JOIN topic t ON qb.topic_id = t.id
+  JOIN section s ON t.section_id = s.id
+  JOIN level l ON qb.level_id = l.id
+  WHERE qb.is_active = TRUE
+    AND t.is_active = TRUE
+    AND s.is_active = TRUE
+    AND l.is_active = TRUE
+    AND qb.assessment_type_id = $1
+    AND s.id = '1'
+  ORDER BY RANDOM()
+  LIMIT 18
+)
+UNION ALL
+(
+  SELECT 
+    qb.id,
+    qb.question,
+    qb.option_a,
+    qb.option_b,
+    qb.option_c,
+    qb.option_d,
+    qb.correct_answer,
+    t.name AS topic,
+    s.name AS section,
+    l.name AS level,
+    t.weightage AS topic_weightage,
+    l.weightage AS level_weightage
+  FROM question_bank qb
+  JOIN topic t ON qb.topic_id = t.id
+  JOIN section s ON t.section_id = s.id
+  JOIN level l ON qb.level_id = l.id
+  WHERE qb.is_active = TRUE
+    AND t.is_active = TRUE
+    AND s.is_active = TRUE
+    AND l.is_active = TRUE
+    AND qb.assessment_type_id = $1
+    AND s.id = '2'
+  ORDER BY RANDOM()
+  LIMIT 18
+)
+      `;
 
-    const result = await pool.query(query);
+    const result = await pool.query(query, [assessmentTypeId]);
 
+    // Format the output as before
     const formattedQuestions = result.rows.map((q: any) => {
       const correctAnswerIndex = { A: 0, B: 1, C: 2, D: 3 }[
         q.correct_answer as "A" | "B" | "C" | "D"
@@ -48,6 +81,8 @@ export async function GET(req: NextRequest) {
         question: q.question,
         options: [q.option_a, q.option_b, q.option_c, q.option_d],
         correctAnswer: correctAnswerIndex,
+        topicWeightage: q.topic_weightage,
+        levelWeightage: q.level_weightage,
       };
     });
 
