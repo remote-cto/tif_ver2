@@ -28,6 +28,7 @@ interface TopicScore {
   weighted_score: number;
   normalized_score: number;
   classification: string;
+  recommendation?: string; // Add recommendation field
 }
 
 interface AssessmentResultTopicScore {
@@ -38,6 +39,7 @@ interface AssessmentResultTopicScore {
   weighted_score: number;
   normalized_score: number;
   classification: string;
+  recommendation?: string; // Add recommendation field
 }
 
 interface AssessmentResultData {
@@ -218,20 +220,8 @@ const AssessmentPage: React.FC = () => {
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const getRecommendationText = (topic: string): string => {
-    const map: Record<string, string> = {
-      Python: "Practice basic Python syntax and build small CLI apps.",
-      Math: "Brush up on linear algebra, stats, and derivatives.",
-      Projects: "Work on hands-on mini-projects to apply concepts.",
-      "Cloud & Deployment": "Try deploying apps to AWS/GCP.",
-      "ML Concepts": "Study supervised/unsupervised algorithms.",
-      "Tools & Git": "Learn Git basics with real collaborative projects.",
-      "AI Use Cases": "Explore real-world applications and case studies.",
-      "Modern AI Stack Awareness":
-        "Understand tools like LangChain, Vector DBs, and inference APIs.",
-    };
-    return map[topic] || "Practice and deepen understanding of this topic.";
-  };
+  // Remove hardcoded recommendation function as it will come from database
+  // const getRecommendationText = (topic: string): string => { ... }
 
   const currentQuestion = state.questions[state.currentQuestion];
 
@@ -314,6 +304,7 @@ const AssessmentPage: React.FC = () => {
         weighted_score: topic.weighted_score,
         normalized_score: topic.normalized_score,
         classification: topic.classification,
+        recommendation: topic.recommendation, // Pass recommendation from backend
       })
     );
 
@@ -343,7 +334,7 @@ const AssessmentPage: React.FC = () => {
           student={studentData}
           assessments={[assessmentData]}
           topicScores={topicScoresForTemplate}
-          getRecommendationText={getRecommendationText}
+          // Remove getRecommendationText prop as recommendations come from database
         />
       </div>
     );

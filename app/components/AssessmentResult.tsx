@@ -12,6 +12,7 @@ interface TopicScore {
   weighted_score: number;
   normalized_score: number;
   classification: string;
+   recommendation?: string;
 }
 
 interface AssessmentResult {
@@ -36,15 +37,14 @@ interface Props {
   };
   assessments: AssessmentResult[];
   topicScores: TopicScore[];
-  getRecommendationText?: (topic: string) => string;
+
 }
 
 const AssessmentResult: React.FC<Props> = ({
   student,
   assessments,
   topicScores,
-  getRecommendationText = (topic: string) =>
-    `Focus on improving your ${topic} skills through practice and additional study.`,
+
 }) => {
   const latestAssessment =
     assessments.length > 0
@@ -565,37 +565,42 @@ const AssessmentResult: React.FC<Props> = ({
       </div>
 
       {/* Recommendations */}
-      <div className="bg-blue-50 p-6 rounded-xl shadow-sm border border-blue-200">
-        <h3 className="text-lg font-bold text-blue-700 mb-4 flex items-center">
-          <span className="mr-2">📈</span> Personalized Recommendations
-        </h3>
-        <div className="space-y-3">
-          {gaps.length > 0 ? (
-            gaps.map((gap, i) => (
-              <div
-                key={i}
-                className="bg-white p-4 rounded-lg border-l-4 border-blue-400"
-              >
-                <div className="font-medium text-blue-900 mb-1">{gap}</div>
-                <div className="text-blue-700 text-sm">
-                  {getRecommendationText(gap)}
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="bg-white p-4 rounded-lg border-l-4 border-green-400">
-              <div className="font-medium text-green-900 mb-1">
-                Excellent Performance!
-              </div>
-              <div className="text-green-700 text-sm">
-                You're performing well across all areas. Consider taking on
-                advanced capstone projects and contributing to open-source AI
-                projects to further enhance your skills.
-              </div>
+     {/* Recommendations */}
+<div className="bg-blue-50 p-6 rounded-xl shadow-sm border border-blue-200">
+  <h3 className="text-lg font-bold text-blue-700 mb-4 flex items-center">
+    <span className="mr-2">📈</span> Personalized Recommendations
+  </h3>
+  <div className="space-y-3">
+    {topicScores
+      .filter(topic => topic.classification === "Gap" || (topic.normalized_score && topic.normalized_score < 60))
+      .length > 0 ? (
+      topicScores
+        .filter(topic => topic.classification === "Gap" || (topic.normalized_score && topic.normalized_score < 60))
+        .map((topic, i) => (
+          <div
+            key={i}
+            className="bg-white p-4 rounded-lg border-l-4 border-blue-400"
+          >
+            <div className="font-medium text-blue-900 mb-1">{topic.topic_name}</div>
+            <div className="text-blue-700 text-sm">
+              {topic.recommendation || `Focus on improving your ${topic.topic_name} skills through practice and additional study.`}
             </div>
-          )}
+          </div>
+        ))
+    ) : (
+      <div className="bg-white p-4 rounded-lg border-l-4 border-green-400">
+        <div className="font-medium text-green-900 mb-1">
+          Excellent Performance!
+        </div>
+        <div className="text-green-700 text-sm">
+          You're performing well across all areas. Consider taking on
+          advanced capstone projects and contributing to open-source AI
+          projects to further enhance your skills.
         </div>
       </div>
+    )}
+  </div>
+</div>
 
       {/* Assessment History - Updated to show section scores */}
       {assessments.length > 1 && (
