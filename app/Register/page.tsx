@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent, FormEvent, FocusEvent } from "react";
 import {
   User,
   GraduationCap,
@@ -18,16 +18,23 @@ import Link from "next/link";
 import Image from "next/image";
 import NewHeader from "../components/NewHeader";
 
+interface College {
+  id: string;
+  name: string;
+}
+
 interface StudentFormData {
   name: string;
   email: string;
   phone: string;
   registration_number: string;
   college_id: string;
-  password: string; // NEW: password field
+  password: string;
 }
 
-const defaultFormState = {
+type StudentFormErrors = Partial<Record<keyof StudentFormData, string>>;
+
+const defaultFormState: StudentFormData = {
   name: "",
   email: "",
   phone: "",
@@ -36,30 +43,38 @@ const defaultFormState = {
   password: "",
 };
 
-const StudentRegistration = () => {
-  const [formData, setFormData] = useState({ ...defaultFormState });
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPwd, setShowPwd] = useState(false);
-  const [showVerification, setShowVerification] = useState(false);
-  const [verificationCode, setVerificationCode] = useState("");
-  const [verificationError, setVerificationError] = useState("");
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [resendingCode, setResendingCode] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(600); // 10 min
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [colleges, setColleges] = useState([]);
-  const [collegesLoading, setCollegesLoading] = useState(true);
-  const [focusedField, setFocusedField] = useState(null);
+type FocusedField =
+  | "name"
+  | "email"
+  | "phone"
+  | "registration"
+  | "college"
+  | "password"
+  | null;
 
-  // Fetch colleges (org entries)
+const StudentRegistration: React.FC = () => {
+  const [formData, setFormData] = useState<StudentFormData>({ ...defaultFormState });
+  const [errors, setErrors] = useState<StudentFormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [showPwd, setShowPwd] = useState<boolean>(false);
+  const [showVerification, setShowVerification] = useState<boolean>(false);
+  const [verificationCode, setVerificationCode] = useState<string>("");
+  const [verificationError, setVerificationError] = useState<string>("");
+  const [isVerifying, setIsVerifying] = useState<boolean>(false);
+  const [resendingCode, setResendingCode] = useState<boolean>(false);
+  const [timeLeft, setTimeLeft] = useState<number>(600); // 10 min
+  const [isRegistered, setIsRegistered] = useState<boolean>(false);
+  const [colleges, setColleges] = useState<College[]>([]);
+  const [collegesLoading, setCollegesLoading] = useState<boolean>(true);
+  const [focusedField, setFocusedField] = useState<FocusedField>(null);
+
   useEffect(() => {
     const fetchColleges = async () => {
       try {
         const response = await fetch("/api/colleges");
         const data = await response.json();
         if (response.ok) {
-          setColleges(data.colleges);
+          setColleges(data.colleges as College[]);
         }
       } catch (error) {
         // Optionally handle error
@@ -70,7 +85,6 @@ const StudentRegistration = () => {
     fetchColleges();
   }, []);
 
-  // Verification code timer countdown
   useEffect(() => {
     if (showVerification && timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -78,20 +92,21 @@ const StudentRegistration = () => {
     }
   }, [showVerification, timeLeft]);
 
-  const formatTime = (seconds) => {
+  const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-
-    if (errors[name]) {
+    if (errors[name as keyof StudentFormData]) {
       setErrors((prev) => ({
         ...prev,
         [name]: "",
@@ -99,10 +114,8 @@ const StudentRegistration = () => {
     }
   };
 
-  // Password validation can be stricter as needed
-  const validateForm = () => {
-    const newErrors = {};
-
+  const validateForm = (): boolean => {
+    const newErrors: StudentFormErrors = {};
     if (!formData.name.trim()) newErrors.name = "Name is required";
     if (!formData.email.trim()) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(formData.email))
@@ -116,12 +129,11 @@ const StudentRegistration = () => {
     if (!formData.password) newErrors.password = "Password is required";
     else if (formData.password.length < 6)
       newErrors.password = "Password must be at least 6 characters long";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent | React.MouseEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
     setIsSubmitting(true);
@@ -146,7 +158,7 @@ const StudentRegistration = () => {
     }
   };
 
-  const handleVerification = async (e) => {
+  const handleVerification = async (e: FormEvent) => {
     e.preventDefault();
     if (!verificationCode.trim()) {
       setVerificationError("Please enter the verification code");
@@ -180,7 +192,7 @@ const StudentRegistration = () => {
   const handleResendCode = async () => {
     setResendingCode(true);
     try {
-      const response = await fetch(`/api/register?email=${formData.email}`, {
+      const response = await fetch(`/api/register?email=${encodeURIComponent(formData.email)}`, {
         method: "GET",
       });
       const data = await response.json();
@@ -208,7 +220,7 @@ const StudentRegistration = () => {
     setFormData({ ...defaultFormState });
   };
 
-  // Success state
+  // Success state...
   if (isRegistered) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-2 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
@@ -246,7 +258,7 @@ const StudentRegistration = () => {
     );
   }
 
-  // Verification state
+  // Verification state...
   if (showVerification) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-2 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
@@ -338,7 +350,7 @@ const StudentRegistration = () => {
     );
   }
 
-  // Registration UI
+  // Registration UI...
   return (
     <>
       <NewHeader />
@@ -364,8 +376,7 @@ const StudentRegistration = () => {
               <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
               <div className="relative group">
                 <User
-                  className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-all duration-300 ${focusedField === "name" ? "text-blue-600" : "text-gray-400"}`}
-                />
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-all duration-300 ${focusedField === "name" ? "text-blue-600" : "text-gray-400"}`} />
                 <input
                   type="text"
                   name="name"
@@ -375,8 +386,7 @@ const StudentRegistration = () => {
                   onBlur={() => setFocusedField(null)}
                   placeholder="Enter your full name"
                   required
-                  className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-0 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm hover:bg-white/90 text-gray-900 placeholder-gray-500 ${errors.name ? "border-red-300 bg-red-50" : "border-gray-200"}`}
-                />
+                  className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-0 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm hover:bg-white/90 text-gray-900 placeholder-gray-500 ${errors.name ? "border-red-300 bg-red-50" : "border-gray-200"}`} />
                 <div className={`absolute inset-0 rounded-xl transition-all duration-300 pointer-events-none ${focusedField === "name" ? "ring-2 ring-blue-500/20" : ""}`}></div>
               </div>
               {errors.name && <p className="mt-1 text-sm text-red-600 font-medium animate-shake">{errors.name}</p>}
@@ -386,8 +396,7 @@ const StudentRegistration = () => {
               <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
               <div className="relative group">
                 <Mail
-                  className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-all duration-300 ${focusedField === "email" ? "text-blue-600" : "text-gray-400"}`}
-                />
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-all duration-300 ${focusedField === "email" ? "text-blue-600" : "text-gray-400"}`} />
                 <input
                   type="email"
                   name="email"
@@ -397,8 +406,7 @@ const StudentRegistration = () => {
                   onBlur={() => setFocusedField(null)}
                   placeholder="Enter your email address"
                   required
-                  className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-0 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm hover:bg-white/90 text-gray-900 placeholder-gray-500 ${errors.email ? "border-red-300 bg-red-50" : "border-gray-200"}`}
-                />
+                  className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-0 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm hover:bg-white/90 text-gray-900 placeholder-gray-500 ${errors.email ? "border-red-300 bg-red-50" : "border-gray-200"}`} />
                 <div className={`absolute inset-0 rounded-xl transition-all duration-300 pointer-events-none ${focusedField === "email" ? "ring-2 ring-blue-500/20" : ""}`}></div>
               </div>
               {errors.email && <p className="mt-1 text-sm text-red-600 font-medium animate-shake">{errors.email}</p>}
@@ -408,8 +416,7 @@ const StudentRegistration = () => {
               <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
               <div className="relative group">
                 <Phone
-                  className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-all duration-300 ${focusedField === "phone" ? "text-blue-600" : "text-gray-400"}`}
-                />
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-all duration-300 ${focusedField === "phone" ? "text-blue-600" : "text-gray-400"}`} />
                 <input
                   type="tel"
                   name="phone"
@@ -419,8 +426,7 @@ const StudentRegistration = () => {
                   onBlur={() => setFocusedField(null)}
                   placeholder="Enter your phone number"
                   required
-                  className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-0 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm hover:bg-white/90 text-gray-900 placeholder-gray-500 ${errors.phone ? "border-red-300 bg-red-50" : "border-gray-200"}`}
-                />
+                  className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-0 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm hover:bg-white/90 text-gray-900 placeholder-gray-500 ${errors.phone ? "border-red-300 bg-red-50" : "border-gray-200"}`} />
                 <div className={`absolute inset-0 rounded-xl transition-all duration-300 pointer-events-none ${focusedField === "phone" ? "ring-2 ring-blue-500/20" : ""}`}></div>
               </div>
               {errors.phone && <p className="mt-1 text-sm text-red-600 font-medium animate-shake">{errors.phone}</p>}
@@ -430,8 +436,7 @@ const StudentRegistration = () => {
               <label className="block text-sm font-semibold text-gray-700 mb-2">Registration Number</label>
               <div className="relative group">
                 <Hash
-                  className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-all duration-300 ${focusedField === "registration" ? "text-blue-600" : "text-gray-400"}`}
-                />
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-all duration-300 ${focusedField === "registration" ? "text-blue-600" : "text-gray-400"}`} />
                 <input
                   type="text"
                   name="registration_number"
@@ -441,8 +446,7 @@ const StudentRegistration = () => {
                   onBlur={() => setFocusedField(null)}
                   placeholder="Enter your registration number"
                   required
-                  className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-0 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm hover:bg-white/90 text-gray-900 placeholder-gray-500 ${errors.registration_number ? "border-red-300 bg-red-50" : "border-gray-200"}`}
-                />
+                  className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-0 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm hover:bg-white/90 text-gray-900 placeholder-gray-500 ${errors.registration_number ? "border-red-300 bg-red-50" : "border-gray-200"}`} />
                 <div className={`absolute inset-0 rounded-xl transition-all duration-300 pointer-events-none ${focusedField === "registration" ? "ring-2 ring-blue-500/20" : ""}`}></div>
               </div>
               {errors.registration_number && <p className="mt-1 text-sm text-red-600 font-medium animate-shake">{errors.registration_number}</p>}
