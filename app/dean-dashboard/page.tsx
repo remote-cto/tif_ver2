@@ -365,7 +365,7 @@ const DeanDashboard: React.FC = () => {
                     student={detailedStudentData.student}
                     assessments={detailedStudentData.assessments}
                     topicScores={detailedStudentData.topicScores}
-                    getRecommendationText={getRecommendationText}
+                   
                   />
                 </div>
               )}
