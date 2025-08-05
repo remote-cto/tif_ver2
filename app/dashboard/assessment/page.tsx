@@ -100,9 +100,11 @@ const AssessmentPage: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [student, setStudent] = useState<StudentData | null>(null);
-  
+
   // Backend calculated results
-  const [backendResults, setBackendResults] = useState<BackendResponse | null>(null);
+  const [backendResults, setBackendResults] = useState<BackendResponse | null>(
+    null
+  );
 
   // Initialize student data
   useEffect(() => {
@@ -184,7 +186,14 @@ const AssessmentPage: React.FC = () => {
     if (state.isCompleted && !assessmentId && !isSaving && student) {
       saveResult();
     }
-  }, [state.isCompleted, assessmentId, isSaving, student, state.answers, state.questions]);
+  }, [
+    state.isCompleted,
+    assessmentId,
+    isSaving,
+    student,
+    state.answers,
+    state.questions,
+  ]);
 
   const handleAnswerSelect = (index: number) => {
     setSelectedAnswer(index);
@@ -295,8 +304,8 @@ const AssessmentPage: React.FC = () => {
     );
     const scorePercent = (totalCorrectAnswers / state.questions.length) * 100;
 
-    const topicScoresForTemplate: AssessmentResultTopicScore[] = backendResults.topic_scores.map(
-      (topic, index) => ({
+    const topicScoresForTemplate: AssessmentResultTopicScore[] =
+      backendResults.topic_scores.map((topic, index) => ({
         topic_id: index + 1,
         topic_name: topic.topic,
         correct_answers: topic.correct,
@@ -305,8 +314,7 @@ const AssessmentPage: React.FC = () => {
         normalized_score: topic.normalized_score,
         classification: topic.classification,
         recommendation: topic.recommendation, // Pass recommendation from backend
-      })
-    );
+      }));
 
     const assessmentData: AssessmentResultData = {
       id: assessmentId,
@@ -316,8 +324,10 @@ const AssessmentPage: React.FC = () => {
       attempted_at: new Date(state.timeStarted).toISOString(),
       total_score: backendResults.total_score,
       readiness_score: backendResults.readiness_score,
-      foundational_score: backendResults.section_scores.foundational,
-      industrial_score: backendResults.section_scores.industrial,
+      foundational_score:
+        backendResults.section_scores.foundational ?? undefined,
+      industrial_score: backendResults.section_scores.industrial ?? undefined,
+
       status: "completed",
     };
 
