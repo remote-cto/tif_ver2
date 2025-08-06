@@ -28,7 +28,7 @@ interface TopicScore {
   weighted_score: number;
   normalized_score: number;
   classification: string;
-  recommendation?: string; // Add recommendation field
+  recommendation?: string;
 }
 
 interface AssessmentResultTopicScore {
@@ -39,7 +39,7 @@ interface AssessmentResultTopicScore {
   weighted_score: number;
   normalized_score: number;
   classification: string;
-  recommendation?: string; // Add recommendation field
+  recommendation?: string;
 }
 
 interface AssessmentResultData {
@@ -101,7 +101,6 @@ const AssessmentPage: React.FC = () => {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [student, setStudent] = useState<StudentData | null>(null);
 
-  // Backend calculated results
   const [backendResults, setBackendResults] = useState<BackendResponse | null>(
     null
   );
@@ -127,7 +126,6 @@ const AssessmentPage: React.FC = () => {
       .catch((err) => console.error("Failed to fetch questions", err));
   }, []);
 
-  // Timer
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeElapsed(Math.floor((Date.now() - state.timeStarted) / 1000));
@@ -135,7 +133,6 @@ const AssessmentPage: React.FC = () => {
     return () => clearInterval(timer);
   }, [state.timeStarted]);
 
-  // Save assessment results - simplified, backend does all calculations
   useEffect(() => {
     const saveResult = async () => {
       if (!student) return;
@@ -229,12 +226,8 @@ const AssessmentPage: React.FC = () => {
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  // Remove hardcoded recommendation function as it will come from database
-  // const getRecommendationText = (topic: string): string => { ... }
-
   const currentQuestion = state.questions[state.currentQuestion];
 
-  // Loading state for student data
   if (!student) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
@@ -246,7 +239,6 @@ const AssessmentPage: React.FC = () => {
     );
   }
 
-  // Show loading state while saving
   if (state.isCompleted && (isSaving || (!assessmentId && !saveError))) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
@@ -261,7 +253,6 @@ const AssessmentPage: React.FC = () => {
     );
   }
 
-  // Show error state if save failed
   if (state.isCompleted && saveError && !assessmentId) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
@@ -344,13 +335,11 @@ const AssessmentPage: React.FC = () => {
           student={studentData}
           assessments={[assessmentData]}
           topicScores={topicScoresForTemplate}
-          // Remove getRecommendationText prop as recommendations come from database
         />
       </div>
     );
   }
 
-  // Loading state for questions
   if (state.questions.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
@@ -362,12 +351,10 @@ const AssessmentPage: React.FC = () => {
     );
   }
 
-  // Assessment in progress - show current question
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
-          {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div>
               <p className="text-gray-600">
@@ -380,7 +367,6 @@ const AssessmentPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Progress */}
           <div className="mb-6">
             <div className="flex justify-between text-sm mb-1">
               <span>Progress</span>
@@ -400,7 +386,6 @@ const AssessmentPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Difficulty */}
           <div className="mb-6">
             <span
               className={`px-3 py-1 rounded-full text-sm font-medium ${

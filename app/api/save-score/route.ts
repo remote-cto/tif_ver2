@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/database";
 
-// Payload interface - simplified, backend will calculate everything
+
 interface SaveScoreRequest {
   academic_user_id: number;
   tenant_id: number;
@@ -537,7 +537,7 @@ async function calculateAllScores(
   };
 }
 
-// Helper function: Calculate section-wise scores from database
+
 async function calculateSectionScoresFromDB(
   client: any,
   questions: Array<{
@@ -555,7 +555,7 @@ async function calculateSectionScoresFromDB(
   );
 
   try {
-    // Get section information for the topics
+    
     const topicIds = Object.values(topicNameToId);
     console.log("🔍 [SECTION DB] Topic IDs to lookup:", topicIds);
 

@@ -1,3 +1,5 @@
+//app/dean-dashboard/page.tsx
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -42,6 +44,85 @@ interface College {
 }
 
 interface DetailedStudentData {
+  success: boolean;
+  student_id: number;
+  student: {
+    id: number;
+    name: string;
+    email: string;
+    registration_number: string;
+  };
+  summary: {
+    total_assessments: number;
+    total_questions: number;
+    total_correct: number;
+    average_score: number;
+    topic_summary: {
+      total_topics: number;
+      strengths: number;
+      partial: number;
+      gaps: number;
+    };
+    section_summary: Record<string, {
+      total_questions: number;
+      correct_answers: number;
+      topics: string[];
+      percentage: number;
+    }>;
+  };
+  assessments: {
+    id: number;
+    assessment_type_id: number;
+    assessment_type_name: string;
+    readiness_score: number;
+    foundational_score: number;
+    industrial_score: number;
+    attempted_at: string;
+    status: string;
+  }[];
+  topic_scores: {
+    topic_id: number;
+    topic_name: string;
+    section_name: string;
+    assessment_type_name: string;
+    assessment_type_id: number;
+    correct: number;
+    total: number;
+    weighted_score: number;
+    normalized_score: number;
+    classification: string;
+    recommendation: string;
+    attempted_at: string;
+  }[];
+  question_details: {
+    id: number;
+    topic_id: number;
+    topic_name: string;
+    section_name: string;
+    question_id: number;
+    question: string;
+    options: {
+      A: string;
+      B: string;
+      C: string;
+      D: string;
+    };
+    correct_answer: string;
+    selected_answer: string;
+    is_correct: boolean;
+    time_taken_seconds: number;
+    confidence_level: string;
+    reasoning: string;
+    feedback: string;
+    difficulty_level: string;
+    level_weightage: number;
+    assessment_type_name: string;
+    attempted_at: string;
+  }[];
+}
+
+// Transform data for AssessmentResult component
+interface TransformedAssessmentData {
   student: {
     id: number;
     name: string;
@@ -68,6 +149,7 @@ interface DetailedStudentData {
     weighted_score: number;
     normalized_score: number;
     classification: string;
+    recommendation?: string;
   }[];
 }
 
@@ -94,6 +176,7 @@ const DeanDashboard: React.FC = () => {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
   const [detailedStudentData, setDetailedStudentData] = useState<DetailedStudentData | null>(null);
+  const [transformedData, setTransformedData] = useState<TransformedAssessmentData | null>(null);
   const [loadingReport, setLoadingReport] = useState<boolean>(false);
   const [reportError, setReportError] = useState<string>("");
 
@@ -134,249 +217,441 @@ const DeanDashboard: React.FC = () => {
     fetchData();
   }, []);
 
+  const transformDataForAssessmentResult = (data: DetailedStudentData): TransformedAssessmentData => {
+    return {
+      student: data.student,
+      assessments: data.assessments.map(assessment => ({
+        id: assessment.id,
+        score: data.summary.total_correct,
+        total_questions: data.summary.total_questions,
+        score_percent: data.summary.average_score,
+        attempted_at: assessment.attempted_at,
+        total_score: data.summary.total_correct,
+        readiness_score: assessment.readiness_score,
+        foundational_score: assessment.foundational_score,
+        industrial_score: assessment.industrial_score,
+        status: assessment.status,
+      })),
+      topicScores: data.topic_scores.map(topic => ({
+        topic_id: topic.topic_id,
+        topic_name: topic.topic_name,
+        correct_answers: topic.correct,
+        total_questions: topic.total,
+        weighted_score: topic.weighted_score,
+        normalized_score: topic.normalized_score,
+        classification: topic.classification,
+        recommendation: topic.recommendation,
+      })),
+    };
+  };
+
   const fetchDetailedReport = async (student: Student) => {
     setLoadingReport(true);
     setReportError("");
+    setDetailedStudentData(null);
+    setTransformedData(null);
     
     try {
-      // Fetch detailed student assessment data
+      console.log("Fetching detailed report for student:", student.id);
+      
       const response = await fetch(`/api/student-detailed-report?student_id=${student.id}`);
       
       if (!response.ok) {
-        throw new Error("Failed to fetch detailed report");
+        const errorText = await response.text();
+        console.error("API Error:", errorText);
+        throw new Error(`Failed to fetch detailed report: ${response.status} ${response.statusText}`);
       }
       
-      const data = await response.json();
+      const data: DetailedStudentData = await response.json();
+      console.log("Received detailed data:", data);
       
-      // Transform the data to match AssessmentResult component expectations
-      const detailedData: DetailedStudentData = {
-        student: {
-          id: student.id,
-          name: student.name,
-          email: student.email,
-          registration_number: student.registration_number,
-        },
-        assessments: data.assessments || [],
-        topicScores: data.topicScores || [],
-      };
+      // Validate the response structure
+      if (!data || !data.success) {
+        throw new Error("Invalid response format from server");
+      }
       
-      setDetailedStudentData(detailedData);
+      if (!data.student || !Array.isArray(data.assessments) || !Array.isArray(data.topic_scores)) {
+        throw new Error("Missing required data in server response");
+      }
+      
+      setDetailedStudentData(data);
+      
+      // Transform data for AssessmentResult component
+      const transformed = transformDataForAssessmentResult(data);
+      setTransformedData(transformed);
+      
+      console.log("Transformed data for AssessmentResult:", transformed);
+      
     } catch (err) {
       console.error("Error fetching detailed report:", err);
-      setReportError("Failed to load detailed report. Please try again.");
+      setReportError(`Failed to load detailed report: ${err instanceof Error ? err.message : 'Unknown error'}. Please try again.`);
     } finally {
       setLoadingReport(false);
     }
   };
 
   const handleViewReport = async (student: Student) => {
+    console.log("Viewing report for student:", student);
     setSelectedStudent(student);
     setIsPopupOpen(true);
     setDetailedStudentData(null);
+    setTransformedData(null);
+    setReportError("");
+    
+    // Store student data in sessionStorage to indicate dean view
+    sessionStorage.setItem("selectedStudentData", JSON.stringify(student));
+    
     await fetchDetailedReport(student);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+    setSelectedStudent(null);
+    setDetailedStudentData(null);
+    setTransformedData(null);
+    setReportError("");
+    sessionStorage.removeItem("selectedStudentData");
   };
 
   const handleLogout = async () => {
     try {
       await fetch("/api/college-login", { method: "DELETE" });
     } catch {}
+    sessionStorage.clear();
     window.location.href = "/login";
   };
 
-  const getRecommendationText = (topic: string): string => {
-    const map: Record<string, string> = {
-      Python: "Practice basic Python syntax and build small CLI apps.",
-      Math: "Brush up on linear algebra, stats, and derivatives.",
-      Projects: "Work on hands-on mini-projects to apply concepts.",
-      "Cloud & Deployment": "Try deploying apps to AWS/GCP.",
-      "ML Concepts": "Study supervised/unsupervised algorithms.",
-      "Tools & Git": "Learn Git basics with real collaborative projects.",
-      "AI Use Cases": "Explore real-world applications and case studies.",
-      "Modern AI Stack Awareness":
-        "Understand tools like LangChain, Vector DBs, and inference APIs.",
-    };
-    return map[topic] || "Practice and deepen understanding of this topic.";
+  const formatScore = (score: number | null | undefined): string => {
+    if (score === null || score === undefined || isNaN(score)) {
+      return "N/A";
+    }
+    return `${score.toFixed(1)}%`;
   };
 
-  if (loading)
+  const getScoreClassName = (score: number | null | undefined): string => {
+    if (score === null || score === undefined || isNaN(score)) {
+      return "bg-gray-100 text-gray-600";
+    }
+    
+    if (score >= 80) {
+      return "bg-green-100 text-green-800";
+    } else if (score >= 60) {
+      return "bg-yellow-100 text-yellow-800";
+    } else {
+      return "bg-red-100 text-red-800";
+    }
+  };
+
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-lg text-gray-700">Loading dashboard...</p>
+        </div>
       </div>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
-      <div className="min-h-screen text-center text-red-600 p-5">{error}</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center text-red-600 p-5">
+          <div className="text-xl font-semibold mb-4">Error</div>
+          <p>{error}</p>
+        </div>
+      </div>
     );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
-        <header className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">🎓 XWORKS- TIF DASHBOARD</h1>
+        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">
+            🎓 XWORKS - TIF DASHBOARD
+          </h1>
           <button
             onClick={handleLogout}
-            className="bg-red-600 text-white px-4 py-2 rounded"
+            className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors"
           >
             Logout
           </button>
         </header>
 
-        <div className="bg-blue-50 p-4 rounded-md mb-6 grid grid-cols-2 gap-6 text-center md:text-left">
-          <div>
-            <span className="text-sm uppercase tracking-wide text-blue-700">
-              Admin Name
-            </span>
-            <p className="text-xl font-semibold">{admin.name ?? "N/A"}</p>
-          </div>
-          <div>
-            <span className="text-sm uppercase tracking-wide text-blue-700">
-              College Name
-            </span>
-            <p className="text-xl font-semibold">
-              {college ? college.name : "Loading..."}
-            </p>
+        <div className="bg-blue-50 p-6 rounded-lg mb-8 border border-blue-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="text-center md:text-left">
+              <span className="text-sm uppercase tracking-wide text-blue-700 font-semibold">
+                Admin Name
+              </span>
+              <p className="text-xl font-semibold text-gray-800 mt-1">
+                {admin.name ?? "N/A"}
+              </p>
+            </div>
+            <div className="text-center md:text-left">
+              <span className="text-sm uppercase tracking-wide text-blue-700 font-semibold">
+                College Name
+              </span>
+              <p className="text-xl font-semibold text-gray-800 mt-1">
+                {college ? college.name : "Loading..."}
+              </p>
+            </div>
           </div>
         </div>
 
-        <h2 className="text-3xl font-semibold mb-4">Students Performance</h2>
+        <div className="bg-white rounded-lg shadow-sm border">
+          <div className="p-6 border-b">
+            <h2 className="text-2xl font-semibold text-gray-800 flex items-center">
+              <span className="mr-2">📊</span>
+              Students Performance Overview
+            </h2>
+            <p className="text-gray-600 mt-1">
+              Click "View Report" to see detailed assessment results for each student
+            </p>
+          </div>
 
-        {students.length === 0 ? (
-          <p>No students found.</p>
-        ) : (
-          <table className="w-full table-auto border border-gray-300 rounded-lg bg-white">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="p-3 text-left border-b border-gray-300">
-                  Student
-                </th>
-                <th className="p-3 text-left border-b border-gray-300">
-                  Registration No.
-                </th>
-                <th className="p-3 text-left border-b border-gray-300">
-                  Email
-                </th>
-                <th className="p-3 text-left border-b border-gray-300">
-                  Readiness Score
-                </th>
-                <th className="p-3 text-left border-b border-gray-300">
-                  Foundation Score
-                </th>
-                <th className="p-3 text-left border-b border-gray-300">
-                  Action
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {students.map((stu) => {
-                const readiness =
-                  stu.assessments && stu.assessments.length > 0
-                    ? stu.assessments[0].readiness_score
-                    : null;
-
-                const foundation =
-                  stu.assessments && stu.assessments.length > 0
-                    ? stu.assessments[0].foundational_assessment
-                    : null;
-
-                return (
-                  <tr key={stu.id} className="hover:bg-gray-50 cursor-pointer">
-                    <td className="p-3 border-b border-gray-300">{stu.name}</td>
-                    <td className="p-3 border-b border-gray-300">
-                      {stu.registration_number}
-                    </td>
-                    <td className="p-3 border-b border-gray-300">
-                      {stu.email}
-                    </td>
-
-                    <td className="p-3 border-b border-gray-300">
-                      {typeof readiness === "number" && !isNaN(readiness)
-                        ? readiness.toFixed(2) + "%"
-                        : "N/A"}
-                    </td>
-
-                    <td className="p-3 border-b border-gray-300">
-                      {typeof foundation === "number" && !isNaN(foundation)
-                        ? foundation.toFixed(2) + "%"
-                        : "N/A"}
-                    </td>
-
-                    <td className="p-3 border-b border-gray-300">
-                      <button
-                        onClick={() => handleViewReport(stu)}
-                        className="text-blue-600 underline hover:text-blue-800"
-                      >
-                        View Report
-                      </button>
-                    </td>
+          <div className="overflow-x-auto">
+            {students.length === 0 ? (
+              <div className="p-8 text-center text-gray-500">
+                <p className="text-lg">No students found.</p>
+                <p className="text-sm mt-2">Students will appear here once they complete their assessments.</p>
+              </div>
+            ) : (
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-50 border-b">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                      Student
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                      Registration No.
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                      Email
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                      Readiness Score
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                      Foundation Score
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                      Action
+                    </th>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        )}
+                </thead>
+                <tbody>
+                  {students.map((student) => {
+                    const readiness =
+                      student.assessments && student.assessments.length > 0
+                        ? student.assessments[0].readiness_score
+                        : null;
+
+                    const foundation =
+                      student.assessments && student.assessments.length > 0
+                        ? student.assessments[0].foundational_assessment
+                        : null;
+
+                    return (
+                      <tr 
+                        key={student.id} 
+                        className="hover:bg-gray-50 border-b transition-colors"
+                      >
+                        <td className="px-6 py-4">
+                          <div className="font-medium text-gray-900">
+                            {student.name}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-gray-700">
+                          {student.registration_number}
+                        </td>
+                        <td className="px-6 py-4 text-gray-700">
+                          {student.email}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getScoreClassName(readiness)}`}>
+                            {formatScore(readiness)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getScoreClassName(foundation)}`}>
+                            {formatScore(foundation)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <button
+                            onClick={() => handleViewReport(student)}
+                            className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+                          >
+                            📋 View Report
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
 
         {/* Enhanced Popup Modal with Full Assessment Report */}
         {isPopupOpen && selectedStudent && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-5 z-50 overflow-auto">
-            <div className="bg-white rounded-lg shadow-lg max-w-6xl w-full max-h-[95vh] overflow-y-auto relative">
-              <button
-                onClick={() => {
-                  setIsPopupOpen(false);
-                  setSelectedStudent(null);
-                  setDetailedStudentData(null);
-                  setReportError("");
-                }}
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200 z-10 bg-white shadow-md"
-                aria-label="Close"
-              >
-                <X size={24} />
-              </button>
-
-              {loadingReport && (
-                <div className="flex items-center justify-center h-96">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                    <p className="text-lg text-gray-700">Loading detailed report...</p>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-auto">
+            <div className="bg-white rounded-xl shadow-2xl max-w-7xl w-full max-h-[95vh] overflow-y-auto relative">
+              <div className="sticky top-0 bg-white border-b px-6 py-4 rounded-t-xl z-10">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-800">
+                      Assessment Report - {selectedStudent.name}
+                    </h3>
+                    {detailedStudentData && detailedStudentData.summary && (
+                      <p className="text-sm text-gray-600 mt-1">
+                        {detailedStudentData.summary.total_assessments} assessments • 
+                        {detailedStudentData.summary.total_questions} questions • 
+                        {detailedStudentData.summary.average_score.toFixed(1)}% average score
+                      </p>
+                    )}
                   </div>
+                  <button
+                    onClick={handleClosePopup}
+                    className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                    aria-label="Close"
+                  >
+                    <X size={24} className="text-gray-500" />
+                  </button>
                 </div>
-              )}
+              </div>
 
-              {reportError && (
-                <div className="flex items-center justify-center h-96">
-                  <div className="text-center text-red-600">
-                    <p className="text-lg font-semibold mb-4">Error Loading Report</p>
-                    <p className="mb-4">{reportError}</p>
-                    <button
-                      onClick={() => fetchDetailedReport(selectedStudent)}
-                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                    >
-                      Try Again
-                    </button>
+              <div className="p-6">
+                {loadingReport && (
+                  <div className="flex items-center justify-center py-20">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-6"></div>
+                      <h4 className="text-lg font-semibold text-gray-700 mb-2">
+                        Loading Detailed Report
+                      </h4>
+                      <p className="text-gray-500">
+                        Fetching assessment data and generating comprehensive analysis...
+                      </p>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {!loadingReport && !reportError && detailedStudentData && (
-                <div className="p-6">
-                  <AssessmentResult
-                    student={detailedStudentData.student}
-                    assessments={detailedStudentData.assessments}
-                    topicScores={detailedStudentData.topicScores}
-                   
-                  />
-                </div>
-              )}
-
-              {!loadingReport && !reportError && !detailedStudentData && (
-                <div className="flex items-center justify-center h-96">
-                  <div className="text-center text-gray-600">
-                    <p className="text-lg">No assessment data available for this student.</p>
+                {reportError && (
+                  <div className="flex items-center justify-center py-20">
+                    <div className="text-center max-w-md">
+                      <div className="text-red-500 text-6xl mb-4">⚠️</div>
+                      <h4 className="text-lg font-semibold text-red-700 mb-4">
+                        Error Loading Report
+                      </h4>
+                      <p className="text-red-600 mb-6 text-sm">{reportError}</p>
+                      <button
+                        onClick={() => fetchDetailedReport(selectedStudent)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors mr-3"
+                      >
+                        🔄 Try Again
+                      </button>
+                      <button
+                        onClick={handleClosePopup}
+                        className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors"
+                      >
+                        Close
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+
+                {!loadingReport && !reportError && transformedData && (
+                  <div className="space-y-6">
+                    {/* Summary Statistics */}
+                    {detailedStudentData && detailedStudentData.summary && (
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        <div className="bg-blue-50 p-4 rounded-lg">
+                          <div className="text-2xl font-bold text-blue-600">
+                            {detailedStudentData.summary.topic_summary.total_topics}
+                          </div>
+                          <div className="text-sm text-blue-700">Total Topics</div>
+                        </div>
+                        <div className="bg-green-50 p-4 rounded-lg">
+                          <div className="text-2xl font-bold text-green-600">
+                            {detailedStudentData.summary.topic_summary.strengths}
+                          </div>
+                          <div className="text-sm text-green-700">Strengths</div>
+                        </div>
+                        <div className="bg-yellow-50 p-4 rounded-lg">
+                          <div className="text-2xl font-bold text-yellow-600">
+                            {detailedStudentData.summary.topic_summary.partial}
+                          </div>
+                          <div className="text-sm text-yellow-700">Partial Understanding</div>
+                        </div>
+                        <div className="bg-red-50 p-4 rounded-lg">
+                          <div className="text-2xl font-bold text-red-600">
+                            {detailedStudentData.summary.topic_summary.gaps}
+                          </div>
+                          <div className="text-sm text-red-700">Knowledge Gaps</div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Section Summary */}
+                    {detailedStudentData && detailedStudentData.summary.section_summary && (
+                      <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                        <h4 className="font-semibold text-gray-800 mb-3">Section-wise Performance</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {Object.entries(detailedStudentData.summary.section_summary).map(([section, data]) => (
+                            <div key={section} className="bg-white p-3 rounded border">
+                              <div className="font-medium text-gray-700">{section}</div>
+                              <div className="text-sm text-gray-600">
+                                {data.correct_answers}/{data.total_questions} correct ({data.percentage}%)
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1">
+                                {data.topics.length} topics
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Assessment Result Component */}
+                    <AssessmentResult
+                      student={transformedData.student}
+                      assessments={transformedData.assessments}
+                      topicScores={transformedData.topicScores}
+                    />
+                  </div>
+                )}
+
+                {!loadingReport && !reportError && !transformedData && detailedStudentData && (
+                  <div className="flex items-center justify-center py-20">
+                    <div className="text-center">
+                      <div className="text-gray-400 text-6xl mb-4">📊</div>
+                      <h4 className="text-lg font-semibold text-gray-700 mb-2">
+                        No Assessment Data Available
+                      </h4>
+                      <p className="text-gray-500">
+                        This student hasn't completed any assessments yet.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {!loadingReport && !reportError && !detailedStudentData && (
+                  <div className="flex items-center justify-center py-20">
+                    <div className="text-center">
+                      <div className="text-gray-400 text-6xl mb-4">📊</div>
+                      <h4 className="text-lg font-semibold text-gray-700 mb-2">
+                        Loading Assessment Data
+                      </h4>
+                      <p className="text-gray-500">
+                        Please wait while we fetch the assessment results...
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
