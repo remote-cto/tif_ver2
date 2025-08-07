@@ -70,7 +70,7 @@ const AssessmentResult: React.FC<Props> = ({
   const radarLabels = uniqueTopics.map((t) => t.topic_name);
   const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
 
-  // Get strengths and gaps based on classification and scores
+ 
   const strengths = topicScores
     .filter(
       (topic) =>
@@ -179,7 +179,7 @@ const AssessmentResult: React.FC<Props> = ({
     return (
       <div className="max-w-5xl mx-auto p-6 sm:p-10">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-indigo-700 mb-4">
+          <h1 className="text-xl md:text-4xl font-bold text-indigo-700 mb-4">
             🚀 Skill Assessment Report
           </h1>
           <p className="text-gray-500">
@@ -215,7 +215,7 @@ const AssessmentResult: React.FC<Props> = ({
 
       {/* Header */}
       <div className="text-center border-b pb-6">
-        <h1 className="text-4xl font-bold text-indigo-700 mb-2">
+        <h1 className="text-lg md:text-4xl font-bold text-indigo-700 mb-2">
           🚀 Skill Assessment Report
         </h1>
         <p className="text-sm text-gray-500">
@@ -227,16 +227,16 @@ const AssessmentResult: React.FC<Props> = ({
       <div className="grid sm:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-lg">
         <div className="space-y-2">
           <p className="text-lg">
-            <strong className="text-gray-700">Name:</strong>{" "}
-            <span className="text-gray-900">{student.name}</span>
+            <strong className="text-gray-700 text-xs md:text-lg">Name:</strong>{" "}
+            <span className="text-gray-900 text-xs md:text-lg">{student.name}</span>
           </p>
           <p className="text-lg">
-            <strong className="text-gray-700">Email:</strong>{" "}
-            <span className="text-gray-900">{student.email}</span>
+            <strong className="text-gray-700 text-xs md:text-lg">Email:</strong>{" "}
+            <span className="text-gray-900 text-xs md:text-lg">{student.email}</span>
           </p>
           <p className="text-lg">
-            <strong className="text-gray-700">Registration No:</strong>{" "}
-            <span className="text-gray-900">{student.registration_number}</span>
+            <strong className="text-gray-700 text-xs md:text-lg">Registration No:</strong>{" "}
+            <span className="text-gray-900 text-xs md:text-lg">{student.registration_number}</span>
           </p>
         </div>
         <div className="text-center sm:text-right">
@@ -297,7 +297,7 @@ const AssessmentResult: React.FC<Props> = ({
         {/* Foundational Score */}
         {foundationalScore !== null && foundationalScore !== undefined && (
           <div className="bg-orange-50 p-4 rounded-lg text-center">
-            <h3 className="text-lg font-semibold text-orange-700">
+            <h3 className="text-xs md:text-lg font-semibold text-orange-700">
               Foundational
             </h3>
             <p
@@ -719,7 +719,7 @@ const AssessmentResult: React.FC<Props> = ({
       {/* Final Status */}
       <div className="text-center">
         <div
-          className={`inline-flex items-center px-8 py-4 rounded-full text-lg font-semibold shadow-lg ${getStatusColor()}`}
+          className={`inline-flex items-center px-8 py-4 rounded-full text-xs md:text-lg font-semibold shadow-lg ${getStatusColor()}`}
         >
           <span className="mr-2">🎖️</span>
           <span>Placement Status: {placementStatus}</span>
