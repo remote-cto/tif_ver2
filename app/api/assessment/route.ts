@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
     AND qb.assessment_type_id = $1
     AND s.id = '1'
   ORDER BY RANDOM()
-  LIMIT 9
+  LIMIT 18
 )
 UNION ALL
 (
@@ -62,7 +62,7 @@ UNION ALL
     AND qb.assessment_type_id = $1
     AND s.id = '2'
   ORDER BY RANDOM()
-  LIMIT 9
+  LIMIT 18
 )
       `;
 

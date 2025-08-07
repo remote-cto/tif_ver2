@@ -56,7 +56,7 @@ const AssessmentResult: React.FC<Props> = ({
       : null;
 
   const readiness = latestAssessment?.readiness_score || 0;
-  const totalScore = latestAssessment?.total_score || 0;
+  // const totalScore = latestAssessment?.total_score || 0;
   const foundationalScore = latestAssessment?.foundational_score;
   const industrialScore = latestAssessment?.industrial_score;
 
@@ -254,7 +254,7 @@ const AssessmentResult: React.FC<Props> = ({
       </div>
 
       {/* Assessment Summary - Updated to include section scores */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-blue-50 p-4 rounded-lg text-center">
           <h3 className="text-lg font-semibold text-blue-700">Basic Score</h3>
           <p
@@ -272,7 +272,7 @@ const AssessmentResult: React.FC<Props> = ({
           </p>
         </div>
 
-        {totalScore > 0 && (
+        {/* {totalScore > 0 && (
           <div className="bg-purple-50 p-4 rounded-lg text-center">
             <h3 className="text-lg font-semibold text-purple-700">
               Total Score
@@ -282,7 +282,7 @@ const AssessmentResult: React.FC<Props> = ({
             </p>
             <p className="text-sm text-gray-600">Weighted Score</p>
           </div>
-        )}
+        )} */}
 
         <div className="bg-green-50 p-4 rounded-lg text-center">
           <h3 className="text-lg font-semibold text-green-700">

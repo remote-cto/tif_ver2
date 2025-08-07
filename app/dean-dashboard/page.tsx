@@ -63,12 +63,15 @@ interface DetailedStudentData {
       partial: number;
       gaps: number;
     };
-    section_summary: Record<string, {
-      total_questions: number;
-      correct_answers: number;
-      topics: string[];
-      percentage: number;
-    }>;
+    section_summary: Record<
+      string,
+      {
+        total_questions: number;
+        correct_answers: number;
+        topics: string[];
+        percentage: number;
+      }
+    >;
   };
   assessments: {
     id: number;
@@ -175,8 +178,10 @@ const DeanDashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
-  const [detailedStudentData, setDetailedStudentData] = useState<DetailedStudentData | null>(null);
-  const [transformedData, setTransformedData] = useState<TransformedAssessmentData | null>(null);
+  const [detailedStudentData, setDetailedStudentData] =
+    useState<DetailedStudentData | null>(null);
+  const [transformedData, setTransformedData] =
+    useState<TransformedAssessmentData | null>(null);
   const [loadingReport, setLoadingReport] = useState<boolean>(false);
   const [reportError, setReportError] = useState<string>("");
 
@@ -186,7 +191,7 @@ const DeanDashboard: React.FC = () => {
       setError("Invalid session. Please log in again.");
       setLoading(false);
       setTimeout(() => {
-        window.location.href = "/login";
+        window.location.href = "/Login";
       }, 1200);
       return;
     }
@@ -217,10 +222,12 @@ const DeanDashboard: React.FC = () => {
     fetchData();
   }, []);
 
-  const transformDataForAssessmentResult = (data: DetailedStudentData): TransformedAssessmentData => {
+  const transformDataForAssessmentResult = (
+    data: DetailedStudentData
+  ): TransformedAssessmentData => {
     return {
       student: data.student,
-      assessments: data.assessments.map(assessment => ({
+      assessments: data.assessments.map((assessment) => ({
         id: assessment.id,
         score: data.summary.total_correct,
         total_questions: data.summary.total_questions,
@@ -232,7 +239,7 @@ const DeanDashboard: React.FC = () => {
         industrial_score: assessment.industrial_score,
         status: assessment.status,
       })),
-      topicScores: data.topic_scores.map(topic => ({
+      topicScores: data.topic_scores.map((topic) => ({
         topic_id: topic.topic_id,
         topic_name: topic.topic_name,
         correct_answers: topic.correct,
@@ -250,41 +257,52 @@ const DeanDashboard: React.FC = () => {
     setReportError("");
     setDetailedStudentData(null);
     setTransformedData(null);
-    
+
     try {
       console.log("Fetching detailed report for student:", student.id);
-      
-      const response = await fetch(`/api/student-detailed-report?student_id=${student.id}`);
-      
+
+      const response = await fetch(
+        `/api/student-detailed-report?student_id=${student.id}`
+      );
+
       if (!response.ok) {
         const errorText = await response.text();
         console.error("API Error:", errorText);
-        throw new Error(`Failed to fetch detailed report: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch detailed report: ${response.status} ${response.statusText}`
+        );
       }
-      
+
       const data: DetailedStudentData = await response.json();
       console.log("Received detailed data:", data);
-      
+
       // Validate the response structure
       if (!data || !data.success) {
         throw new Error("Invalid response format from server");
       }
-      
-      if (!data.student || !Array.isArray(data.assessments) || !Array.isArray(data.topic_scores)) {
+
+      if (
+        !data.student ||
+        !Array.isArray(data.assessments) ||
+        !Array.isArray(data.topic_scores)
+      ) {
         throw new Error("Missing required data in server response");
       }
-      
+
       setDetailedStudentData(data);
-      
+
       // Transform data for AssessmentResult component
       const transformed = transformDataForAssessmentResult(data);
       setTransformedData(transformed);
-      
+
       console.log("Transformed data for AssessmentResult:", transformed);
-      
     } catch (err) {
       console.error("Error fetching detailed report:", err);
-      setReportError(`Failed to load detailed report: ${err instanceof Error ? err.message : 'Unknown error'}. Please try again.`);
+      setReportError(
+        `Failed to load detailed report: ${
+          err instanceof Error ? err.message : "Unknown error"
+        }. Please try again.`
+      );
     } finally {
       setLoadingReport(false);
     }
@@ -297,10 +315,10 @@ const DeanDashboard: React.FC = () => {
     setDetailedStudentData(null);
     setTransformedData(null);
     setReportError("");
-    
+
     // Store student data in sessionStorage to indicate dean view
     sessionStorage.setItem("selectedStudentData", JSON.stringify(student));
-    
+
     await fetchDetailedReport(student);
   };
 
@@ -318,7 +336,7 @@ const DeanDashboard: React.FC = () => {
       await fetch("/api/college-login", { method: "DELETE" });
     } catch {}
     sessionStorage.clear();
-    window.location.href = "/login";
+    window.location.href = "/Login";
   };
 
   const formatScore = (score: number | null | undefined): string => {
@@ -332,7 +350,7 @@ const DeanDashboard: React.FC = () => {
     if (score === null || score === undefined || isNaN(score)) {
       return "bg-gray-100 text-gray-600";
     }
-    
+
     if (score >= 80) {
       return "bg-green-100 text-green-800";
     } else if (score >= 60) {
@@ -407,7 +425,8 @@ const DeanDashboard: React.FC = () => {
               Students Performance Overview
             </h2>
             <p className="text-gray-600 mt-1">
-              Click "View Report" to see detailed assessment results for each student
+              Click "View Report" to see detailed assessment results for each
+              student
             </p>
           </div>
 
@@ -415,7 +434,10 @@ const DeanDashboard: React.FC = () => {
             {students.length === 0 ? (
               <div className="p-8 text-center text-gray-500">
                 <p className="text-lg">No students found.</p>
-                <p className="text-sm mt-2">Students will appear here once they complete their assessments.</p>
+                <p className="text-sm mt-2">
+                  Students will appear here once they complete their
+                  assessments.
+                </p>
               </div>
             ) : (
               <table className="w-full">
@@ -436,6 +458,9 @@ const DeanDashboard: React.FC = () => {
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
                       Foundation Score
                     </th>
+                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                      Industrial Score
+                    </th>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
                       Action
                     </th>
@@ -452,10 +477,14 @@ const DeanDashboard: React.FC = () => {
                       student.assessments && student.assessments.length > 0
                         ? student.assessments[0].foundational_assessment
                         : null;
+                        const industry =
+                      student.assessments && student.assessments.length > 0
+                        ? student.assessments[0].industrial_assessment
+                        : null;
 
                     return (
-                      <tr 
-                        key={student.id} 
+                      <tr
+                        key={student.id}
                         className="hover:bg-gray-50 border-b transition-colors"
                       >
                         <td className="px-6 py-4">
@@ -470,13 +499,30 @@ const DeanDashboard: React.FC = () => {
                           {student.email}
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getScoreClassName(readiness)}`}>
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getScoreClassName(
+                              readiness
+                            )}`}
+                          >
                             {formatScore(readiness)}
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getScoreClassName(foundation)}`}>
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getScoreClassName(
+                              foundation
+                            )}`}
+                          >
                             {formatScore(foundation)}
+                          </span>
+                        </td>
+                           <td className="px-6 py-4">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getScoreClassName(
+                              industry
+                            )}`}
+                          >
+                            {formatScore(industry)}
                           </span>
                         </td>
                         <td className="px-6 py-4">
@@ -506,13 +552,7 @@ const DeanDashboard: React.FC = () => {
                     <h3 className="text-xl font-semibold text-gray-800">
                       Assessment Report - {selectedStudent.name}
                     </h3>
-                    {detailedStudentData && detailedStudentData.summary && (
-                      <p className="text-sm text-gray-600 mt-1">
-                        {detailedStudentData.summary.total_assessments} assessments • 
-                        {detailedStudentData.summary.total_questions} questions • 
-                        {detailedStudentData.summary.average_score.toFixed(1)}% average score
-                      </p>
-                    )}
+                    
                   </div>
                   <button
                     onClick={handleClosePopup}
@@ -533,7 +573,8 @@ const DeanDashboard: React.FC = () => {
                         Loading Detailed Report
                       </h4>
                       <p className="text-gray-500">
-                        Fetching assessment data and generating comprehensive analysis...
+                        Fetching assessment data and generating comprehensive
+                        analysis...
                       </p>
                     </div>
                   </div>
@@ -566,54 +607,6 @@ const DeanDashboard: React.FC = () => {
                 {!loadingReport && !reportError && transformedData && (
                   <div className="space-y-6">
                     {/* Summary Statistics */}
-                    {detailedStudentData && detailedStudentData.summary && (
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                        <div className="bg-blue-50 p-4 rounded-lg">
-                          <div className="text-2xl font-bold text-blue-600">
-                            {detailedStudentData.summary.topic_summary.total_topics}
-                          </div>
-                          <div className="text-sm text-blue-700">Total Topics</div>
-                        </div>
-                        <div className="bg-green-50 p-4 rounded-lg">
-                          <div className="text-2xl font-bold text-green-600">
-                            {detailedStudentData.summary.topic_summary.strengths}
-                          </div>
-                          <div className="text-sm text-green-700">Strengths</div>
-                        </div>
-                        <div className="bg-yellow-50 p-4 rounded-lg">
-                          <div className="text-2xl font-bold text-yellow-600">
-                            {detailedStudentData.summary.topic_summary.partial}
-                          </div>
-                          <div className="text-sm text-yellow-700">Partial Understanding</div>
-                        </div>
-                        <div className="bg-red-50 p-4 rounded-lg">
-                          <div className="text-2xl font-bold text-red-600">
-                            {detailedStudentData.summary.topic_summary.gaps}
-                          </div>
-                          <div className="text-sm text-red-700">Knowledge Gaps</div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Section Summary */}
-                    {detailedStudentData && detailedStudentData.summary.section_summary && (
-                      <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                        <h4 className="font-semibold text-gray-800 mb-3">Section-wise Performance</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {Object.entries(detailedStudentData.summary.section_summary).map(([section, data]) => (
-                            <div key={section} className="bg-white p-3 rounded border">
-                              <div className="font-medium text-gray-700">{section}</div>
-                              <div className="text-sm text-gray-600">
-                                {data.correct_answers}/{data.total_questions} correct ({data.percentage}%)
-                              </div>
-                              <div className="text-xs text-gray-500 mt-1">
-                                {data.topics.length} topics
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
 
                     {/* Assessment Result Component */}
                     <AssessmentResult
@@ -624,19 +617,22 @@ const DeanDashboard: React.FC = () => {
                   </div>
                 )}
 
-                {!loadingReport && !reportError && !transformedData && detailedStudentData && (
-                  <div className="flex items-center justify-center py-20">
-                    <div className="text-center">
-                      <div className="text-gray-400 text-6xl mb-4">📊</div>
-                      <h4 className="text-lg font-semibold text-gray-700 mb-2">
-                        No Assessment Data Available
-                      </h4>
-                      <p className="text-gray-500">
-                        This student hasn't completed any assessments yet.
-                      </p>
+                {!loadingReport &&
+                  !reportError &&
+                  !transformedData &&
+                  detailedStudentData && (
+                    <div className="flex items-center justify-center py-20">
+                      <div className="text-center">
+                        <div className="text-gray-400 text-6xl mb-4">📊</div>
+                        <h4 className="text-lg font-semibold text-gray-700 mb-2">
+                          No Assessment Data Available
+                        </h4>
+                        <p className="text-gray-500">
+                          This student hasn't completed any assessments yet.
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {!loadingReport && !reportError && !detailedStudentData && (
                   <div className="flex items-center justify-center py-20">

@@ -216,70 +216,81 @@ export async function GET(req: NextRequest) {
 
 
     // 3. Fetch topic-wise performance from academic_assessment_action
-    const topicPerformanceQuery = `
-      SELECT
-        aaa.topic_id,
-        t.name as topic_name,
-        s.name as section_name,
-        aaa.correct_answers,
-        aaa.total_questions,
-        aaa.topic_wt_got as weighted_score,
-        aaa.level_wt_got as level_weight,
-        at.name as assessment_type_name,
-        aaa.assessment_type_id,
-        aaa.create_date,
-        -- Calculate normalized score (same logic as save-score API)
-        CASE
-          WHEN aaa.total_questions > 0 AND aaa.topic_wt_got > 0
-          THEN LEAST(100, (aaa.topic_wt_got / 10.0) * 100)
-          ELSE 0
-        END as normalized_score
-      FROM academic_assessment_action aaa
-      INNER JOIN topic t ON aaa.topic_id = t.id
-      INNER JOIN section s ON t.section_id = s.id
-      INNER JOIN assessment_type at ON aaa.assessment_type_id = at.id
-      WHERE aaa.academic_user_id = $1
-        AND aaa.is_active = true
-      ORDER BY aaa.create_date DESC, s.name, t.name
-    `;
+  const topicPerformanceQuery = `
+  SELECT
+    aaa.topic_id,
+    t.name as topic_name,
+    s.name as section_name,
+    aaa.correct_answers,
+    aaa.total_questions,
+    aaa.topic_wt_got as weighted_score,
+    aaa.level_wt_got as level_weight,
+    at.name as assessment_type_name,
+    aaa.assessment_type_id,
+    aaa.create_date,
+    CASE
+      WHEN aaa.total_questions > 0 AND aaa.topic_wt_got > 0
+      THEN LEAST(100, (aaa.topic_wt_got / 10.0) * 100)
+      ELSE 0
+    END as normalized_score
+  FROM academic_assessment_action aaa
+  INNER JOIN topic t ON aaa.topic_id = t.id
+  INNER JOIN section s ON t.section_id = s.id
+  INNER JOIN assessment_type at ON aaa.assessment_type_id = at.id
+  WHERE aaa.academic_user_id = $1
+    AND aaa.is_active = true
+    AND aaa.create_date = (
+      SELECT MAX(create_date)
+      FROM academic_assessment_action
+      WHERE academic_user_id = $1 AND is_active = true
+    )
+  ORDER BY aaa.create_date DESC, s.name, t.name
+`;
+
 
     // 4. Fetch question-level details from academic_log
-    const questionDetailsQuery = `
-      SELECT
-        al.id,
-        al.topic_id,
-        t.name as topic_name,
-        s.name as section_name,
-        al.question_bankid,
-        qb.question,
-        qb.option_a,
-        qb.option_b,
-        qb.option_c,
-        qb.option_d,
-        qb.correct_answer,
-        al.selected_answer,
-        CASE
-          WHEN al.selected_answer = qb.correct_answer THEN true
-          ELSE false
-        END as is_correct,
-        al.time_taken_seconds,
-        al.confidence_level,
-        al.reasoning,
-        al.feedback,
-        l.name as difficulty_level,
-        l.weightage as level_weightage,
-        at.name as assessment_type_name,
-        al.create_date as attempted_at
-      FROM academic_log al
-      INNER JOIN question_bank qb ON al.question_bankid = qb.id
-      INNER JOIN topic t ON al.topic_id = t.id
-      INNER JOIN section s ON t.section_id = s.id
-      INNER JOIN level l ON qb.level_id = l.id
-      INNER JOIN assessment_type at ON al.assessment_type_id = at.id
-      WHERE al.academic_user_id = $1
-        AND al.is_active = true
-      ORDER BY al.create_date DESC, t.name
-    `;
+   const questionDetailsQuery = `
+  SELECT
+    al.id,
+    al.topic_id,
+    t.name as topic_name,
+    s.name as section_name,
+    al.question_bankid,
+    qb.question,
+    qb.option_a,
+    qb.option_b,
+    qb.option_c,
+    qb.option_d,
+    qb.correct_answer,
+    al.selected_answer,
+    CASE
+      WHEN al.selected_answer = qb.correct_answer THEN true
+      ELSE false
+    END as is_correct,
+    al.time_taken_seconds,
+    al.confidence_level,
+    al.reasoning,
+    al.feedback,
+    l.name as difficulty_level,
+    l.weightage as level_weightage,
+    at.name as assessment_type_name,
+    al.create_date as attempted_at
+  FROM academic_log al
+  INNER JOIN question_bank qb ON al.question_bankid = qb.id
+  INNER JOIN topic t ON al.topic_id = t.id
+  INNER JOIN section s ON t.section_id = s.id
+  INNER JOIN level l ON qb.level_id = l.id
+  INNER JOIN assessment_type at ON al.assessment_type_id = at.id
+  WHERE al.academic_user_id = $1
+    AND al.is_active = true
+    AND al.create_date = (
+      SELECT MAX(create_date)
+      FROM academic_log
+      WHERE academic_user_id = $1 AND is_active = true
+    )
+  ORDER BY al.create_date DESC, t.name
+`;
+
 
     // Execute all queries
     console.log("🔍 [REPORT API] Executing database queries...");
