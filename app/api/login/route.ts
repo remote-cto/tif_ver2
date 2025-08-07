@@ -1,5 +1,6 @@
 // app/api/login/route.ts
 import { NextRequest, NextResponse } from "next/server";
+import { serialize } from "cookie";
 import pool from "@/lib/database";
 
 export async function POST(req: NextRequest) {
@@ -15,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     const query = `
-      SELECT au.id, au.name, au.email, au.registration_number, org.name as college_name
+      SELECT au.id, au.name, au.email, au.registration_number, au.org_id, org.name as college_name
       FROM academic_user au
       INNER JOIN user_type ut ON au.user_type_id = ut.id
       INNER JOIN org ON au.org_id = org.id
@@ -43,10 +44,41 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    return NextResponse.json({
-      success: true,
-      student: result.rows[0],
+    const student = result.rows[0];
+
+    // Prepare cookie data (store minimal data only)
+    const cookieValue = JSON.stringify({
+      id: student.id,
+      name: student.name,
+      email: student.email,
+      registration_number: student.registration_number,
+      org_id: student.org_id,
+      college_name: student.college_name,
     });
+
+    // Cookie config
+    const cookie = serialize("studentSession", cookieValue, {
+      path: "/",
+      httpOnly: false, // false so you can read on client (for learning only)
+      maxAge: 60 * 60 * 6, // 6 hours
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production", // true in prod
+    });
+
+    const res = NextResponse.json({
+      success: true,
+      student: {
+        id: student.id,
+        name: student.name,
+        email: student.email,
+        registration_number: student.registration_number,
+        org_id: student.org_id,
+        college_name: student.college_name,
+      },
+    });
+    res.headers.set("Set-Cookie", cookie);
+
+    return res;
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(
@@ -54,4 +86,15 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+export async function DELETE() {
+  // Clear studentSession cookie
+  const cookie = serialize("studentSession", "", {
+    path: "/",
+    maxAge: 0,
+  });
+  const res = NextResponse.json({ loggedOut: true });
+  res.headers.set("Set-Cookie", cookie);
+  return res;
 }

@@ -1,4 +1,4 @@
-//app/login/Page.tsx
+// app/login/Page.tsx
 
 "use client";
 
@@ -21,6 +21,37 @@ import Footer from "../components/Footer";
 import NewHeader from "../components/NewHeader";
 import { getStudentData } from "@/utils/getStudentData";
 
+// Helper function to get admin data from cookie
+function getAdminData() {
+  if (typeof window !== "undefined") {
+    try {
+      const cookieValue = getCookie("adminSession");
+      if (cookieValue) {
+        const cookieData = JSON.parse(cookieValue);
+        return cookieData?.id ? cookieData : null;
+      }
+      // Fallback to sessionStorage for backward compatibility
+      const sessionData = JSON.parse(sessionStorage.getItem("adminData") || "{}");
+      return sessionData?.id ? sessionData : null;
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
+// Helper function to get cookie by name
+function getCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return parts.pop()?.split(';').shift() || null;
+  }
+  return null;
+}
+
 const LoginPage: React.FC = () => {
   const router = useRouter();
 
@@ -42,8 +73,8 @@ const LoginPage: React.FC = () => {
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   useEffect(() => {
-    const student = getStudentData(); // your helper from utils
-    const admin = sessionStorage.getItem("adminData");
+    const student = getStudentData(); // now checks cookies first
+    const admin = getAdminData(); // checks cookies first
 
     if (student) {
       router.push("/dashboard");
@@ -107,6 +138,7 @@ const LoginPage: React.FC = () => {
       const data = await response.json();
 
       if (response.ok) {
+        // Keep sessionStorage for backward compatibility
         sessionStorage.setItem(
           "studentData",
           JSON.stringify({
@@ -117,6 +149,7 @@ const LoginPage: React.FC = () => {
             college_name: data.student.college_name,
           })
         );
+        // Cookie is automatically set by the API
         router.push("/dashboard");
       } else {
         setError(data.error || "Login failed");
@@ -144,7 +177,9 @@ const LoginPage: React.FC = () => {
       const data = await response.json();
 
       if (response.ok) {
+        // Keep sessionStorage for backward compatibility
         sessionStorage.setItem("adminData", JSON.stringify(data.admin));
+        // Cookie is automatically set by the API
         router.push("/dean-dashboard");
       } else {
         setError(data.error || "Login failed");
