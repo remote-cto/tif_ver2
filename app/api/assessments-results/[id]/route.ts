@@ -7,15 +7,16 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Await the params since they're now a Promise in Next.js 15+
     const resolvedParams = await params;
     const assessmentId = parseInt(resolvedParams.id);
-    
+
     if (!assessmentId) {
-      return NextResponse.json({ error: "Invalid assessment ID" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid assessment ID" },
+        { status: 400 }
+      );
     }
 
-    // Get basic assessment info
     const assessmentQuery = `
       SELECT 
         sa.*,
@@ -29,14 +30,16 @@ export async function GET(
     `;
 
     const assessmentResult = await pool.query(assessmentQuery, [assessmentId]);
-    
+
     if (assessmentResult.rows.length === 0) {
-      return NextResponse.json({ error: "Assessment not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Assessment not found" },
+        { status: 404 }
+      );
     }
 
     const assessment = assessmentResult.rows[0];
 
-    // Get individual answers
     const answersQuery = `
       SELECT 
         sa.question_id,
@@ -61,7 +64,6 @@ export async function GET(
 
     const answersResult = await pool.query(answersQuery, [assessmentId]);
 
-    // Get topic-wise scores
     const topicScoresQuery = `
       SELECT 
         sts.*,
@@ -74,9 +76,10 @@ export async function GET(
       ORDER BY sts.normalized_score DESC
     `;
 
-    const topicScoresResult = await pool.query(topicScoresQuery, [assessmentId]);
+    const topicScoresResult = await pool.query(topicScoresQuery, [
+      assessmentId,
+    ]);
 
-    // Get recommendations
     const recommendationsQuery = `
       SELECT 
         sr.*,
@@ -92,12 +95,16 @@ export async function GET(
         END
     `;
 
-    const recommendationsResult = await pool.query(recommendationsQuery, [assessmentId]);
+    const recommendationsResult = await pool.query(recommendationsQuery, [
+      assessmentId,
+    ]);
 
-    // Calculate summary statistics
     const totalQuestions = answersResult.rows.length;
-    const correctAnswers = answersResult.rows.filter(row => row.is_correct).length;
-    const accuracy = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
+    const correctAnswers = answersResult.rows.filter(
+      (row) => row.is_correct
+    ).length;
+    const accuracy =
+      totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
 
     // Group answers by topic for analysis
     const topicAnalysis = answersResult.rows.reduce((acc, row) => {
@@ -107,16 +114,16 @@ export async function GET(
           total: 0,
           correct: 0,
           levels: { Basic: 0, Intermediate: 0, Advanced: 0 },
-          questions: []
+          questions: [],
         };
       }
-      
+
       acc[topic].total++;
       if (row.is_correct) {
         acc[topic].correct++;
         acc[topic].levels[row.level_name]++;
       }
-      
+
       acc[topic].questions.push({
         id: row.question_id,
         question: row.question,
@@ -124,9 +131,9 @@ export async function GET(
         correctAnswer: row.correct_answer,
         selectedOption: row.selected_option,
         isCorrect: row.is_correct,
-        level: row.level_name
+        level: row.level_name,
       });
-      
+
       return acc;
     }, {});
 
@@ -135,30 +142,37 @@ export async function GET(
         id: assessment.id,
         student: {
           name: assessment.student_name,
-          email: assessment.student_email
+          email: assessment.student_email,
         },
         questionnaire_title: assessment.questionnaire_title,
         started_at: assessment.started_at,
         completed_at: assessment.completed_at,
         total_score: assessment.total_score,
         readiness_score: assessment.readiness_score,
-        status: assessment.status
+        status: assessment.status,
       },
       summary: {
         totalQuestions,
         correctAnswers,
         accuracy,
-        timeTaken: assessment.completed_at ? 
-         Math.round((new Date(assessment.completed_at).getTime() - new Date(assessment.started_at).getTime()) / 1000) : 0
+        timeTaken: assessment.completed_at
+          ? Math.round(
+              (new Date(assessment.completed_at).getTime() -
+                new Date(assessment.started_at).getTime()) /
+                1000
+            )
+          : 0,
       },
       answers: answersResult.rows,
       topicScores: topicScoresResult.rows,
       recommendations: recommendationsResult.rows,
-      topicAnalysis
+      topicAnalysis,
     });
-
   } catch (err) {
     console.error("Error fetching assessment results:", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

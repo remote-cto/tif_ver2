@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Student ID is required" }, { status: 400 });
     }
 
-    // Get latest assessment for this student
+   
     const { rows: assessmentRows } = await pool.query(
       `SELECT id, assessment_type_id FROM academic_assessment_final
        WHERE academic_user_id = $1 AND is_active = TRUE
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     }
     const { id: assessment_final_id, assessment_type_id } = assessmentRows[0];
 
-    // Get topic-wise scores from academic_assessment_action for this assessment type and academic_user
+
     const { rows: topicRows } = await pool.query(
       `SELECT a.topic_id, t.name AS topic_name, a.correct_answers, a.total_questions,
               a.topic_wt_got AS weighted_score,

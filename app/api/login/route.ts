@@ -8,10 +8,12 @@ export async function POST(req: NextRequest) {
     const { email, registration_number, password, college_id } = body;
 
     if (!email || !registration_number || !password || !college_id) {
-      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "All fields are required" },
+        { status: 400 }
+      );
     }
 
-    // Join user_type for 'Student'
     const query = `
       SELECT au.id, au.name, au.email, au.registration_number, org.name as college_name
       FROM academic_user au
@@ -35,7 +37,10 @@ export async function POST(req: NextRequest) {
     ]);
 
     if (result.rows.length === 0) {
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Invalid credentials" },
+        { status: 401 }
+      );
     }
 
     return NextResponse.json({
@@ -44,6 +49,9 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error("Login error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

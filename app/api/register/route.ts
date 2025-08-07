@@ -10,8 +10,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const data = body as StudentRegistrationData;
-
-    // Validate input data (should include password)
     const validatedInput = validationUtils.validateRegistrationData(data);
     if (!validatedInput.isValid) {
       return NextResponse.json(
@@ -20,7 +18,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate student data against DB and get foreign keys
     const studentValidation = await studentService.validateStudentData(data);
     if (!studentValidation.isValid) {
       return NextResponse.json(
@@ -33,20 +30,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate verification code
     const verificationCode = verificationService.generateCode();
 
-    // Store verification code + data, including password as plain text (not recommended!)
     verificationService.storeCode(data.email, verificationCode, {
       ...data,
-      password: data.password, // just store as given
+      password: data.password,
       org_id: studentValidation.orgId,
       tenant_id: studentValidation.tenantId,
       user_type_id: studentValidation.userTypeId,
     });
 
-    // Send verification email
-    await emailService.sendVerificationEmail(data.email, data.name, verificationCode);
+    await emailService.sendVerificationEmail(
+      data.email,
+      data.name,
+      verificationCode
+    );
 
     return NextResponse.json({
       message: "Verification code sent to your email",
@@ -54,7 +52,10 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Registration error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -70,7 +71,6 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Validate code
     if (!verificationService.isCodeValid(email, verificationCode)) {
       return NextResponse.json(
         { error: "Invalid or expired verification code" },
@@ -78,7 +78,6 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Get stored data for this email (contains plain password)
     const storedData = verificationService.getStoredData(email);
     if (!storedData) {
       return NextResponse.json(
@@ -87,10 +86,10 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Create academic_user record in DB, password as received
-    const createdUser = await studentService.createAcademicUser(storedData.data);
+    const createdUser = await studentService.createAcademicUser(
+      storedData.data
+    );
 
-    // Delete code from memory after success
     verificationService.deleteCode(email);
 
     return NextResponse.json({
@@ -100,10 +99,7 @@ export async function PUT(request: NextRequest) {
     });
   } catch (error: unknown) {
     console.error("Verification error:", error);
-    if (
-      error instanceof Error &&
-      error.message.includes("duplicate key")
-    ) {
+    if (error instanceof Error && error.message.includes("duplicate key")) {
       return NextResponse.json(
         { error: "Email or registration number already exists" },
         { status: 409 }
@@ -129,7 +125,6 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Check pending verification for email
     const storedData = verificationService.getStoredData(email);
     if (!storedData) {
       return NextResponse.json(
@@ -138,11 +133,9 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Generate new code and update
     const newCode = verificationService.generateCode();
     verificationService.updateCode(email, newCode);
 
-    // Send resend verification email
     await emailService.sendResendVerificationEmail(
       email,
       storedData.data.name,

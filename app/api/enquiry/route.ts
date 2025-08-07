@@ -7,21 +7,24 @@ export async function POST(req: Request) {
     const { name, email, phone, message } = await req.json();
 
     if (!name || !email || !phone || !message) {
-      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "All fields are required" },
+        { status: 400 }
+      );
     }
 
-    // Create the transporter
+
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER, // Your Gmail address
-        pass: process.env.EMAIL_PASS, // App password (not your Gmail password)
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
     const mailOptions = {
       from: `"XWORKS Enquiry" <${process.env.SMTP_EMAIL}>`,
-      to: process.env.EMAIL_USER, // The host email (e.g., your company or admin email)
+      to: process.env.EMAIL_USER,
       subject: `🚀 New Enquiry from ${name}`,
       html: `
         <h2>You've got a new enquiry!</h2>
@@ -34,7 +37,10 @@ export async function POST(req: Request) {
 
     await transporter.sendMail(mailOptions);
 
-    return NextResponse.json({ message: "Email sent successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Email sent successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Email send error:", error);
     return NextResponse.json(

@@ -19,11 +19,11 @@ interface TopicRecommendation {
 async function fetchSkillLevels(client: any): Promise<SkillLevelData[]> {
   try {
     console.log("🔍 [SKILL LEVELS] Fetching skill levels from database...");
-    
+
     const res = await client.query(
       `SELECT id, level, description FROM skill_level WHERE is_active = TRUE ORDER BY id`
     );
-    
+
     console.log("✅ [SKILL LEVELS] Successfully fetched:", res.rows);
     return res.rows;
   } catch (error) {
@@ -37,8 +37,10 @@ function determineSkillLevelByScore(
   normalizedScore: number,
   skillLevels: SkillLevelData[]
 ): { skillLevelId: number; skillLevel: string } {
-  console.log(`🎯 [SKILL DETERMINATION] Determining skill level for score: ${normalizedScore}`);
-  
+  console.log(
+    `🎯 [SKILL DETERMINATION] Determining skill level for score: ${normalizedScore}`
+  );
+
   if (skillLevels.length === 0) {
     return { skillLevelId: 1, skillLevel: "Unknown" };
   }
@@ -49,9 +51,12 @@ function determineSkillLevelByScore(
       sl.level.toLowerCase().includes("excellent")
     );
     if (excellentLevel) {
-      return { skillLevelId: excellentLevel.id, skillLevel: excellentLevel.level };
+      return {
+        skillLevelId: excellentLevel.id,
+        skillLevel: excellentLevel.level,
+      };
     }
-    
+
     const highestLevel = skillLevels.reduce(
       (max, current) => (current.id > max.id ? current : max),
       skillLevels[0]
@@ -64,7 +69,7 @@ function determineSkillLevelByScore(
     if (partialLevel) {
       return { skillLevelId: partialLevel.id, skillLevel: partialLevel.level };
     }
-    
+
     const sortedLevels = skillLevels.sort((a, b) => a.id - b.id);
     const middleIndex = Math.floor(sortedLevels.length / 2);
     const middleLevel = sortedLevels[middleIndex];
@@ -78,7 +83,7 @@ function determineSkillLevelByScore(
     if (gapLevel) {
       return { skillLevelId: gapLevel.id, skillLevel: gapLevel.level };
     }
-    
+
     const lowestLevel = skillLevels.reduce(
       (min, current) => (current.id < min.id ? current : min),
       skillLevels[0]
@@ -94,10 +99,11 @@ async function getSkillLevelAndRecommendation(
   assessmentTypeId: number,
   normalizedScore: number
 ): Promise<{ skillLevel: string; recommendation: string }> {
-  console.log(`📊 [RECOMMENDATION] Getting skill level for topic ${topicId}, score: ${normalizedScore}`);
+  console.log(
+    `📊 [RECOMMENDATION] Getting skill level for topic ${topicId}, score: ${normalizedScore}`
+  );
 
   try {
-    // First, find the appropriate skill level based on percentage range
     const skillLevelRes = await client.query(
       `SELECT slt.skill_level_id, sl.level, sl.description
        FROM skill_level_tracker slt
@@ -117,10 +123,15 @@ async function getSkillLevelAndRecommendation(
     let skillLevel: string;
 
     if (skillLevelRes.rows.length === 0) {
-      console.log("⚠️ [RECOMMENDATION] No skill level found in tracker, using fallback...");
-      
+      console.log(
+        "⚠️ [RECOMMENDATION] No skill level found in tracker, using fallback..."
+      );
+
       const skillLevels = await fetchSkillLevels(client);
-      const determined = determineSkillLevelByScore(normalizedScore, skillLevels);
+      const determined = determineSkillLevelByScore(
+        normalizedScore,
+        skillLevels
+      );
       skillLevelId = determined.skillLevelId;
       skillLevel = determined.skillLevel;
     } else {
@@ -150,18 +161,27 @@ async function getSkillLevelAndRecommendation(
     return { skillLevel, recommendation };
   } catch (error) {
     console.error("❌ [RECOMMENDATION] Error:", error);
-    
+
     // Ultimate fallback
-    const skillLevel = normalizedScore >= 80 ? "Excellent" : 
-                     normalizedScore >= 60 ? "Partial Gap" : "Gap";
-    const recommendation = generateDefaultRecommendation(skillLevel, normalizedScore);
-    
+    const skillLevel =
+      normalizedScore >= 80
+        ? "Excellent"
+        : normalizedScore >= 60
+        ? "Partial Gap"
+        : "Gap";
+    const recommendation = generateDefaultRecommendation(
+      skillLevel,
+      normalizedScore
+    );
+
     return { skillLevel, recommendation };
   }
 }
 
-// Helper function: Generate default recommendation
-function generateDefaultRecommendation(skillLevel: string, score: number): string {
+function generateDefaultRecommendation(
+  skillLevel: string,
+  score: number
+): string {
   if (skillLevel.toLowerCase().includes("excellent")) {
     return "Great job! You're ready to move on to advanced topics.";
   } else if (skillLevel.toLowerCase().includes("partial")) {
@@ -173,10 +193,12 @@ function generateDefaultRecommendation(skillLevel: string, score: number): strin
 
 export async function GET(req: NextRequest) {
   const client = await pool.connect();
-  
+
   try {
-    console.log("🚀 [REPORT API] Starting student detailed report generation...");
-    
+    console.log(
+      "🚀 [REPORT API] Starting student detailed report generation..."
+    );
+
     const { searchParams } = new URL(req.url);
     const studentId = searchParams.get("student_id");
 
@@ -187,7 +209,9 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    console.log(`📋 [REPORT API] Generating report for student ID: ${studentId}`);
+    console.log(
+      `📋 [REPORT API] Generating report for student ID: ${studentId}`
+    );
 
     // 1. Fetch student basic information
     const studentInfoQuery = `
@@ -197,7 +221,7 @@ export async function GET(req: NextRequest) {
     `;
 
     // 2. Fetch assessment summary from academic_assessment_final
-   const assessmentSummaryQuery = `
+    const assessmentSummaryQuery = `
   SELECT
     aaf.id,
     aaf.readiness_score,
@@ -214,9 +238,8 @@ export async function GET(req: NextRequest) {
   LIMIT 1
 `;
 
-
     // 3. Fetch topic-wise performance from academic_assessment_action
-  const topicPerformanceQuery = `
+    const topicPerformanceQuery = `
   SELECT
     aaa.topic_id,
     t.name as topic_name,
@@ -247,9 +270,8 @@ export async function GET(req: NextRequest) {
   ORDER BY aaa.create_date DESC, s.name, t.name
 `;
 
-
     // 4. Fetch question-level details from academic_log
-   const questionDetailsQuery = `
+    const questionDetailsQuery = `
   SELECT
     al.id,
     al.topic_id,
@@ -291,31 +313,27 @@ export async function GET(req: NextRequest) {
   ORDER BY al.create_date DESC, t.name
 `;
 
-
     // Execute all queries
     console.log("🔍 [REPORT API] Executing database queries...");
-    
+
     const [studentResult, assessmentResult, topicResult, questionResult] =
       await Promise.all([
         client.query(studentInfoQuery, [studentId]),
         client.query(assessmentSummaryQuery, [studentId]),
         client.query(topicPerformanceQuery, [studentId]),
-        client.query(questionDetailsQuery, [studentId])
+        client.query(questionDetailsQuery, [studentId]),
       ]);
 
     // Validate student exists
     if (studentResult.rows.length === 0) {
-      return NextResponse.json(
-        { error: "Student not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Student not found" }, { status: 404 });
     }
 
     const student = studentResult.rows[0];
     console.log(`✅ [REPORT API] Found student: ${student.name}`);
 
     // Process assessment summary
-    const assessments = assessmentResult.rows.map(row => ({
+    const assessments = assessmentResult.rows.map((row) => ({
       id: row.id,
       assessment_type_id: row.assessment_type_id,
       assessment_type_name: row.assessment_type_name,
@@ -323,25 +341,28 @@ export async function GET(req: NextRequest) {
       foundational_score: parseFloat(row.foundational_assessment) || 0,
       industrial_score: parseFloat(row.industrial_assessment) || 0,
       attempted_at: row.attempted_at,
-      status: "completed"
+      status: "completed",
     }));
 
     console.log(`📊 [REPORT API] Found ${assessments.length} assessments`);
 
     // Process topic scores with skill levels and recommendations
-    console.log("🎯 [REPORT API] Processing topic scores with recommendations...");
-    
+    console.log(
+      "🎯 [REPORT API] Processing topic scores with recommendations..."
+    );
+
     const topicScores = await Promise.all(
       topicResult.rows.map(async (row) => {
         const normalizedScore = parseFloat(row.normalized_score) || 0;
-        
+
         // Get skill level and recommendation from database
-        const { skillLevel, recommendation } = await getSkillLevelAndRecommendation(
-          client,
-          row.topic_id,
-          row.assessment_type_id,
-          normalizedScore
-        );
+        const { skillLevel, recommendation } =
+          await getSkillLevelAndRecommendation(
+            client,
+            row.topic_id,
+            row.assessment_type_id,
+            normalizedScore
+          );
 
         return {
           topic_id: row.topic_id,
@@ -355,7 +376,7 @@ export async function GET(req: NextRequest) {
           normalized_score: normalizedScore,
           classification: skillLevel,
           recommendation: recommendation,
-          attempted_at: row.create_date
+          attempted_at: row.create_date,
         };
       })
     );
@@ -363,7 +384,7 @@ export async function GET(req: NextRequest) {
     console.log(`🎯 [REPORT API] Processed ${topicScores.length} topic scores`);
 
     // Process question details
-    const questionDetails = questionResult.rows.map(row => ({
+    const questionDetails = questionResult.rows.map((row) => ({
       id: row.id,
       topic_id: row.topic_id,
       topic_name: row.topic_name,
@@ -374,7 +395,7 @@ export async function GET(req: NextRequest) {
         A: row.option_a,
         B: row.option_b,
         C: row.option_c,
-        D: row.option_d
+        D: row.option_d,
       },
       correct_answer: row.correct_answer,
       selected_answer: row.selected_answer,
@@ -386,23 +407,39 @@ export async function GET(req: NextRequest) {
       difficulty_level: row.difficulty_level,
       level_weightage: row.level_weightage,
       assessment_type_name: row.assessment_type_name,
-      attempted_at: row.attempted_at
+      attempted_at: row.attempted_at,
     }));
 
-    console.log(`📝 [REPORT API] Found ${questionDetails.length} question details`);
+    console.log(
+      `📝 [REPORT API] Found ${questionDetails.length} question details`
+    );
 
     // Calculate summary statistics
-    const totalQuestions = topicScores.reduce((sum, topic) => sum + topic.total, 0);
-    const totalCorrect = topicScores.reduce((sum, topic) => sum + topic.correct, 0);
-    const averageScore = totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
+    const totalQuestions = topicScores.reduce(
+      (sum, topic) => sum + topic.total,
+      0
+    );
+    const totalCorrect = topicScores.reduce(
+      (sum, topic) => sum + topic.correct,
+      0
+    );
+    const averageScore =
+      totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
 
     // Topic performance summary
     const topicSummary = {
       total_topics: topicScores.length,
-      strengths: topicScores.filter(t => t.classification.toLowerCase().includes('excellent')).length,
-      partial: topicScores.filter(t => t.classification.toLowerCase().includes('partial')).length,
-      gaps: topicScores.filter(t => t.classification.toLowerCase().includes('gap') && 
-                                   !t.classification.toLowerCase().includes('partial')).length
+      strengths: topicScores.filter((t) =>
+        t.classification.toLowerCase().includes("excellent")
+      ).length,
+      partial: topicScores.filter((t) =>
+        t.classification.toLowerCase().includes("partial")
+      ).length,
+      gaps: topicScores.filter(
+        (t) =>
+          t.classification.toLowerCase().includes("gap") &&
+          !t.classification.toLowerCase().includes("partial")
+      ).length,
     };
 
     // Section-wise summary
@@ -412,7 +449,7 @@ export async function GET(req: NextRequest) {
         acc[section] = {
           total_questions: 0,
           correct_answers: 0,
-          topics: []
+          topics: [],
         };
       }
       acc[section].total_questions += topic.total;
@@ -422,11 +459,14 @@ export async function GET(req: NextRequest) {
     }, {} as Record<string, any>);
 
     // Add percentage calculation to section summary
-    Object.keys(sectionSummary).forEach(section => {
+    Object.keys(sectionSummary).forEach((section) => {
       const data = sectionSummary[section];
-      data.percentage = data.total_questions > 0
-        ? Math.round((data.correct_answers / data.total_questions) * 100 * 100) / 100
-        : 0;
+      data.percentage =
+        data.total_questions > 0
+          ? Math.round(
+              (data.correct_answers / data.total_questions) * 100 * 100
+            ) / 100
+          : 0;
     });
 
     console.log("✅ [REPORT API] Successfully generated comprehensive report");
@@ -438,7 +478,7 @@ export async function GET(req: NextRequest) {
         id: student.id,
         name: student.name,
         email: student.email,
-        registration_number: student.registration_number
+        registration_number: student.registration_number,
       },
       summary: {
         total_assessments: assessments.length,
@@ -446,19 +486,18 @@ export async function GET(req: NextRequest) {
         total_correct: totalCorrect,
         average_score: Math.round(averageScore * 100) / 100,
         topic_summary: topicSummary,
-        section_summary: sectionSummary
+        section_summary: sectionSummary,
       },
       assessments: assessments,
       topic_scores: topicScores,
-      question_details: questionDetails
+      question_details: questionDetails,
     });
-
   } catch (error) {
     console.error("❌ [REPORT API] Error generating student report:", error);
     return NextResponse.json(
-      { 
-        error: "Internal server error", 
-        details: error instanceof Error ? error.message : String(error)
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
     );
