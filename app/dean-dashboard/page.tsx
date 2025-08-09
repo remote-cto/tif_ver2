@@ -43,6 +43,13 @@ interface College {
   name: string;
 }
 
+interface Assignment {
+  id: number;
+  name: string;
+  description?: string;
+  key_area_name?: string;
+}
+
 interface DetailedStudentData {
   success: boolean;
   student_id: number;
@@ -174,6 +181,8 @@ const DeanDashboard: React.FC = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [admin, setAdmin] = useState<Admin>({});
   const [college, setCollege] = useState<College | null>(null);
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [selectedAssignment, setSelectedAssignment] = useState<number | string>("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
@@ -184,6 +193,8 @@ const DeanDashboard: React.FC = () => {
     useState<TransformedAssessmentData | null>(null);
   const [loadingReport, setLoadingReport] = useState<boolean>(false);
   const [reportError, setReportError] = useState<string>("");
+  const [showStudentsTable, setShowStudentsTable] = useState<boolean>(false);
+  const [loadingAssignments, setLoadingAssignments] = useState<boolean>(false);
 
   useEffect(() => {
     const adminInfo = getAdminFromCookie();
@@ -197,8 +208,11 @@ const DeanDashboard: React.FC = () => {
     }
     setAdmin(adminInfo);
 
-    const fetchData = async () => {
+    const fetchInitialData = async () => {
       try {
+        setLoadingAssignments(true);
+        
+        // Fetch college info
         const collegeRes = await fetch(
           `/api/college-info?college_id=${adminInfo.org_id}`
         );
@@ -206,21 +220,69 @@ const DeanDashboard: React.FC = () => {
         const collegeData = await collegeRes.json();
         setCollege(collegeData.college);
 
-        const studentsRes = await fetch(
-          `/api/college-students?college_id=${adminInfo.org_id}`
+        // Fetch available assessment types (assignments) from database
+        const assignmentsRes = await fetch(
+          `/api/assessment-types?org_id=${adminInfo.org_id}`
         );
-        if (!studentsRes.ok) throw new Error("Failed to fetch students");
-        const studentsData = await studentsRes.json();
-        setStudents(studentsData.students || []);
+        
+        if (assignmentsRes.ok) {
+          const assignmentsData = await assignmentsRes.json();
+          console.log("Fetched assignments from DB:", assignmentsData);
+          
+          if (assignmentsData.success && assignmentsData.assessment_types?.length > 0) {
+            setAssignments(assignmentsData.assessment_types);
+          } else {
+            console.warn("No assessment types found in database");
+            setAssignments([]);
+          }
+        } else {
+          const errorText = await assignmentsRes.text();
+          console.error("Failed to fetch assignments:", errorText);
+          setError("Failed to load assessment types. Please contact support.");
+        }
+        
       } catch (err) {
-        setError("Failed to load data. Please try again later.");
+        setError("Failed to load initial data. Please try again later.");
         console.error("Error loading dean-dashboard data:", err);
       } finally {
         setLoading(false);
+        setLoadingAssignments(false);
       }
     };
-    fetchData();
+    fetchInitialData();
   }, []);
+
+  const fetchStudentsForAssignment = async (assignmentId: number | string) => {
+    try {
+      setLoading(true);
+      const studentsRes = await fetch(
+        `/api/college-students?college_id=${admin.org_id}&assessment_type_id=${assignmentId}`
+      );
+      if (!studentsRes.ok) throw new Error("Failed to fetch students");
+      const studentsData = await studentsRes.json();
+      
+      console.log("Students data:", studentsData);
+      setStudents(studentsData.students || []);
+      setShowStudentsTable(true);
+    } catch (err) {
+      setError("Failed to load students data. Please try again later.");
+      console.error("Error loading students data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAssignmentChange = (assignmentId: string) => {
+    const numericId = assignmentId ? parseInt(assignmentId) : "";
+    setSelectedAssignment(numericId);
+    
+    if (numericId) {
+      fetchStudentsForAssignment(numericId);
+    } else {
+      setShowStudentsTable(false);
+      setStudents([]);
+    }
+  };
 
   const transformDataForAssessmentResult = (
     data: DetailedStudentData
@@ -262,7 +324,7 @@ const DeanDashboard: React.FC = () => {
       console.log("Fetching detailed report for student:", student.id);
 
       const response = await fetch(
-        `/api/student-detailed-report?student_id=${student.id}`
+        `/api/student-detailed-report?student_id=${student.id}&assessment_type_id=${selectedAssignment}`
       );
 
       if (!response.ok) {
@@ -360,7 +422,13 @@ const DeanDashboard: React.FC = () => {
     }
   };
 
-  if (loading) {
+  const getSelectedAssignmentName = (): string => {
+    if (!selectedAssignment) return "";
+    const assignment = assignments.find(a => a.id === selectedAssignment);
+    return assignment ? assignment.name : "";
+  };
+
+  if (loading && !showStudentsTable) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -371,7 +439,7 @@ const DeanDashboard: React.FC = () => {
     );
   }
 
-  if (error) {
+  if (error && !showStudentsTable) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center text-red-600 p-5">
@@ -418,129 +486,196 @@ const DeanDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6 border-b">
-            <h2 className="text-2xl font-semibold text-gray-800 flex items-center">
-              <span className="mr-2">📊</span>
-              Students Performance Overview
+        {/* Assignment Selection */}
+        <div className="bg-white rounded-lg shadow-sm border mb-8">
+          <div className="p-6">
+            <h2 className="text-2xl font-semibold text-gray-800 flex items-center mb-4">
+              <span className="mr-2">📝</span>
+              Select Assessment Type
             </h2>
-            <p className="text-gray-600 mt-1">
-              Click "View Report" to see detailed assessment results for each
-              student
-            </p>
-          </div>
-
-          <div className="overflow-x-auto">
-            {students.length === 0 ? (
-              <div className="p-8 text-center text-gray-500">
-                <p className="text-lg">No students found.</p>
-                <p className="text-sm mt-2">
-                  Students will appear here once they complete their
-                  assessments.
+            <div className="max-w-md">
+              <label htmlFor="assignment-select" className="block text-sm font-medium text-gray-700 mb-2">
+                Choose an assessment type to view student performance:
+              </label>
+              
+              {loadingAssignments ? (
+                <div className="flex items-center space-x-2 p-3 border border-gray-300 rounded-lg bg-gray-50">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                  <span className="text-gray-600">Loading assessment types...</span>
+                </div>
+              ) : (
+                <select
+                  id="assignment-select"
+                  value={selectedAssignment}
+                  onChange={(e) => handleAssignmentChange(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                  disabled={assignments.length === 0}
+                >
+                  <option value="">-- Select Assessment Type --</option>
+                  {assignments.map((assignment) => (
+                    <option key={assignment.id} value={assignment.id}>
+                      {assignment.name}
+                      {assignment.key_area_name && ` (${assignment.key_area_name})`}
+                    </option>
+                  ))}
+                </select>
+              )}
+              
+              {!loadingAssignments && assignments.length === 0 && (
+                <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-yellow-800 text-sm">
+                    ⚠️ No assessment types found for this organization. Please contact support.
+                  </p>
+                </div>
+              )}
+            </div>
+            
+            {selectedAssignment && (
+              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-green-800 text-sm">
+                  ✅ Selected: {getSelectedAssignmentName()}
                 </p>
               </div>
-            ) : (
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gray-50 border-b">
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                      Student
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                      Registration No.
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                      Email
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                      Readiness Score
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                      Foundation Score
-                    </th>
-                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                      Industrial Score
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {students.map((student) => {
-                    const readiness =
-                      student.assessments && student.assessments.length > 0
-                        ? student.assessments[0].readiness_score
-                        : null;
-
-                    const foundation =
-                      student.assessments && student.assessments.length > 0
-                        ? student.assessments[0].foundational_assessment
-                        : null;
-                        const industry =
-                      student.assessments && student.assessments.length > 0
-                        ? student.assessments[0].industrial_assessment
-                        : null;
-
-                    return (
-                      <tr
-                        key={student.id}
-                        className="hover:bg-gray-50 border-b transition-colors"
-                      >
-                        <td className="px-6 py-4">
-                          <div className="font-medium text-gray-900">
-                            {student.name}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-gray-700">
-                          {student.registration_number}
-                        </td>
-                        <td className="px-6 py-4 text-gray-700">
-                          {student.email}
-                        </td>
-                        <td className="px-6 py-4">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getScoreClassName(
-                              readiness
-                            )}`}
-                          >
-                            {formatScore(readiness)}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getScoreClassName(
-                              foundation
-                            )}`}
-                          >
-                            {formatScore(foundation)}
-                          </span>
-                        </td>
-                           <td className="px-6 py-4">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getScoreClassName(
-                              industry
-                            )}`}
-                          >
-                            {formatScore(industry)}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <button
-                            onClick={() => handleViewReport(student)}
-                            className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
-                          >
-                            📋 View Report
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
             )}
           </div>
         </div>
+
+        {/* Students Performance Overview - Only show when assignment is selected */}
+        {showStudentsTable && (
+          <div className="bg-white rounded-lg shadow-sm border">
+            <div className="p-6 border-b">
+              <h2 className="text-2xl font-semibold text-gray-800 flex items-center">
+                <span className="mr-2">📊</span>
+                Students Performance Overview
+                {selectedAssignment && (
+                  <span className="ml-3 px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
+                    {getSelectedAssignmentName()}
+                  </span>
+                )}
+              </h2>
+              <p className="text-gray-600 mt-1">
+                Click "View Report" to see detailed assessment results for each
+                student
+              </p>
+            </div>
+
+            <div className="overflow-x-auto">
+              {loading ? (
+                <div className="p-8 text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p className="text-gray-600">Loading students data...</p>
+                </div>
+              ) : students.length === 0 ? (
+                <div className="p-8 text-center text-gray-500">
+                  <p className="text-lg">No students found for this assessment type.</p>
+                  <p className="text-sm mt-2">
+                    Students will appear here once they complete their
+                    assessments for the selected assessment type.
+                  </p>
+                </div>
+              ) : (
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-gray-50 border-b">
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Student
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Registration No.
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Email
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Readiness Score
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Foundation Score
+                      </th>
+                       <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Industrial Score
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {students.map((student) => {
+                      const readiness =
+                        student.assessments && student.assessments.length > 0
+                          ? student.assessments[0].readiness_score
+                          : null;
+
+                      const foundation =
+                        student.assessments && student.assessments.length > 0
+                          ? student.assessments[0].foundational_assessment
+                          : null;
+                          const industry =
+                        student.assessments && student.assessments.length > 0
+                          ? student.assessments[0].industrial_assessment
+                          : null;
+
+                      return (
+                        <tr
+                          key={student.id}
+                          className="hover:bg-gray-50 border-b transition-colors"
+                        >
+                          <td className="px-6 py-4">
+                            <div className="font-medium text-gray-900">
+                              {student.name}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-gray-700">
+                            {student.registration_number}
+                          </td>
+                          <td className="px-6 py-4 text-gray-700">
+                            {student.email}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getScoreClassName(
+                                readiness
+                              )}`}
+                            >
+                              {formatScore(readiness)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getScoreClassName(
+                                foundation
+                              )}`}
+                            >
+                              {formatScore(foundation)}
+                            </span>
+                          </td>
+                             <td className="px-6 py-4">
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getScoreClassName(
+                                industry
+                              )}`}
+                            >
+                              {formatScore(industry)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <button
+                              onClick={() => handleViewReport(student)}
+                              className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+                            >
+                              📋 View Report
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Enhanced Popup Modal with Full Assessment Report */}
         {isPopupOpen && selectedStudent && (
@@ -552,7 +687,11 @@ const DeanDashboard: React.FC = () => {
                     <h3 className="text-xl font-semibold text-gray-800">
                       Assessment Report - {selectedStudent.name}
                     </h3>
-                    
+                    {selectedAssignment && (
+                      <p className="text-sm text-gray-600 mt-1">
+                        Assessment Type: {getSelectedAssignmentName()}
+                      </p>
+                    )}
                   </div>
                   <button
                     onClick={handleClosePopup}
@@ -606,8 +745,6 @@ const DeanDashboard: React.FC = () => {
 
                 {!loadingReport && !reportError && transformedData && (
                   <div className="space-y-6">
-                    {/* Summary Statistics */}
-
                     {/* Assessment Result Component */}
                     <AssessmentResult
                       student={transformedData.student}
