@@ -1,3 +1,5 @@
+// app/api/assessment/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/database";
 
@@ -10,60 +12,42 @@ export async function GET(req: NextRequest) {
     const query = `
         -- Foundation section
     (
-  SELECT 
-    qb.id,
-    qb.question,
-    qb.option_a,
-    qb.option_b,
-    qb.option_c,
-    qb.option_d,
-    qb.correct_answer,
-    t.name AS topic,
-    s.name AS section,
-    l.name AS level,
-    t.weightage AS topic_weightage,
-    l.weightage AS level_weightage
-  FROM question_bank qb
-  JOIN topic t ON qb.topic_id = t.id
-  JOIN section s ON t.section_id = s.id
-  JOIN level l ON qb.level_id = l.id
-  WHERE qb.is_active = TRUE
-    AND t.is_active = TRUE
-    AND s.is_active = TRUE
-    AND l.is_active = TRUE
-    AND qb.assessment_type_id = $1
-    AND s.id = '1'
-  ORDER BY RANDOM()
-  LIMIT 18
-)
-UNION ALL
-(
-  SELECT 
-    qb.id,
-    qb.question,
-    qb.option_a,
-    qb.option_b,
-    qb.option_c,
-    qb.option_d,
-    qb.correct_answer,
-    t.name AS topic,
-    s.name AS section,
-    l.name AS level,
-    t.weightage AS topic_weightage,
-    l.weightage AS level_weightage
-  FROM question_bank qb
-  JOIN topic t ON qb.topic_id = t.id
-  JOIN section s ON t.section_id = s.id
-  JOIN level l ON qb.level_id = l.id
-  WHERE qb.is_active = TRUE
-    AND t.is_active = TRUE
-    AND s.is_active = TRUE
-    AND l.is_active = TRUE
-    AND qb.assessment_type_id = $1
-    AND s.id = '2'
-  ORDER BY RANDOM()
-  LIMIT 18
-)
+      SELECT 
+        qb.id, qb.question, qb.option_a, qb.option_b, qb.option_c, qb.option_d, qb.correct_answer,
+        t.name AS topic, s.name AS section, l.name AS level,
+        t.weightage AS topic_weightage, l.weightage AS level_weightage
+      FROM question_bank qb
+      JOIN topic t ON qb.topic_id = t.id
+      JOIN section s ON t.section_id = s.id
+      JOIN level l ON qb.level_id = l.id
+      WHERE qb.is_active = TRUE
+        AND t.is_active = TRUE
+        AND s.is_active = TRUE
+        AND l.is_active = TRUE
+        AND qb.assessment_type_id = $1
+        AND s.id = 1 -- FIX: Changed '1' to 1 (integer)
+      ORDER BY RANDOM()
+      LIMIT 18
+    )
+    UNION ALL
+    (
+      SELECT 
+        qb.id, qb.question, qb.option_a, qb.option_b, qb.option_c, qb.option_d, qb.correct_answer,
+        t.name AS topic, s.name AS section, l.name AS level,
+        t.weightage AS topic_weightage, l.weightage AS level_weightage
+      FROM question_bank qb
+      JOIN topic t ON qb.topic_id = t.id
+      JOIN section s ON t.section_id = s.id
+      JOIN level l ON qb.level_id = l.id
+      WHERE qb.is_active = TRUE
+        AND t.is_active = TRUE
+        AND s.is_active = TRUE
+        AND l.is_active = TRUE
+        AND qb.assessment_type_id = $1
+        AND s.id = 2 -- FIX: Changed '2' to 2 (integer)
+      ORDER BY RANDOM()
+      LIMIT 18
+    )
       `;
 
     const result = await pool.query(query, [assessmentTypeId]);

@@ -1,4 +1,4 @@
-//app/api/colleges
+//app/api/colleges/route.ts
 import { NextResponse } from "next/server";
 import pool from "@/lib/database";
 

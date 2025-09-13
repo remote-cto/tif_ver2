@@ -2,7 +2,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/database";
 
-
 interface SaveScoreRequest {
   academic_user_id: number;
   tenant_id: number;
@@ -483,7 +482,7 @@ async function calculateAllScores(
 
   console.log("✅ [CALCULATION] All topic calculations completed");
 
-  // Calculate section scores
+  // Calculate section scores from frontend data as a reliable fallback
   const sectionStats = {
     Foundational: { correct: 0, total: 0 },
     Industrial: { correct: 0, total: 0 },
@@ -518,9 +517,9 @@ async function calculateAllScores(
   const totalScore = topicScores.reduce((sum, t) => sum + t.weighted_score, 0);
 
   // Get max possible level weight for calculation
-  const maxLevelWeight = Math.max(...Object.values(levelWeights));
+  const maxLevelWeight = Math.max(...Object.values(levelWeights), 1); // Ensure it's at least 1
   const maxPossible = questions.length * maxLevelWeight;
-  const readinessScore = Math.min(100, (totalScore / maxPossible) * 100);
+  const readinessScore = maxPossible > 0 ? Math.min(100, (totalScore / maxPossible) * 100) : 0;
 
   console.log(
     `🎯 [FINAL SCORES] Total: ${totalScore}, Readiness: ${readinessScore}%, Max possible: ${maxPossible}`
@@ -555,8 +554,11 @@ async function calculateSectionScoresFromDB(
   );
 
   try {
-    
     const topicIds = Object.values(topicNameToId);
+    if (topicIds.length === 0) {
+        console.log("⚠️ [SECTION DB] No topic IDs to look up. Skipping.");
+        return { foundational: null, industrial: null };
+    }
     console.log("🔍 [SECTION DB] Topic IDs to lookup:", topicIds);
 
     const res = await client.query(
@@ -576,13 +578,13 @@ async function calculateSectionScoresFromDB(
 
     // Calculate correct answers by section
     const sectionStats = {
-      Foundation: { correct: 0, total: 0 },
-      Industry: { correct: 0, total: 0 },
+      Foundational: { correct: 0, total: 0 }, // FIX: Was "Foundation"
+      Industrial: { correct: 0, total: 0 },   // FIX: Was "Industry"
     };
 
     questions.forEach((q) => {
       const section = topicToSection[q.topic];
-      if (section === "Foundation" || section === "Industry") {
+      if (section === "Foundational" || section === "Industrial") { // FIX: Was "Foundation" or "Industry"
         sectionStats[section].total++;
         if (answers[q.id] === q.correctAnswer) {
           sectionStats[section].correct++;
@@ -591,18 +593,17 @@ async function calculateSectionScoresFromDB(
     });
 
     const foundational =
-      sectionStats.Foundation.total > 0
-        ? (sectionStats.Foundation.correct / sectionStats.Foundation.total) *
-          100
+      sectionStats.Foundational.total > 0  // FIX: Was "Foundation"
+        ? (sectionStats.Foundational.correct / sectionStats.Foundational.total) * 100
         : null;
 
     const industrial =
-      sectionStats.Industry.total > 0
-        ? (sectionStats.Industry.correct / sectionStats.Industry.total) * 100
+      sectionStats.Industrial.total > 0    // FIX: Was "Industry"
+        ? (sectionStats.Industrial.correct / sectionStats.Industrial.total) * 100
         : null;
 
     console.log(
-      `✅ [SECTION DB] DATABASE section scores - Foundation: ${foundational}%, Industry: ${industrial}%`
+      `✅ [SECTION DB] DATABASE section scores - Foundational: ${foundational}%, Industrial: ${industrial}%`
     );
 
     return { foundational, industrial };
@@ -685,7 +686,7 @@ export async function POST(req: NextRequest) {
 
     console.log("✅ [API] Level name to ID mapping:", levelNameToId);
 
-    // Calculate all scores using backend logic (now with DB recommendations)
+    // Calculate all scores using backend logic
     const calculatedScores = await calculateAllScores(
       client,
       questions,

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Rocket, User, Mail, Hash, GraduationCap, LogOut } from "lucide-react";
+import { getStudentData } from "@/utils/getStudentData"; // FIX: Import the new utility
 
 interface StudentData {
   id: string;
@@ -17,26 +18,49 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get student data from sessionStorage (set during login)
-    const storedStudentData = sessionStorage.getItem("studentData");
-    if (storedStudentData) {
-      setStudentData(JSON.parse(storedStudentData));
+    // FIX: Get student data from the secure cookie via our utility function
+    const data = getStudentData();
+    if (data) {
+      setStudentData(data);
     } else {
-      // If no student data, redirect to login
+      // Your middleware should handle this, but as a fallback, redirect to login.
+      console.error("No student session found, redirecting...");
       router.push("/Login");
     }
     setLoading(false);
   }, [router]);
 
-  const handleStartAssessment = () => {
-    // Navigate to the assessment page
-    router.push("/dashboard/assessment");
-  };
+  // FIX: Updated handleLogout to call the API
+  const handleLogout = async () => {
+    try {
+      // Call the server endpoint to clear the HttpOnly cookie and handle redirection.
+      const response = await fetch('/api/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userType: 'student' }),
+      });
 
-  const handleLogout = () => {
-    // Clear session data and redirect to login
-    sessionStorage.removeItem("studentData");
-    router.push("/Login");
+      // The API now handles the redirect. The browser will follow the redirect response.
+      // We can add a fallback for extra safety.
+      if (response.redirected) {
+        // Let the browser handle the redirect from the API response
+        // Force a full page reload on the new location to clear any client-side state
+        window.location.href = response.url;
+      } else {
+        // Fallback if the API redirect fails for some reason
+        router.push("/Login");
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Force redirect even if API call fails
+      router.push("/Login");
+    }
+  };
+  
+  const handleStartAssessment = () => {
+    router.push("/dashboard/assessment");
   };
 
   if (loading) {
@@ -51,9 +75,11 @@ const DashboardPage = () => {
   }
 
   if (!studentData) {
-    return null; // Will redirect to login
+    // This state is briefly visible while the router redirects.
+    return null; 
   }
 
+  // The rest of your JSX remains the same
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-blue-50 px-6 py-12">
       <div className="max-w-6xl mx-auto">

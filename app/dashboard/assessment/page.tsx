@@ -1,11 +1,11 @@
-//app/dashboard/assessment/page.tsx
-
 "use client";
 import React, { useState, useEffect } from "react";
-import { XCircle, Clock } from "lucide-react";
+import { XCircle, Clock, LogIn } from "lucide-react"; // Import LogIn icon
 import { getStudentData } from "@/utils/getStudentData";
 import AssessmentResult from "../../components/AssessmentResult";
+import Link from "next/link"; // Import Link for navigation
 
+// ... (keep all your interface definitions: Question, TopicScore, etc.)
 interface Question {
   id: string;
   topic: string;
@@ -85,6 +85,7 @@ interface BackendResponse {
   topic_scores: TopicScore[];
 }
 
+
 const AssessmentPage: React.FC = () => {
   const [state, setState] = useState<AssessmentState>({
     currentQuestion: 0,
@@ -99,7 +100,12 @@ const AssessmentPage: React.FC = () => {
   const [assessmentId, setAssessmentId] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  
+  // FIX: Add state to manage student and question loading separately
   const [student, setStudent] = useState<StudentData | null>(null);
+  const [studentLoading, setStudentLoading] = useState(true);
+  const [questionsLoading, setQuestionsLoading] = useState(true);
+  const [questionsError, setQuestionsError] = useState<string | null>(null);
 
   const [backendResults, setBackendResults] = useState<BackendResponse | null>(
     null
@@ -110,22 +116,58 @@ const AssessmentPage: React.FC = () => {
     const studentData = getStudentData();
     if (studentData) {
       setStudent(studentData);
+    } else {
+      console.error("No student data found in cookie");
     }
+    setStudentLoading(false); // We are done checking for student data
   }, []);
 
-  // Load questions
+  // Load questions, but only if a student is found
   useEffect(() => {
-    fetch("/api/assessment")
-      .then((res) => res.json())
-      .then((data) => {
-        setState((prev) => ({
-          ...prev,
-          questions: data.questions,
-        }));
-      })
-      .catch((err) => console.error("Failed to fetch questions", err));
-  }, []);
+    // FIX: Do not fetch questions if there's no student
+    if (!student) {
+        // If we are done checking for the student and there is none, stop loading questions.
+        if(!studentLoading) {
+            setQuestionsLoading(false);
+        }
+        return;
+    }
 
+    const fetchQuestions = async () => {
+      try {
+        setQuestionsLoading(true);
+        setQuestionsError(null);
+        
+        const response = await fetch("/api/assessment");
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.questions && Array.isArray(data.questions)) {
+          setState((prev) => ({
+            ...prev,
+            questions: data.questions,
+            timeStarted: Date.now(), // Reset timer when questions are loaded
+          }));
+        } else {
+          console.error("Invalid questions data structure:", data);
+          setQuestionsError("Invalid questions data received from server.");
+        }
+      } catch (err) {
+        console.error("Failed to fetch questions", err);
+        setQuestionsError(err instanceof Error ? err.message : "An unknown error occurred.");
+      } finally {
+        setQuestionsLoading(false);
+      }
+    };
+
+    fetchQuestions();
+  }, [student, studentLoading]); // Depend on student state
+
+  // Timer useEffect (no changes needed)
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeElapsed(Math.floor((Date.now() - state.timeStarted) / 1000));
@@ -133,6 +175,7 @@ const AssessmentPage: React.FC = () => {
     return () => clearInterval(timer);
   }, [state.timeStarted]);
 
+  // Save result useEffect (no changes needed)
   useEffect(() => {
     const saveResult = async () => {
       if (!student) return;
@@ -190,6 +233,7 @@ const AssessmentPage: React.FC = () => {
     student,
     state.answers,
     state.questions,
+    state.timeStarted,
   ]);
 
   const handleAnswerSelect = (index: number) => {
@@ -226,20 +270,88 @@ const AssessmentPage: React.FC = () => {
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const currentQuestion = state.questions[state.currentQuestion];
+  // --- START: NEW RENDER LOGIC ---
 
-  if (!student) {
+  if (studentLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-lg text-gray-700">Loading student data...</p>
+          <p className="text-lg text-gray-700">Verifying student session...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!student) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
+        <div className="text-center bg-white p-10 rounded-xl shadow-lg">
+          <div className="text-red-500 mb-4">
+            <XCircle className="w-16 h-16 mx-auto mb-2" />
+            <p className="text-xl font-semibold">Authentication Error</p>
+          </div>
+          <p className="text-gray-600 mb-6">
+            No student session was found. Please log in to take the assessment.
+          </p>
+          <Link href="/login" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition inline-flex items-center">
+            <LogIn className="w-5 h-5 mr-2" />
+            Go to Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (questionsLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-lg text-gray-700">Loading questions...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (questionsError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 mb-4">
+            <XCircle className="w-16 h-16 mx-auto mb-2" />
+            <p className="text-lg font-semibold">Failed to Load Questions</p>
+          </div>
+          <p className="text-gray-600 mb-4">{questionsError}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!questionsLoading && state.questions.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-yellow-500 mb-4">
+            <XCircle className="w-16 h-16 mx-auto mb-2" />
+            <p className="text-lg font-semibold">No Questions Available</p>
+          </div>
+          <p className="text-gray-600 mb-4">
+            There are no questions available for this assessment at the moment.
+          </p>
         </div>
       </div>
     );
   }
 
   if (state.isCompleted && (isSaving || (!assessmentId && !saveError))) {
+    // ... (keep this block as is)
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
         <div className="text-center">
@@ -252,8 +364,9 @@ const AssessmentPage: React.FC = () => {
       </div>
     );
   }
-
+  
   if (state.isCompleted && saveError && !assessmentId) {
+    // ... (keep this block as is)
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
         <div className="text-center">
@@ -285,18 +398,17 @@ const AssessmentPage: React.FC = () => {
       </div>
     );
   }
-
-  // Show results if assessment is completed and saved successfully
+  
   if (state.isCompleted && assessmentId && backendResults) {
-    // Calculate total correct answers for display
+    // ... (keep this block as is, assuming AssessmentResult component exists)
     const totalCorrectAnswers = backendResults.topic_scores.reduce(
-      (sum, topic) => sum + topic.correct,
-      0
+        (sum, topic) => sum + topic.correct,
+        0
     );
     const scorePercent = (totalCorrectAnswers / state.questions.length) * 100;
 
     const topicScoresForTemplate: AssessmentResultTopicScore[] =
-      backendResults.topic_scores.map((topic, index) => ({
+        backendResults.topic_scores.map((topic, index) => ({
         topic_id: index + 1,
         topic_name: topic.topic,
         correct_answers: topic.correct,
@@ -304,54 +416,46 @@ const AssessmentPage: React.FC = () => {
         weighted_score: topic.weighted_score,
         normalized_score: topic.normalized_score,
         classification: topic.classification,
-        recommendation: topic.recommendation, // Pass recommendation from backend
-      }));
+        recommendation: topic.recommendation,
+        }));
 
     const assessmentData: AssessmentResultData = {
-      id: assessmentId,
-      score: totalCorrectAnswers,
-      total_questions: state.questions.length,
-      score_percent: scorePercent,
-      attempted_at: new Date(state.timeStarted).toISOString(),
-      total_score: backendResults.total_score,
-      readiness_score: backendResults.readiness_score,
-      foundational_score:
+        id: assessmentId,
+        score: totalCorrectAnswers,
+        total_questions: state.questions.length,
+        score_percent: scorePercent,
+        attempted_at: new Date(state.timeStarted).toISOString(),
+        total_score: backendResults.total_score,
+        readiness_score: backendResults.readiness_score,
+        foundational_score:
         backendResults.section_scores.foundational ?? undefined,
-      industrial_score: backendResults.section_scores.industrial ?? undefined,
-
-      status: "completed",
+        industrial_score: backendResults.section_scores.industrial ?? undefined,
+        status: "completed",
     };
 
     const studentData = {
-      id: parseInt(student.id) || 1,
-      name: student.name,
-      email: student.email,
-      registration_number: student.registration_number || "N/A",
+        id: parseInt(student.id) || 1,
+        name: student.name,
+        email: student.email,
+        registration_number: student.registration_number || "N/A",
     };
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
         <AssessmentResult
-          student={studentData}
-          assessments={[assessmentData]}
-          topicScores={topicScoresForTemplate}
+            student={studentData}
+            assessments={[assessmentData]}
+            topicScores={topicScoresForTemplate}
         />
-      </div>
-    );
-  }
-
-  if (state.questions.length === 0) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-lg text-gray-700">Loading questions...</p>
         </div>
-      </div>
     );
   }
+  
+  const currentQuestion = state.questions[state.currentQuestion];
 
+  // This is the main assessment UI
   return (
+    // ... (keep the entire return block for the assessment UI as is)
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
@@ -401,7 +505,6 @@ const AssessmentPage: React.FC = () => {
             <span className="ml-3 text-gray-600">Difficulty Level</span>
           </div>
 
-          {/* Question */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
               {currentQuestion.question}

@@ -1,4 +1,3 @@
-// app/api/logout/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { serialize } from "cookie";
 
@@ -11,19 +10,28 @@ export async function POST(req: NextRequest) {
       cookieName = "adminSession";
     }
 
-    // Clear the appropriate cookie
-    const cookie = serialize(cookieName, "", {
+    // Redirect to the login page
+    const url = req.nextUrl.clone();
+    url.pathname = '/Login';
+    const response = NextResponse.redirect(url, { status: 307 });
+
+    // Create a "blank" cookie with an expiration date in the past.
+    // Being explicit about all attributes is key to ensuring it gets deleted.
+    const expiredCookie = serialize(cookieName, "", {
       path: "/",
-      maxAge: 0,
+      expires: new Date(0), // The key to deletion
+      httpOnly: true,
+      // Set 'secure' dynamically based on environment. Important for production.
+      secure: process.env.NODE_ENV === "production",
+      // Use 'lax' as a sensible default. Adjust if your login cookie used 'strict'.
+      sameSite: "lax", 
     });
 
-    const res = NextResponse.json({ 
-      success: true, 
-      message: "Logged out successfully" 
-    });
-    res.headers.set("Set-Cookie", cookie);
+    // Set the explicit deletion cookie on the redirect response
+    response.headers.set("Set-Cookie", expiredCookie);
 
-    return res;
+    return response;
+
   } catch (error) {
     console.error("Logout error:", error);
     return NextResponse.json(
