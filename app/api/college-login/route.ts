@@ -1,5 +1,3 @@
-// app/api/college-login/route.ts
-
 import { NextRequest, NextResponse } from "next/server";
 import { serialize } from "cookie";
 import pool from "@/lib/database"; // your DB connection
@@ -9,14 +7,17 @@ export async function POST(req: NextRequest) {
     const { email, password } = await req.json();
 
     if (!email || !password) {
-      return NextResponse.json({ error: "Email and password required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Email and password required" },
+        { status: 400 }
+      );
     }
 
     // Query for admin
     const result = await pool.query(
       `SELECT
         au.id, au.name, au.email, au.org_id, au.tenant_id,
-        o.name as org_name, ac.hashed_password
+        o.name as org_name, ac.plain_text_password
        FROM academic_user au
        JOIN org o ON au.org_id = o.id
        JOIN user_type ut ON au.user_type_id = ut.id
@@ -31,15 +32,22 @@ export async function POST(req: NextRequest) {
     );
 
     if (result.rows.length === 0) {
-      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Invalid email or password" },
+        { status: 401 }
+      );
     }
 
     const admin = result.rows[0];
 
     // Plain text password check
-    const isPasswordCorrect = password === admin.hashed_password;
+    // FIX: Corrected the typo from admin.plain_text__password to admin.plain_text_password
+    const isPasswordCorrect = password === admin.plain_text_password;
     if (!isPasswordCorrect) {
-      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Invalid email or password" },
+        { status: 401 }
+      );
     }
 
     // Prepare cookie data (store minimal data only)
@@ -77,7 +85,10 @@ export async function POST(req: NextRequest) {
     return res;
   } catch (error) {
     console.error("Admin login error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -91,3 +102,4 @@ export async function DELETE() {
   res.headers.set("Set-Cookie", cookie);
   return res;
 }
+
