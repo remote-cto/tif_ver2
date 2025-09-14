@@ -37,14 +37,41 @@ interface Props {
   };
   assessments: AssessmentResult[];
   topicScores: TopicScore[];
+}
 
+// Helper function to clear cookie
+function clearCookie(name: string): void {
+  document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+}
+
+// Helper function to get cookie by name
+function getCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return parts.pop()?.split(";").shift() || null;
+  }
+  return null;
+}
+
+// Function to check if user is from dean dashboard
+function isDeanView(): boolean {
+  try {
+    const deanSessionCookie = getCookie("deanSession");
+    const selectedStudentCookie = getCookie("selectedStudent");
+    return !!(deanSessionCookie && selectedStudentCookie);
+  } catch (error) {
+    console.error("Error checking dean view:", error);
+    return false;
+  }
 }
 
 const AssessmentResult: React.FC<Props> = ({
   student,
   assessments,
   topicScores,
-
 }) => {
   const latestAssessment =
     assessments.length > 0
@@ -70,7 +97,6 @@ const AssessmentResult: React.FC<Props> = ({
   const radarLabels = uniqueTopics.map((t) => t.topic_name);
   const radarData = uniqueTopics.map((t) => Number(t.normalized_score || 0));
 
- 
   const strengths = topicScores
     .filter(
       (topic) =>
@@ -175,6 +201,20 @@ const AssessmentResult: React.FC<Props> = ({
     }
   };
 
+  const handleLogout = () => {
+    const isDean = isDeanView();
+
+    if (isDean) {
+      // Clear selected student cookie but keep dean session
+      clearCookie("selectedStudent");
+      window.location.href = "/dean-dashboard";
+    } else {
+      // Clear student session cookie
+      clearCookie("studentSession");
+      window.location.href = "/Login";
+    }
+  };
+
   if (!latestAssessment) {
     return (
       <div className="max-w-5xl mx-auto p-6 sm:p-10">
@@ -194,23 +234,10 @@ const AssessmentResult: React.FC<Props> = ({
     <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-6 sm:p-10 space-y-10">
       {/* Logout/Back Button */}
       <button
-        onClick={() => {
-          // Check if accessed from dean dashboard
-          const isDeanView = sessionStorage.getItem("selectedStudentData");
-
-          if (isDeanView) {
-            sessionStorage.removeItem("selectedStudentData");
-            window.location.href = "/dean-dashboard";
-          } else {
-            sessionStorage.removeItem("studentData");
-            window.location.href = "/Login";
-          }
-        }}
+        onClick={handleLogout}
         className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
       >
-        {sessionStorage.getItem("selectedStudentData")
-          ? "Back to Dashboard"
-          : "Logout"}
+        {isDeanView() ? "Back to Dashboard" : "Logout"}
       </button>
 
       {/* Header */}
@@ -271,18 +298,6 @@ const AssessmentResult: React.FC<Props> = ({
               : "(N/A)"}
           </p>
         </div>
-
-        {/* {totalScore > 0 && (
-          <div className="bg-purple-50 p-4 rounded-lg text-center">
-            <h3 className="text-lg font-semibold text-purple-700">
-              Total Score
-            </h3>
-            <p className={`text-2xl font-bold ${getScoreColor(totalScore)}`}>
-              {totalScore.toFixed(1)}
-            </p>
-            <p className="text-sm text-gray-600">Weighted Score</p>
-          </div>
-        )} */}
 
         <div className="bg-green-50 p-4 rounded-lg text-center">
           <h3 className="text-lg font-semibold text-green-700">
@@ -565,42 +580,41 @@ const AssessmentResult: React.FC<Props> = ({
       </div>
 
       {/* Recommendations */}
-     {/* Recommendations */}
-<div className="bg-blue-50 p-6 rounded-xl shadow-sm border border-blue-200">
-  <h3 className="text-lg font-bold text-blue-700 mb-4 flex items-center">
-    <span className="mr-2">📈</span> Personalized Recommendations
-  </h3>
-  <div className="space-y-3">
-    {topicScores
-      .filter(topic => topic.classification === "Gap" || (topic.normalized_score && topic.normalized_score < 60))
-      .length > 0 ? (
-      topicScores
-        .filter(topic => topic.classification === "Gap" || (topic.normalized_score && topic.normalized_score < 60))
-        .map((topic, i) => (
-          <div
-            key={i}
-            className="bg-white p-4 rounded-lg border-l-4 border-blue-400"
-          >
-            <div className="font-medium text-blue-900 mb-1">{topic.topic_name}</div>
-            <div className="text-blue-700 text-sm">
-              {topic.recommendation || `Focus on improving your ${topic.topic_name} skills through practice and additional study.`}
+      <div className="bg-blue-50 p-6 rounded-xl shadow-sm border border-blue-200">
+        <h3 className="text-lg font-bold text-blue-700 mb-4 flex items-center">
+          <span className="mr-2">📈</span> Personalized Recommendations
+        </h3>
+        <div className="space-y-3">
+          {topicScores
+            .filter(topic => topic.classification === "Gap" || (topic.normalized_score && topic.normalized_score < 60))
+            .length > 0 ? (
+            topicScores
+              .filter(topic => topic.classification === "Gap" || (topic.normalized_score && topic.normalized_score < 60))
+              .map((topic, i) => (
+                <div
+                  key={i}
+                  className="bg-white p-4 rounded-lg border-l-4 border-blue-400"
+                >
+                  <div className="font-medium text-blue-900 mb-1">{topic.topic_name}</div>
+                  <div className="text-blue-700 text-sm">
+                    {topic.recommendation || `Focus on improving your ${topic.topic_name} skills through practice and additional study.`}
+                  </div>
+                </div>
+              ))
+          ) : (
+            <div className="bg-white p-4 rounded-lg border-l-4 border-green-400">
+              <div className="font-medium text-green-900 mb-1">
+                Excellent Performance!
+              </div>
+              <div className="text-green-700 text-sm">
+                You're performing well across all areas. Consider taking on
+                advanced capstone projects and contributing to open-source AI
+                projects to further enhance your skills.
+              </div>
             </div>
-          </div>
-        ))
-    ) : (
-      <div className="bg-white p-4 rounded-lg border-l-4 border-green-400">
-        <div className="font-medium text-green-900 mb-1">
-          Excellent Performance!
-        </div>
-        <div className="text-green-700 text-sm">
-          You're performing well across all areas. Consider taking on
-          advanced capstone projects and contributing to open-source AI
-          projects to further enhance your skills.
+          )}
         </div>
       </div>
-    )}
-  </div>
-</div>
 
       {/* Assessment History - Updated to show section scores */}
       {assessments.length > 1 && (

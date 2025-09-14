@@ -351,7 +351,7 @@ const AssessmentPage: React.FC = () => {
   }
 
   if (state.isCompleted && (isSaving || (!assessmentId && !saveError))) {
-    // ... (keep this block as is)
+   
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
         <div className="text-center">
@@ -366,7 +366,7 @@ const AssessmentPage: React.FC = () => {
   }
   
   if (state.isCompleted && saveError && !assessmentId) {
-    // ... (keep this block as is)
+  
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
         <div className="text-center">
@@ -400,7 +400,7 @@ const AssessmentPage: React.FC = () => {
   }
   
   if (state.isCompleted && assessmentId && backendResults) {
-    // ... (keep this block as is, assuming AssessmentResult component exists)
+    
     const totalCorrectAnswers = backendResults.topic_scores.reduce(
         (sum, topic) => sum + topic.correct,
         0
@@ -455,7 +455,7 @@ const AssessmentPage: React.FC = () => {
 
   // This is the main assessment UI
   return (
-    // ... (keep the entire return block for the assessment UI as is)
+    
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
