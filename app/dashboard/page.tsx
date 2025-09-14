@@ -93,7 +93,7 @@ const DashboardPage = () => {
   }
 
   if (!studentData) {
-    return null; // Will be redirected by the useEffect hook
+    return null; 
   }
 
   return (

@@ -1,3 +1,5 @@
+//app/api/assessment/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/database";
 
@@ -23,64 +25,74 @@ const BASE_WHERE_CLAUSE = `
     AND qb.assessment_type_id = $1
 `;
 
-// GET: /api/assessment?type=standard or /api/assessment?type=adaptive
 export async function GET(req: NextRequest) {
   const url = new URL(req.url || "");
   const assessmentTypeId = url.searchParams.get("assessment_type_id") || "1";
-  const testType = url.searchParams.get("type") || "standard"; // Default to 'standard'
+  const testType = url.searchParams.get("type") || "standard";
 
   try {
-    let query = '';
+    let query = "";
 
-    if (testType === 'adaptive') {
-      // --- ADAPTIVE (STRUCTURED) QUERY ---
-      // This query builds a test with a fixed number of questions from each difficulty level.
+    if (testType === "adaptive") {
       query = `
-        -- Foundational Section (Structured)
-        (SELECT ${QUESTION_SELECT_FIELDS} ${QUESTION_JOINS} ${BASE_WHERE_CLAUSE} AND s.id = 1 AND l.name = 'Basic' ORDER BY RANDOM() LIMIT 6)
-        UNION ALL
-        (SELECT ${QUESTION_SELECT_FIELDS} ${QUESTION_JOINS} ${BASE_WHERE_CLAUSE} AND s.id = 1 AND l.name = 'Intermediate' ORDER BY RANDOM() LIMIT 6)
-        UNION ALL
-        (SELECT ${QUESTION_SELECT_FIELDS} ${QUESTION_JOINS} ${BASE_WHERE_CLAUSE} AND s.id = 1 AND l.name = 'Advanced' ORDER BY RANDOM() LIMIT 6)
-        
-        UNION ALL
-
-        -- Industrial Section (Structured)
-        (SELECT ${QUESTION_SELECT_FIELDS} ${QUESTION_JOINS} ${BASE_WHERE_CLAUSE} AND s.id = 2 AND l.name = 'Basic' ORDER BY RANDOM() LIMIT 6)
-        UNION ALL
-        (SELECT ${QUESTION_SELECT_FIELDS} ${QUESTION_JOINS} ${BASE_WHERE_CLAUSE} AND s.id = 2 AND l.name = 'Intermediate' ORDER BY RANDOM() LIMIT 6)
-        UNION ALL
-        (SELECT ${QUESTION_SELECT_FIELDS} ${QUESTION_JOINS} ${BASE_WHERE_CLAUSE} AND s.id = 2 AND l.name = 'Advanced' ORDER BY RANDOM() LIMIT 6)
+        WITH adaptive_questions AS (
+          -- Foundational Section (6 questions per level)
+          (SELECT ${QUESTION_SELECT_FIELDS}, 'foundational' as section_type
+           ${QUESTION_JOINS} 
+           ${BASE_WHERE_CLAUSE} AND s.id = 1 AND l.name = 'Basic' 
+           ORDER BY RANDOM() LIMIT 6)
+          UNION ALL
+          (SELECT ${QUESTION_SELECT_FIELDS}, 'foundational' as section_type
+           ${QUESTION_JOINS} 
+           ${BASE_WHERE_CLAUSE} AND s.id = 1 AND l.name = 'Intermediate' 
+           ORDER BY RANDOM() LIMIT 6)
+          UNION ALL
+          (SELECT ${QUESTION_SELECT_FIELDS}, 'foundational' as section_type
+           ${QUESTION_JOINS} 
+           ${BASE_WHERE_CLAUSE} AND s.id = 1 AND l.name = 'Advanced' 
+           ORDER BY RANDOM() LIMIT 6)
+          UNION ALL
+          -- Industrial Section (6 questions per level)
+          (SELECT ${QUESTION_SELECT_FIELDS}, 'industrial' as section_type
+           ${QUESTION_JOINS} 
+           ${BASE_WHERE_CLAUSE} AND s.id = 2 AND l.name = 'Basic' 
+           ORDER BY RANDOM() LIMIT 6)
+          UNION ALL
+          (SELECT ${QUESTION_SELECT_FIELDS}, 'industrial' as section_type
+           ${QUESTION_JOINS} 
+           ${BASE_WHERE_CLAUSE} AND s.id = 2 AND l.name = 'Intermediate' 
+           ORDER BY RANDOM() LIMIT 6)
+          UNION ALL
+          (SELECT ${QUESTION_SELECT_FIELDS}, 'industrial' as section_type
+           ${QUESTION_JOINS} 
+           ${BASE_WHERE_CLAUSE} AND s.id = 2 AND l.name = 'Advanced' 
+           ORDER BY RANDOM() LIMIT 6)
+        )
+        SELECT * FROM adaptive_questions;
       `;
     } else {
-      // --- STANDARD (RANDOM) QUERY ---
-      // This is the original query that fetches a random mix of questions.
+      // STANDARD: Random mix (18 per section)
       query = `
-        -- Foundational Section (Random)
-        (
-          SELECT ${QUESTION_SELECT_FIELDS}
-          ${QUESTION_JOINS}
-          ${BASE_WHERE_CLAUSE}
-          AND s.id = 1
-          ORDER BY RANDOM()
-          LIMIT 18
+        WITH standard_questions AS (
+          -- Foundational Section (Random 18)
+          (SELECT ${QUESTION_SELECT_FIELDS}, 'foundational' as section_type
+           ${QUESTION_JOINS}
+           ${BASE_WHERE_CLAUSE} AND s.id = 1
+           ORDER BY RANDOM() LIMIT 18)
+          UNION ALL
+          -- Industrial Section (Random 18)
+          (SELECT ${QUESTION_SELECT_FIELDS}, 'industrial' as section_type
+           ${QUESTION_JOINS}
+           ${BASE_WHERE_CLAUSE} AND s.id = 2
+           ORDER BY RANDOM() LIMIT 18)
         )
-        UNION ALL
-        -- Industrial Section (Random)
-        (
-          SELECT ${QUESTION_SELECT_FIELDS}
-          ${QUESTION_JOINS}
-          ${BASE_WHERE_CLAUSE}
-          AND s.id = 2
-          ORDER BY RANDOM()
-          LIMIT 18
-        )
+        SELECT * FROM standard_questions;
       `;
     }
 
     const result = await pool.query(query, [assessmentTypeId]);
 
-    // Shuffle the final combined list of questions for a better user experience
+    // Shuffle final results
     const shuffledRows = result.rows.sort(() => Math.random() - 0.5);
 
     const formattedQuestions = shuffledRows.map((q: any) => {
@@ -97,19 +109,23 @@ export async function GET(req: NextRequest) {
         correctAnswer: correctAnswerIndex,
         topicWeightage: q.topic_weightage,
         levelWeightage: q.level_weightage,
+        testType: testType,
       };
     });
 
     return NextResponse.json(
-      { questions: formattedQuestions },
+      {
+        questions: formattedQuestions,
+        testType: testType,
+        totalQuestions: formattedQuestions.length,
+      },
       { status: 200 }
     );
   } catch (error) {
     console.error("Error fetching questions:", error);
     return NextResponse.json(
-      { error: "Failed to load questions" },
+      { error: "Failed to load questions", testType: testType },
       { status: 500 }
     );
   }
 }
-

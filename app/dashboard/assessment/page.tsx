@@ -1,11 +1,12 @@
+//app/dashboard/assessment/page.tsx
+
 "use client";
 import React, { useState, useEffect } from "react";
-import { XCircle, Clock, LogIn } from "lucide-react"; // Import LogIn icon
+import { XCircle, Clock, LogIn } from "lucide-react";
 import { getStudentData } from "@/utils/getStudentData";
 import AssessmentResult from "../../components/AssessmentResult";
-import Link from "next/link"; // Import Link for navigation
+import Link from "next/link";
 
-// ... (keep all your interface definitions: Question, TopicScore, etc.)
 interface Question {
   id: string;
   topic: string;
@@ -85,7 +86,6 @@ interface BackendResponse {
   topic_scores: TopicScore[];
 }
 
-
 const AssessmentPage: React.FC = () => {
   const [state, setState] = useState<AssessmentState>({
     currentQuestion: 0,
@@ -100,12 +100,13 @@ const AssessmentPage: React.FC = () => {
   const [assessmentId, setAssessmentId] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  
+
   // FIX: Add state to manage student and question loading separately
   const [student, setStudent] = useState<StudentData | null>(null);
   const [studentLoading, setStudentLoading] = useState(true);
   const [questionsLoading, setQuestionsLoading] = useState(true);
   const [questionsError, setQuestionsError] = useState<string | null>(null);
+  const [testType, setTestType] = useState<"adaptive" | "standard">("standard");
 
   const [backendResults, setBackendResults] = useState<BackendResponse | null>(
     null
@@ -126,31 +127,36 @@ const AssessmentPage: React.FC = () => {
   useEffect(() => {
     // FIX: Do not fetch questions if there's no student
     if (!student) {
-        // If we are done checking for the student and there is none, stop loading questions.
-        if(!studentLoading) {
-            setQuestionsLoading(false);
-        }
-        return;
+      // If we are done checking for the student and there is none, stop loading questions.
+      if (!studentLoading) {
+        setQuestionsLoading(false);
+      }
+      return;
     }
 
     const fetchQuestions = async () => {
       try {
         setQuestionsLoading(true);
         setQuestionsError(null);
-        
-        const response = await fetch("/api/assessment");
-        
+
+        // Get test type from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlTestType = urlParams.get("type") || "standard";
+        setTestType(urlTestType as "adaptive" | "standard");
+
+        const response = await fetch(`/api/assessment?type=${urlTestType}`);
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         if (data.questions && Array.isArray(data.questions)) {
           setState((prev) => ({
             ...prev,
             questions: data.questions,
-            timeStarted: Date.now(), // Reset timer when questions are loaded
+            timeStarted: Date.now(),
           }));
         } else {
           console.error("Invalid questions data structure:", data);
@@ -158,14 +164,16 @@ const AssessmentPage: React.FC = () => {
         }
       } catch (err) {
         console.error("Failed to fetch questions", err);
-        setQuestionsError(err instanceof Error ? err.message : "An unknown error occurred.");
+        setQuestionsError(
+          err instanceof Error ? err.message : "An unknown error occurred."
+        );
       } finally {
         setQuestionsLoading(false);
       }
     };
 
     fetchQuestions();
-  }, [student, studentLoading]); // Depend on student state
+  }, [student, studentLoading]);
 
   // Timer useEffect (no changes needed)
   useEffect(() => {
@@ -294,7 +302,10 @@ const AssessmentPage: React.FC = () => {
           <p className="text-gray-600 mb-6">
             No student session was found. Please log in to take the assessment.
           </p>
-          <Link href="/login" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition inline-flex items-center">
+          <Link
+            href="/login"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition inline-flex items-center"
+          >
             <LogIn className="w-5 h-5 mr-2" />
             Go to Login
           </Link>
@@ -351,7 +362,6 @@ const AssessmentPage: React.FC = () => {
   }
 
   if (state.isCompleted && (isSaving || (!assessmentId && !saveError))) {
-   
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
         <div className="text-center">
@@ -364,9 +374,8 @@ const AssessmentPage: React.FC = () => {
       </div>
     );
   }
-  
+
   if (state.isCompleted && saveError && !assessmentId) {
-  
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex items-center justify-center">
         <div className="text-center">
@@ -398,17 +407,16 @@ const AssessmentPage: React.FC = () => {
       </div>
     );
   }
-  
+
   if (state.isCompleted && assessmentId && backendResults) {
-    
     const totalCorrectAnswers = backendResults.topic_scores.reduce(
-        (sum, topic) => sum + topic.correct,
-        0
+      (sum, topic) => sum + topic.correct,
+      0
     );
     const scorePercent = (totalCorrectAnswers / state.questions.length) * 100;
 
     const topicScoresForTemplate: AssessmentResultTopicScore[] =
-        backendResults.topic_scores.map((topic, index) => ({
+      backendResults.topic_scores.map((topic, index) => ({
         topic_id: index + 1,
         topic_name: topic.topic,
         correct_answers: topic.correct,
@@ -417,53 +425,63 @@ const AssessmentPage: React.FC = () => {
         normalized_score: topic.normalized_score,
         classification: topic.classification,
         recommendation: topic.recommendation,
-        }));
+      }));
 
     const assessmentData: AssessmentResultData = {
-        id: assessmentId,
-        score: totalCorrectAnswers,
-        total_questions: state.questions.length,
-        score_percent: scorePercent,
-        attempted_at: new Date(state.timeStarted).toISOString(),
-        total_score: backendResults.total_score,
-        readiness_score: backendResults.readiness_score,
-        foundational_score:
+      id: assessmentId,
+      score: totalCorrectAnswers,
+      total_questions: state.questions.length,
+      score_percent: scorePercent,
+      attempted_at: new Date(state.timeStarted).toISOString(),
+      total_score: backendResults.total_score,
+      readiness_score: backendResults.readiness_score,
+      foundational_score:
         backendResults.section_scores.foundational ?? undefined,
-        industrial_score: backendResults.section_scores.industrial ?? undefined,
-        status: "completed",
+      industrial_score: backendResults.section_scores.industrial ?? undefined,
+      status: "completed",
     };
 
     const studentData = {
-        id: parseInt(student.id) || 1,
-        name: student.name,
-        email: student.email,
-        registration_number: student.registration_number || "N/A",
+      id: parseInt(student.id) || 1,
+      name: student.name,
+      email: student.email,
+      registration_number: student.registration_number || "N/A",
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
         <AssessmentResult
-            student={studentData}
-            assessments={[assessmentData]}
-            topicScores={topicScoresForTemplate}
+          student={studentData}
+          assessments={[assessmentData]}
+          topicScores={topicScoresForTemplate}
         />
-        </div>
+      </div>
     );
   }
-  
+
   const currentQuestion = state.questions[state.currentQuestion];
 
   // This is the main assessment UI
   return (
-    
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <p className="text-gray-600">
-                {currentQuestion.section} Section • {currentQuestion.topic}
-              </p>
+              <div className="flex items-center gap-3">
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    testType === "adaptive"
+                      ? "bg-purple-100 text-purple-800"
+                      : "bg-green-100 text-green-800"
+                  }`}
+                >
+                  {testType === "adaptive" ? "Adaptive Mode" : "Standard Mode"}
+                </span>
+                <p className="text-gray-600">
+                  {currentQuestion.section} Section • {currentQuestion.topic}
+                </p>
+              </div>
             </div>
             <div className="text-gray-600 flex items-center">
               <Clock className="w-5 h-5 mr-2" />
