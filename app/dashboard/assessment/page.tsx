@@ -125,7 +125,7 @@ const AssessmentPage: React.FC = () => {
 
   // Load questions, but only if a student is found
   useEffect(() => {
-    // FIX: Do not fetch questions if there's no student
+    
     if (!student) {
       // If we are done checking for the student and there is none, stop loading questions.
       if (!studentLoading) {
@@ -278,7 +278,7 @@ const AssessmentPage: React.FC = () => {
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  // --- START: NEW RENDER LOGIC ---
+ 
 
   if (studentLoading) {
     return (

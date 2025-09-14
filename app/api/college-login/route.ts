@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { serialize } from "cookie";
-import pool from "@/lib/database"; // your DB connection
+import pool from "@/lib/database"; 
 
 export async function POST(req: NextRequest) {
   try {
@@ -40,8 +40,7 @@ export async function POST(req: NextRequest) {
 
     const admin = result.rows[0];
 
-    // Plain text password check
-    // FIX: Corrected the typo from admin.plain_text__password to admin.plain_text_password
+    
     const isPasswordCorrect = password === admin.plain_text_password;
     if (!isPasswordCorrect) {
       return NextResponse.json(
@@ -50,7 +49,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Prepare cookie data (store minimal data only)
+   
     const cookieValue = JSON.stringify({
       id: admin.id,
       email: admin.email,
@@ -63,10 +62,10 @@ export async function POST(req: NextRequest) {
     // Cookie config
     const cookie = serialize("adminSession", cookieValue, {
       path: "/",
-      httpOnly: false, // false so you can read on client (for learning only)
-      maxAge: 60 * 60 * 6, // 6 hours
+      httpOnly: false, 
+      maxAge: 60 * 60 * 6, 
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production", // true in prod
+      secure: process.env.NODE_ENV === "production", 
     });
 
     const res = NextResponse.json({
