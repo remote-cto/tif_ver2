@@ -1,59 +1,89 @@
-// app/api/assessment/route.ts
-
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/database";
 
-// GET: /api/assessment?assessment_type_id=1
+// Define a common structure for the question select statement to avoid repetition
+const QUESTION_SELECT_FIELDS = `
+  qb.id, qb.question, qb.option_a, qb.option_b, qb.option_c, qb.option_d, qb.correct_answer,
+  t.name AS topic, s.name AS section, l.name AS level,
+  t.weightage AS topic_weightage, l.weightage AS level_weightage
+`;
+
+const QUESTION_JOINS = `
+  FROM question_bank qb
+  JOIN topic t ON qb.topic_id = t.id
+  JOIN section s ON t.section_id = s.id
+  JOIN level l ON qb.level_id = l.id
+`;
+
+const BASE_WHERE_CLAUSE = `
+  WHERE qb.is_active = TRUE
+    AND t.is_active = TRUE
+    AND s.is_active = TRUE
+    AND l.is_active = TRUE
+    AND qb.assessment_type_id = $1
+`;
+
+// GET: /api/assessment?type=standard or /api/assessment?type=adaptive
 export async function GET(req: NextRequest) {
   const url = new URL(req.url || "");
   const assessmentTypeId = url.searchParams.get("assessment_type_id") || "1";
+  const testType = url.searchParams.get("type") || "standard"; // Default to 'standard'
 
   try {
-    const query = `
-        -- Foundation section
-    (
-      SELECT 
-        qb.id, qb.question, qb.option_a, qb.option_b, qb.option_c, qb.option_d, qb.correct_answer,
-        t.name AS topic, s.name AS section, l.name AS level,
-        t.weightage AS topic_weightage, l.weightage AS level_weightage
-      FROM question_bank qb
-      JOIN topic t ON qb.topic_id = t.id
-      JOIN section s ON t.section_id = s.id
-      JOIN level l ON qb.level_id = l.id
-      WHERE qb.is_active = TRUE
-        AND t.is_active = TRUE
-        AND s.is_active = TRUE
-        AND l.is_active = TRUE
-        AND qb.assessment_type_id = $1
-        AND s.id = 1 -- FIX: Changed '1' to 1 (integer)
-      ORDER BY RANDOM()
-      LIMIT 18
-    )
-    UNION ALL
-    (
-      SELECT 
-        qb.id, qb.question, qb.option_a, qb.option_b, qb.option_c, qb.option_d, qb.correct_answer,
-        t.name AS topic, s.name AS section, l.name AS level,
-        t.weightage AS topic_weightage, l.weightage AS level_weightage
-      FROM question_bank qb
-      JOIN topic t ON qb.topic_id = t.id
-      JOIN section s ON t.section_id = s.id
-      JOIN level l ON qb.level_id = l.id
-      WHERE qb.is_active = TRUE
-        AND t.is_active = TRUE
-        AND s.is_active = TRUE
-        AND l.is_active = TRUE
-        AND qb.assessment_type_id = $1
-        AND s.id = 2 -- FIX: Changed '2' to 2 (integer)
-      ORDER BY RANDOM()
-      LIMIT 18
-    )
+    let query = '';
+
+    if (testType === 'adaptive') {
+      // --- ADAPTIVE (STRUCTURED) QUERY ---
+      // This query builds a test with a fixed number of questions from each difficulty level.
+      query = `
+        -- Foundational Section (Structured)
+        (SELECT ${QUESTION_SELECT_FIELDS} ${QUESTION_JOINS} ${BASE_WHERE_CLAUSE} AND s.id = 1 AND l.name = 'Basic' ORDER BY RANDOM() LIMIT 6)
+        UNION ALL
+        (SELECT ${QUESTION_SELECT_FIELDS} ${QUESTION_JOINS} ${BASE_WHERE_CLAUSE} AND s.id = 1 AND l.name = 'Intermediate' ORDER BY RANDOM() LIMIT 6)
+        UNION ALL
+        (SELECT ${QUESTION_SELECT_FIELDS} ${QUESTION_JOINS} ${BASE_WHERE_CLAUSE} AND s.id = 1 AND l.name = 'Advanced' ORDER BY RANDOM() LIMIT 6)
+        
+        UNION ALL
+
+        -- Industrial Section (Structured)
+        (SELECT ${QUESTION_SELECT_FIELDS} ${QUESTION_JOINS} ${BASE_WHERE_CLAUSE} AND s.id = 2 AND l.name = 'Basic' ORDER BY RANDOM() LIMIT 6)
+        UNION ALL
+        (SELECT ${QUESTION_SELECT_FIELDS} ${QUESTION_JOINS} ${BASE_WHERE_CLAUSE} AND s.id = 2 AND l.name = 'Intermediate' ORDER BY RANDOM() LIMIT 6)
+        UNION ALL
+        (SELECT ${QUESTION_SELECT_FIELDS} ${QUESTION_JOINS} ${BASE_WHERE_CLAUSE} AND s.id = 2 AND l.name = 'Advanced' ORDER BY RANDOM() LIMIT 6)
       `;
+    } else {
+      // --- STANDARD (RANDOM) QUERY ---
+      // This is the original query that fetches a random mix of questions.
+      query = `
+        -- Foundational Section (Random)
+        (
+          SELECT ${QUESTION_SELECT_FIELDS}
+          ${QUESTION_JOINS}
+          ${BASE_WHERE_CLAUSE}
+          AND s.id = 1
+          ORDER BY RANDOM()
+          LIMIT 18
+        )
+        UNION ALL
+        -- Industrial Section (Random)
+        (
+          SELECT ${QUESTION_SELECT_FIELDS}
+          ${QUESTION_JOINS}
+          ${BASE_WHERE_CLAUSE}
+          AND s.id = 2
+          ORDER BY RANDOM()
+          LIMIT 18
+        )
+      `;
+    }
 
     const result = await pool.query(query, [assessmentTypeId]);
 
-    // Format the output as before
-    const formattedQuestions = result.rows.map((q: any) => {
+    // Shuffle the final combined list of questions for a better user experience
+    const shuffledRows = result.rows.sort(() => Math.random() - 0.5);
+
+    const formattedQuestions = shuffledRows.map((q: any) => {
       const correctAnswerIndex = { A: 0, B: 1, C: 2, D: 3 }[
         q.correct_answer as "A" | "B" | "C" | "D"
       ];
@@ -82,3 +112,4 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
