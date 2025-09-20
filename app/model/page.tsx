@@ -62,7 +62,7 @@ const Page = () => {
                 THE INTELLIGENCE LAYER BENEATH TALENT
               </h1>
               <p className="text-lg md:text-xl text-white/90 leading-relaxed font-['Inter'] font-light">
-                At XWORKS, we don't run programs — we run a{" "}
+                At CELTM, we don't run programs — we run a{" "}
                 <span className="font-bold text-yellow-300 font-['Inter']">
                   Talent Intelligence Framework
                 </span>

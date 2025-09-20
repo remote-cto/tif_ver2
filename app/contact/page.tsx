@@ -265,7 +265,7 @@ const Page = () => {
                     Email
                   </strong>
                   <a
-                    href="mailto:connect@xworks.live"
+                    href="mailto:connect@CELTM.live"
                     className="text-blue-600 text-xl relative group
                     after:content-[''] after:absolute after:bottom-0 after:left-0
                     after:w-full after:h-0.5 after:bg-blue-400
@@ -274,7 +274,7 @@ const Page = () => {
                     group-hover:after:scale-x-100
                     hover:text-blue-800 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] font-['Inter']"
                   >
-                    connect@xworks.live
+                    connect@CELTM.live
                   </a>
                 </div>
 

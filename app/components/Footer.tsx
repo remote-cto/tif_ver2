@@ -14,10 +14,10 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
           <div className="flex items-center mb-6 lg:mb-0">
             <div className="rounded-lg flex items-center justify-center mr-3">
               <Image
-                src="/images/XWORKS.png"
-                alt="XWORKS Logo"
-                width={128}
-                height={128}
+                src="/images/CELTM.png"
+                alt="CELTM Logo"
+                width={168}
+                height={168}
               />
             </div>
           </div>
@@ -90,7 +90,7 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
         <div className="border-t border-gray-200 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-600 text-sm text-center md:text-left">
-              © 2025 XWorks, All Rights Reserved.
+              © 2025 CELTM, All Rights Reserved.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm">

@@ -63,7 +63,7 @@ const Page = () => {
                 potential. Most systems miss them.
               </p>
               <p className="text-base md:text-lg text-white/80 leading-relaxed font-['Inter'] font-light">
-                At <span className="font-bold text-yellow-300 font-['Inter']">XWORKS</span>,
+                At <span className="font-bold text-yellow-300 font-['Inter']">CELTM</span>,
                 readiness is not a score. It's a multi-dimensional alignment — of
                 cognition, adaptability, and industry signal resonance. We don't
                 just measure talent. We tune into it.

@@ -15,14 +15,14 @@ const emailTemplates = {
   verification: (name: string, verificationCode: string) => `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <div style="background-color: #2563eb; color: white; padding: 20px; text-align: center;">
-        <h1>XWORKS</h1>
+        <h1>CELTM</h1>
         <h2>Email Verification</h2>
       </div>
       
       <div style="padding: 20px; background-color: #f9fafb;">
         <h3>Hello ${name},</h3>
         
-        <p>Thank you for registering with XWORKS! To complete your registration, please use the verification code below:</p>
+        <p>Thank you for registering with CELTM! To complete your registration, please use the verification code below:</p>
         
         <div style="background-color: white; border: 2px solid #2563eb; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0;">
           <h1 style="color: #2563eb; font-size: 36px; margin: 0; letter-spacing: 8px;">${verificationCode}</h1>
@@ -37,11 +37,11 @@ const emailTemplates = {
         
         <p>If you have any questions, please contact our support team.</p>
         
-        <p>Best regards,<br>The XWORKS Team</p>
+        <p>Best regards,<br>The CELTM Team</p>
       </div>
       
       <div style="background-color: #374151; color: white; padding: 10px; text-align: center; font-size: 12px;">
-        <p>© 2025 XWORKS. All rights reserved.</p>
+        <p>© 2025 CELTM. All rights reserved.</p>
       </div>
     </div>
   `,
@@ -49,7 +49,7 @@ const emailTemplates = {
   resendVerification: (name: string, verificationCode: string) => `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <div style="background-color: #2563eb; color: white; padding: 20px; text-align: center;">
-        <h1>XWORKS</h1>
+        <h1>CELTM</h1>
         <h2>New Verification Code</h2>
       </div>
       
@@ -64,7 +64,7 @@ const emailTemplates = {
         
         <p><strong>This code will expire in 10 minutes.</strong></p>
         
-        <p>Best regards,<br>The XWORKS Team</p>
+        <p>Best regards,<br>The CELTM Team</p>
       </div>
     </div>
   `
@@ -76,7 +76,7 @@ export const emailService = {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
-      subject: 'XWORKS - Email Verification Code',
+      subject: 'CELTM - Email Verification Code',
       html: emailTemplates.verification(name, verificationCode)
     };
 
@@ -87,7 +87,7 @@ export const emailService = {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
-      subject: 'XWORKS - New Verification Code',
+      subject: 'CELTM - New Verification Code',
       html: emailTemplates.resendVerification(name, verificationCode)
     };
 

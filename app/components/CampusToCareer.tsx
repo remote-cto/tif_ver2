@@ -81,7 +81,7 @@ const CampusToCareer: React.FC = () => {
           <div className="flex justify-center lg:justify-end">
             <Image
               src="/images/Industry.jpeg"
-              alt="XWORKS"
+              alt="CELTM"
               width={600}
               height={600}
               className="w-full max-w-md h-auto object-cover rounded-xl shadow-lg"

@@ -53,8 +53,7 @@ const LandingPage = () => {
                   We built the system that listens.
                 </p>
                 <p className="text-base sm:text-lg md:text-2xl text-gray-200 max-w-4xl mx-auto leading-relaxed px-4 drop-shadow-lg font-['Inter']">
-                  XWORKS is building the world's first AI Talent Intelligence
-                  Ecosystem.
+                  CELTM is building India's first Skill-Based LLM — an AI engine that translates knowledge into employability.
                 </p>
                 <p className="text-base sm:text-lg md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed px-4 drop-shadow-lg font-['Inter'] font-bold">
                   Discover who's ready. Develop who's rising. Deploy who

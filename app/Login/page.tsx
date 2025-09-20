@@ -220,7 +220,7 @@ const LoginPage: React.FC = () => {
             </h1>
             <p className="text-gray-600 text-lg leading-relaxed">
               {loginType === "student"
-                ? "Welcome back to your XWORKS journey ✨"
+                ? "Welcome back to your CELTM journey ✨"
                 : "Manage your institution with ease 🎓"}
             </p>
           </div>
@@ -452,7 +452,7 @@ const LoginPage: React.FC = () => {
             {/* Registration link for students */}
             {loginType === "student" && (
               <div className="text-center mt-6 pt-4 border-t border-gray-200">
-                <p className="text-gray-600 mb-2">New to XWORKS?</p>
+                <p className="text-gray-600 mb-2">New to CELTM?</p>
                 <Link
                   href="/Register"
                   className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold transition-all duration-300 transform hover:scale-105"

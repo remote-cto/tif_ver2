@@ -23,7 +23,7 @@ const Different = () => {
 
   const comparisonData = [
     {
-      xworks: {
+      CELTM: {
         title: "Intelligence-led",
         description:
           "AI-powered insights drive talent decisions with precision and scale",
@@ -39,7 +39,7 @@ const Different = () => {
       },
     },
     {
-      xworks: {
+      CELTM: {
         title: "Talent Validation",
         description:
           "Comprehensive skill assessment and continuous performance tracking",
@@ -55,7 +55,7 @@ const Different = () => {
       },
     },
     {
-      xworks: {
+      CELTM: {
         title: "Ecosystem Building",
         description:
           "Creating interconnected talent networks and collaborative environments",
@@ -70,7 +70,7 @@ const Different = () => {
       },
     },
     {
-      xworks: {
+      CELTM: {
         title: "Regional Depth",
         description:
           "Localized expertise with deep understanding of regional markets",
@@ -86,7 +86,7 @@ const Different = () => {
       },
     },
     {
-      xworks: {
+      CELTM: {
         title: "Human + AI",
         description:
           "Perfect blend of human expertise enhanced by AI capabilities",
@@ -162,30 +162,30 @@ const Different = () => {
           {/* Comparison Card */}
           <div className="relative bg-white bg-opacity-80 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-slate-200 shadow-xl transition-all duration-500 ease-in-out">
             <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-              {/* XWORKS Side */}
+              {/* CELTM Side */}
               <div className="relative">
                 <div className="flex items-start space-x-4 mb-6">
                   <div
-                    className={`w-16 h-16 bg-gradient-to-r ${currentComparison.xworks.color} rounded-2xl flex items-center justify-center shadow-lg transform hover:rotate-6 transition-all duration-300`}
+                    className={`w-16 h-16 bg-gradient-to-r ${currentComparison.CELTM.color} rounded-2xl flex items-center justify-center shadow-lg transform hover:rotate-6 transition-all duration-300`}
                   >
-                    <currentComparison.xworks.icon className="w-4 h-4 text-white" />
+                    <currentComparison.CELTM.icon className="w-4 h-4 text-white" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-3">
                       <h3 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent">
-                        {currentComparison.xworks.title}
+                        {currentComparison.CELTM.title}
                       </h3>
                       <CheckCircle className="w-6 h-6 text-green-500" />
                     </div>
                     <p className="text-slate-600 text-lg leading-relaxed">
-                      {currentComparison.xworks.description}
+                      {currentComparison.CELTM.description}
                     </p>
                   </div>
                 </div>
 
                 <div className="absolute top-0 right-0">
                   <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1 rounded-full text-sm">
-                    XWORKS
+                    CELTM
                   </span>
                 </div>
               </div>

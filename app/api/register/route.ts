@@ -93,7 +93,7 @@ export async function PUT(request: NextRequest) {
     verificationService.deleteCode(email);
 
     return NextResponse.json({
-      message: "Registration successful! Welcome to XWORKS.",
+      message: "Registration successful! Welcome to CELTM.",
       success: true,
       student: createdUser,
     });

@@ -179,7 +179,7 @@ const StudentRegistration: React.FC = () => {
       const data = await response.json();
       if (response.ok) {
         setIsRegistered(true);
-        alert("Registration successful! Welcome to XWORKS.");
+        alert("Registration successful! Welcome to CELTM.");
       } else {
         setVerificationError(
           data.error || "Verification failed. Please try again."
@@ -241,12 +241,12 @@ const StudentRegistration: React.FC = () => {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-3">
               Registration Successful!
             </h1>
-            <p className="text-gray-600 text-lg">Welcome to XWORKS ✨</p>
+            <p className="text-gray-600 text-lg">Welcome to CELTM ✨</p>
           </div>
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-8 text-center transform transition-all duration-500 hover:shadow-3xl">
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
               Your account has been created successfully. You can now start your
-              journey with XWORKS.
+              journey with CELTM.
             </p>
             <div className="space-y-4">
               <Link
@@ -275,8 +275,8 @@ const StudentRegistration: React.FC = () => {
         <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-blue-200/20 to-purple-200/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
         <Image
-          src="/images/XWORKS.png"
-          alt="XWORKS Logo"
+          src="/images/CELTM.png"
+          alt="CELTM Logo"
           width={148}
           height={148}
           className="text-white w-[70px] h-[48px] md:w-[150px] md:h-[100px] relative z-10"
@@ -403,7 +403,7 @@ const StudentRegistration: React.FC = () => {
               Student Registration
             </h1>
             <p className="text-gray-600 text-lg leading-relaxed">
-              Join XWORKS and start your journey ✨
+              Join CELTM and start your journey ✨
             </p>
           </div>
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-8 space-y-6 transform transition-all duration-500 hover:shadow-3xl">

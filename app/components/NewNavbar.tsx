@@ -34,8 +34,8 @@ const NewNavbar = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 group cursor-pointer">
               <Image
-                src="/images/XWORKS.png"
-                alt="XWORKS Logo"
+                src="/images/CELTM.png"
+                alt="CELTM Logo"
                 width={148}
                 height={148}
                 className="text-white w-[70px] h-[48px] md:w-[150px] md:h-[100px]"

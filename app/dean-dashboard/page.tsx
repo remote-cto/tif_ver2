@@ -474,7 +474,7 @@ const DeanDashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">
-            🎓 XWORKS - TIF DASHBOARD
+            🎓 CELTM - TIF DASHBOARD
           </h1>
           <button
             onClick={handleLogout}

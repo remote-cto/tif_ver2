@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     });
 
     const mailOptions = {
-      from: `"XWORKS Enquiry" <${process.env.SMTP_EMAIL}>`,
+      from: `"CELTM Enquiry" <${process.env.SMTP_EMAIL}>`,
       to: process.env.EMAIL_USER,
       subject: `🚀 New Enquiry from ${name}`,
       html: `
