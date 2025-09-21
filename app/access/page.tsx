@@ -56,7 +56,7 @@ const Page = () => {
           </div>
 
           {/* Content */}
-          <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10">
+          <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10 mt-20">
             {/* Text Content - Left Side */}
             <div className="flex-1 space-y-6">
               <h1 className="text-3xl md:text-4xl lg:text-5xl text-white leading-relaxed font-['Inter'] font-light mt-5">

@@ -19,7 +19,7 @@ const LandingPage = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 text-slate-900 overflow-hidden relative">
+      <div className=" min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 text-slate-900 overflow-hidden relative">
         {/* Hero Section with Video Background */}
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
           {/* Background Video */}
@@ -38,7 +38,7 @@ const LandingPage = () => {
           <div className="absolute inset-0 bg-black/40 z-5"></div>
 
           {/* Hero Content */}
-          <div className="container mx-auto px-4 sm:px-6 text-center relative z-10 mt-10">
+          <div className="container mx-auto px-4 sm:px-6 text-center relative z-10 mt-20">
             <div className="max-w-5xl mx-auto mt-10">
                    <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-slate-800 via-blue-800 to-purple-800 bg-clip-text text-transparent leading-tight px-2">
                 What if Talent could
