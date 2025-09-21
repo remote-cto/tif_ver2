@@ -156,7 +156,7 @@ const Page = () => {
   return (
     <>
       <Navbar />
-      <section className="bg-white font-['Inter']">
+      <section className="bg-white font-['Manrope']">
         {/* Hero Section with Video Background */}
         <section className="bg-gradient-to-br from-slate-50 via-white to-yellow-50">
           <div className="relative py-24 px-6 md:px-16 lg:px-24 overflow-hidden">
@@ -178,26 +178,26 @@ const Page = () => {
             <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10 mt-20">
               {/* Text Content - Left Side */}
               <div className="flex-1 space-y-6">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl text-white leading-relaxed font-['Inter'] font-light mt-5">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl text-white leading-relaxed font-['Manrope'] font-light mt-5">
                   GET IN TOUCH WITH US
                 </h1>
-                <p className="text-lg md:text-xl text-white/90 leading-relaxed font-['Inter'] font-light">
+                <p className="text-lg md:text-xl text-white/90 leading-relaxed font-['Manrope'] font-light">
                   You're here. That's the first{" "}
-                  <span className="font-bold text-yellow-300 font-['Inter']">
+                  <span className="font-bold text-yellow-300 font-['Manrope']">
                     signal
                   </span>
                   .
                 </p>
-                <p className="text-base md:text-lg text-white/80 leading-relaxed font-['Inter'] font-light">
+                <p className="text-base md:text-lg text-white/80 leading-relaxed font-['Manrope'] font-light">
                   We don't cold-sell. We align deeply. If you're looking to
                   activate talent at scale, accelerate ecosystem impact, or
                   architect future-ready skill networks — we'd love to hear your
                   signal.
                 </p>
-                <p className="text-base md:text-lg text-white/80 leading-relaxed font-['Inter'] font-light">
+                <p className="text-base md:text-lg text-white/80 leading-relaxed font-['Manrope'] font-light">
                   No forms. No bots. Just a conversation. Because the future
                   won't be built by funnels. It'll be built by{" "}
-                  <span className="font-bold text-yellow-300 font-['Inter']">
+                  <span className="font-bold text-yellow-300 font-['Manrope']">
                     resonance
                   </span>
                   .
@@ -219,15 +219,15 @@ const Page = () => {
                 className="group relative transition-all duration-500 hover:scale-110"
               >
                 <div
-                  className={`bg-gradient-to-r ${card.color} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer min-w-[280px] max-w-[280px] min-h-[250px] flex flex-col justify-center`}
+                  className={`bg-gradient-to-r ${card.color} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-poManrope min-w-[280px] max-w-[280px] min-h-[250px] flex flex-col justify-center`}
                 >
                   <div className="flex items-center justify-center mb-3">
                     <div className="text-3xl">{card.emoji}</div>
                   </div>
-                  <h3 className="text-xl font-bold text-white text-center mb-2 font-['Inter']">
+                  <h3 className="text-xl font-bold text-white text-center mb-2 font-['Manrope']">
                     {card.title}
                   </h3>
-                  <p className="text-sm text-white/90 text-center leading-relaxed font-['Inter']">
+                  <p className="text-sm text-white/90 text-center leading-relaxed font-['Manrope']">
                     {card.description}
                   </p>
                 </div>
@@ -272,14 +272,14 @@ const Page = () => {
                     after:transform after:scale-x-0 after:origin-left
                     after:transition-transform after:duration-300
                     group-hover:after:scale-x-100
-                    hover:text-blue-800 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] font-['Inter']"
+                    hover:text-blue-800 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] font-['Manrope']"
                   >
                     connect@CELTM.live
                   </a>
                 </div>
 
                 <div className="transform transition-all duration-300 hover:scale-105">
-                  <strong className="block text-[#061BB0] text-2xl lg:text-3xl mb-2 font-['Inter']">
+                  <strong className="block text-[#061BB0] text-2xl lg:text-3xl mb-2 font-['Manrope']">
                     Our Location
                   </strong>
                   <p
@@ -289,7 +289,7 @@ const Page = () => {
                     after:transform after:scale-x-0 after:origin-left
                     after:transition-transform after:duration-300
                     group-hover:after:scale-x-100
-                    hover:text-blue-800 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] font-['Inter']"
+                    hover:text-blue-800 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] font-['Manrope']"
                   >
                     <span>10, Shivani, Nr IIMA, Ambavadi, Ahmedabad</span>
                   </p>
@@ -325,7 +325,7 @@ const Page = () => {
                   </div>
 
                   {/* Email and Phone Fields */}
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 font-['Inter']">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 font-['Manrope']">
                     <div>
                       <label className="sr-only" htmlFor="email">
                         Email
@@ -399,7 +399,7 @@ const Page = () => {
                       hover:scale-105 hover:bg-blue-700
                       shadow-[0_0_15px_rgba(59,130,246,0.2)]
                       hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]
-                      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-['Inter']"
+                      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-['Manrope']"
                     >
                       Send Enquiry
                     </button>

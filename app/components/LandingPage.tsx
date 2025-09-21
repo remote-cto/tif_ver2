@@ -49,13 +49,13 @@ const LandingPage = () => {
               </h1>
 
               <div className="mb-8 sm:mb-12">
-                <p className="text-base sm:text-lg md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed px-4 mb-4 drop-shadow-lg font-['Inter'] font-bold">
+                <p className="text-base sm:text-lg md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed px-4 mb-4 drop-shadow-lg font-['Manrope'] font-bold">
                   We built the system that listens.
                 </p>
-                <p className="text-base sm:text-lg md:text-2xl text-gray-200 max-w-4xl mx-auto leading-relaxed px-4 drop-shadow-lg font-['Inter']">
+                <p className="text-base sm:text-lg md:text-2xl text-gray-200 max-w-4xl mx-auto leading-relaxed px-4 drop-shadow-lg font-['Manrope']">
                   CELTM is building India's first Skill-Based LLM — an AI engine that translates knowledge into employability.
                 </p>
-                <p className="text-base sm:text-lg md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed px-4 drop-shadow-lg font-['Inter'] font-bold">
+                <p className="text-base sm:text-lg md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed px-4 drop-shadow-lg font-['Manrope'] font-bold">
                   Discover who's ready. Develop who's rising. Deploy who
                   matters.
                 </p>
@@ -76,7 +76,7 @@ const LandingPage = () => {
                   return (
                     <div
                       key={index}
-                      className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-slate-300 hover:border-blue-400 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20 cursor-pointer group transform hover:scale-105 hover:bg-white/95"
+                      className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-slate-300 hover:border-blue-400 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20 cursor-poManrope group transform hover:scale-105 hover:bg-white/95"
                     >
                       <div className="flex items-center justify-center mb-2 sm:mb-3">
                         <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center group-hover:from-blue-200 group-hover:to-purple-200 transition-all duration-300">

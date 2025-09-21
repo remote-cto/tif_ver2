@@ -31,10 +31,9 @@ const Page = () => {
   ];
 
   return (
-    <section className="bg-white font-['Inter']">
-     <Navbar/>
+    <>
+      <Navbar />
 
-      
       <section className=" bg-gradient-to-br from-slate-50 via-white to-green-50">
         {/* Hero Section with Video Background */}
         <div className="relative py-24 px-6 md:px-16 lg:px-24 overflow-hidden">
@@ -54,33 +53,29 @@ const Page = () => {
             <div className="absolute inset-0 bg-black/40"></div>
           </div>
 
-          {/* Content */}
           <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10 mt-20">
-            {/* Text Content - Left Side */}
             <div className="flex-1 space-y-6">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl text-white leading-relaxed font-['Inter'] font-light mt-5">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl text-white leading-relaxed font-['Manrope'] font-light mt-5">
                 THE INTELLIGENCE LAYER BENEATH TALENT
               </h1>
-              <p className="text-lg md:text-xl text-white/90 leading-relaxed font-['Inter'] font-light">
+              <p className="text-lg md:text-xl text-white/90 leading-relaxed font-['Manrope'] font-light">
                 At CELTM, we don't run programs — we run a{" "}
                 <span className="font-bold text-yellow-300 font-['Inter']">
                   Talent Intelligence Framework
                 </span>
                 .
               </p>
-              <p className="text-base md:text-lg text-white/80 leading-relaxed font-['Inter'] font-light">
+              <p className="text-base md:text-lg text-white/80 leading-relaxed font-['Manrope'] font-light">
                 This framework is our model — a living, evolving system that
                 maps potential, validates readiness, builds real capability, and
                 opens access to opportunities that matter.
               </p>
             </div>
 
-            {/* Right Side - Empty space for video to show through */}
             <div className="flex-1 flex justify-center items-center"></div>
           </div>
         </div>
 
-        {/* Cards Section - Now outside the video background */}
         <div className="py-16 px-6 md:px-16 lg:px-24">
           <div className="flex flex-wrap items-center justify-center gap-8 max-w-8xl mx-auto">
             {cards.map((card, index) => (
@@ -94,10 +89,10 @@ const Page = () => {
                   <div className="flex items-center justify-center mb-3">
                     <card.icon className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-white text-center mb-2 font-['Inter']">
+                  <h3 className="text-xl font-bold text-white text-center mb-2 font-['Manrope']">
                     {card.title}
                   </h3>
-                  <p className="text-sm text-white/90 text-center leading-relaxed font-['Inter']">
+                  <p className="text-sm text-white/90 text-center leading-relaxed font-['Manrope']">
                     {card.description}
                   </p>
                 </div>
@@ -108,7 +103,7 @@ const Page = () => {
       </section>
 
       <Footer />
-    </section>
+    </>
   );
 };
 
