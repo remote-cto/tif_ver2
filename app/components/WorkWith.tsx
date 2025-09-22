@@ -34,14 +34,19 @@ const WorkWith: React.FC = () => {
             description="Helping us build regional talent ecosystems from the ground up."
           />
         </div>
+    
 
+
+        
         {/* Statistics Section */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-6 mb-12">
-          <StatBox number="100+" label="Colleges Empowered" />
-          <StatBox number="50+" label="Hiring Partners Aligned" />
-          <StatBox number="6" label="Countries Reached" />
-          <StatBox number="95%" label="Success Rate in Skilling Outcomes" />
-        </div>
+        {/*<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-6 mb-12">
+          //<StatBox number="100+" label="Colleges Empowered" />
+          //<StatBox number="50+" label="Hiring Partners Aligned" />
+          //<StatBox number="6" label="Countries Reached" />
+          //<StatBox number="95%" label="Success Rate in Skilling Outcomes" />
+        //</div> */}
+        
+
 
         {/* Footer Quote */}
         <div className="bg-white p-6 rounded-xl shadow-sm max-w-3xl mx-auto text-center">
