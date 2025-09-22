@@ -15,7 +15,7 @@ const Page = () => {
       color: "from-blue-500 to-cyan-500",
     },
     {
-      title: "Readiness Engine1",
+      title: "Readiness Engine",
       description:
         "We validate if someone is truly deployable — not just teachable.",
       icon: CheckCircle,
