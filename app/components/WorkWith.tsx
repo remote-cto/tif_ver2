@@ -38,13 +38,13 @@ const WorkWith: React.FC = () => {
 
 
         
-        //{/* Statistics Section */
-        //<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-6 mb-12">
+        {/* Statistics Section */}
+        {/*<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-6 mb-12">
           //<StatBox number="100+" label="Colleges Empowered" />
           //<StatBox number="50+" label="Hiring Partners Aligned" />
           //<StatBox number="6" label="Countries Reached" />
           //<StatBox number="95%" label="Success Rate in Skilling Outcomes" />
-        //</div>
+        //</div> */}
         
 
 
