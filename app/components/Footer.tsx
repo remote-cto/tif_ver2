@@ -1,9 +1,12 @@
-//Components/Footer.tsx
-"use client"
+// /components/Footer.tsx
+"use client";
 import Image from "next/image";
 import React, { useState } from "react";
 import TermsAndConditions from "./TermsAndConditions";
 import PrivacyPolicy from "./PrivacyPolicy";
+import RefundAndCancellationPolicy from "./RefundAndCancellationPolicy";
+import DataPolicy from "./DataPolicy";
+import CodeOfConduct from "./CodeOfConduct";
 
 interface FooterProps {
   className?: string;
@@ -12,12 +15,25 @@ interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ className = "" }) => {
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
+  const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
+  const [isDataPolicyModalOpen, setIsDataPolicyModalOpen] = useState(false);
+
+  const [isConductModalOpen, setIsConductModalOpen] = useState(false);
 
   const openTermsModal = () => setIsTermsModalOpen(true);
   const closeTermsModal = () => setIsTermsModalOpen(false);
-  
+
   const openPrivacyModal = () => setIsPrivacyModalOpen(true);
   const closePrivacyModal = () => setIsPrivacyModalOpen(false);
+
+  const openRefundModal = () => setIsRefundModalOpen(true);
+  const closeRefundModal = () => setIsRefundModalOpen(false);
+
+  const openDataPolicyModal = () => setIsDataPolicyModalOpen(true);
+  const closeDataPolicyModal = () => setIsDataPolicyModalOpen(false);
+
+  const openConductModal = () => setIsConductModalOpen(true);
+  const closeConductModal = () => setIsConductModalOpen(false);
 
   return (
     <>
@@ -120,12 +136,25 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
                 >
                   Terms & Conditions
                 </button>
-                <a
-                  href="#"
+                <button
+                  onClick={openRefundModal}
+                  className="text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
+                >
+                  Refund and Cancellation Policy
+                </button>
+                <button
+                  onClick={openDataPolicyModal}
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  Data Policy
+                </button>
+
+                <button
+                  onClick={openConductModal}
                   className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   Code of Conduct
-                </a>
+                </button>
               </div>
             </div>
           </div>
@@ -135,6 +164,16 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
       {/* Modals */}
       <TermsAndConditions isOpen={isTermsModalOpen} onClose={closeTermsModal} />
       <PrivacyPolicy isOpen={isPrivacyModalOpen} onClose={closePrivacyModal} />
+      <RefundAndCancellationPolicy
+        isOpen={isRefundModalOpen}
+        onClose={closeRefundModal}
+      />
+      <DataPolicy
+        isOpen={isDataPolicyModalOpen}
+        onClose={closeDataPolicyModal}
+      />
+
+      <CodeOfConduct isOpen={isConductModalOpen} onClose={closeConductModal} />
     </>
   );
 };
