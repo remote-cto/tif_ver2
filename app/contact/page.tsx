@@ -274,7 +274,7 @@ const Page = () => {
                     group-hover:after:scale-x-100
                     hover:text-blue-800 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] font-['Manrope']"
                   >
-                    connect@CELTM.live
+                    admin@celtm.com
                   </a>
                 </div>
 
