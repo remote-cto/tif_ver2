@@ -58,9 +58,12 @@ const WorkWith: React.FC = () => {
             <strong>educators</strong>, <strong>business</strong>, and{" "}
             <strong>ecosystem leaders</strong> who believe in transforming
             talent from the inside out.
-          </p>
-          
+          </p>                   
         </div>
+        {/* Disclaimer */}
+          <p className="text-xs text-gray-400 mt-4 font-['Inter']">
+            * References to being “first” or “pioneering” are based on CELTM Global Pvt Ltd’s internal research as of September 2025 and are not certified by any third party.
+          </p>
       </div>
     </div>
   );

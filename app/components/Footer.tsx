@@ -43,12 +43,12 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8">
             <div className="flex items-center mb-6 lg:mb-0">
               <div className="rounded-lg flex items-center justify-center mr-3">
-                <Image
+                {/*<Image
                   src="/images/CELTM.png"
                   alt="CELTM Logo"
                   width={168}
                   height={168}
-                />
+                /> */}
               </div>
             </div>
 
