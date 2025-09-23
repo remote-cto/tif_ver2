@@ -53,7 +53,7 @@ const CampusToCareer: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 ">
+    <div id="campus-to-career" className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 ">
       <div className="container mx-auto px-6 lg:px-12 py-16">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
