@@ -7,8 +7,8 @@ const LandingPage = () => {
   const router=useRouter();
 
   const stats = [
-    { number: "50K+", label: "Professionals Trained", icon: Users },
-    { number: "500+", label: "Partner Companies", icon: Globe },
+    { number: "5K+", label: "Professionals Trained", icon: Users },
+    { number: "50+", label: "Partner Companies", icon: Globe },
     { number: "95%", label: "Success Rate", icon: Target },
     { number: "24/7", label: "Global Support", icon: Zap },
   ];
@@ -30,7 +30,7 @@ const LandingPage = () => {
             playsInline
             className="absolute top-0 left-0 w-full h-full object-cover z-0"
           >
-            <source src="/video/bg.mp4" type="video/mp4" />
+            <source src="/video/bg_14.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
 
@@ -40,7 +40,7 @@ const LandingPage = () => {
           
           <div className="container mx-auto px-4 sm:px-6 text-center relative z-10 mt-20">
             <div className="max-w-5xl mx-auto mt-10">
-                   <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-slate-800 via-blue-800 to-purple-800 bg-clip-text text-transparent leading-tight px-2">
+                   <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 bg-clip-text text-transparent leading-tight px-2">
                 What if Talent could
                 <br />
                 <span className="bg-gradient-to-r from-blue-700 via-purple-700 to-pink-700 bg-clip-text text-transparent">
