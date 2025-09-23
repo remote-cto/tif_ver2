@@ -22,7 +22,7 @@ const Page = () => {
     },
     {
       title: "Beyond Scores",
-      description: "Readiness is not just measured. It's Manropepreted, calibrated, and forecasted — in real-time.",
+      description: "Readiness is not just measured ++. It's Manropepreted, calibrated, and forecasted — in real-time.",
       icon: TrendingUp,
       color: "from-cyan-500 to-teal-500",
     },
