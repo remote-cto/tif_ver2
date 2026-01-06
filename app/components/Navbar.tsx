@@ -37,7 +37,7 @@ const Navbar = () => {
             : "bg-transparent"
         }`}
       >
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 group cursor-pointer">
               <Image
@@ -45,7 +45,7 @@ const Navbar = () => {
                 alt="CELTM Logo"
                 width={178}
                 height={178}
-                className="text-white w-[120px] h-[75px] md:w-[220px] md:h-[150px]"
+                className="text-white w-[120px] h-[75px] md:w-[200px] md:h-[130px]"
               />
             </div>
 
@@ -103,7 +103,7 @@ const Navbar = () => {
               {/* Get Started Button - Only visible on desktop */}
               <button
                 onClick={scrollToCampusToCareer}
-                className={`px-6 py-2 rounded-lg font-semibold text-base font-['Montserrat'] transition-all duration-300 hover:scale-105 hover:shadow-lg ${
+                className={`cursor-pointer px-6 py-2 rounded-lg font-semibold text-base font-['Montserrat'] transition-all duration-300 hover:scale-105 hover:shadow-lg ${
                   isScrolled
                     ? "bg-blue-600 text-white hover:bg-blue-700"
                     : "bg-white text-blue-600 hover:bg-blue-50"
