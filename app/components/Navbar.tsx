@@ -20,12 +20,12 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToCampusToCareer = () => {
-    const element = document.getElementById('campus-to-career');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  // const scrollToCampusToCareer = () => {
+  //   const element = document.getElementById('campus-to-career');
+  //   if (element) {
+  //     element.scrollIntoView({ behavior: 'smooth' });
+  //   }
+  // };
 
   return (
     <>
@@ -100,8 +100,8 @@ const Navbar = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></span>
               </Link>
 
-              {/* Get Started Button - Only visible on desktop */}
-              <button
+              
+              {/* <button
                 onClick={scrollToCampusToCareer}
                 className={`cursor-pointer px-6 py-2 rounded-lg font-semibold text-base font-['Montserrat'] transition-all duration-300 hover:scale-105 hover:shadow-lg ${
                   isScrolled
@@ -110,7 +110,7 @@ const Navbar = () => {
                 }`}
               >
                 Get Started
-              </button>
+              </button> */}
             </div>
 
             <button
