@@ -60,7 +60,7 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
           href="https://www.linkedin.com/company/celtm"
           target="_blank"
           rel="noopener noreferrer"
-          className="p-2 rounded-md hover:bg-gray-100 transition"
+          className="p-2 rounded-md bg-gray-100 hover:bg-gray-300 transition"
           aria-label="LinkedIn"
         >
           <svg
@@ -78,7 +78,7 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
           href="https://www.youtube.com/@CELTM"
           target="_blank"
           rel="noopener noreferrer"
-          className="p-2 rounded-md hover:bg-gray-100 transition"
+          className="p-2 rounded-md bh-gray-100 hover:bg-gray-300 transition"
           aria-label="YouTube"
         >
           <svg
@@ -94,7 +94,7 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
         {/* Email */}
         <a
           href="mailto:team@celtm.com"
-          className="p-2 rounded-md hover:bg-gray-100 transition"
+         className="p-2 rounded-md bh-gray-100 hover:bg-gray-300 transition"
           aria-label="Email"
         >
           <svg
