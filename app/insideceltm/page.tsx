@@ -31,7 +31,7 @@ const Page = () => {
   ];
 
   return (
-    <section className="bg-white font-['Manrope']">
+    <section className="bg-white ">
       <Navbar />
 
       {/* === SECTION 1: Hero Section with Video Background === */}
@@ -57,7 +57,7 @@ const Page = () => {
           <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10 mt-20">
             {/* Text Content - Left Side */}
             <div className="flex-1 space-y-6">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl text-white leading-relaxed font-['Manrope'] font-light mt-5">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl text-white leading-relaxed  font-light mt-5">
                 THE READINESS INTELLIGENCE LAYER
               </h1>
               <p className="text-lg md:text-xl text-white/90 leading-relaxed">
@@ -103,10 +103,10 @@ const Page = () => {
                   <div className="flex items-center justify-center mb-3">
                     <card.icon className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-white text-center mb-2 font-['Manrope']">
+                  <h3 className="text-xl font-bold text-white text-center mb-2 ">
                     {card.title}
                   </h3>
-                  <p className="text-sm text-white/90 text-center leading-relaxed font-['Manrope']">
+                  <p className="text-sm text-white/90 text-center leading-relaxed ">
                     {card.description}
                   </p>
                 </div>

@@ -1,4 +1,3 @@
-
 import LandingPage from "./components/LandingPage";
 
 import WhatWeDo from "./components/WhatWeDo";
@@ -6,7 +5,7 @@ import WeBuilding from "./components/WeBuilding";
 import Different from "./components/Different";
 import WorkWith from "./components/WorkWith";
 import Footer from "./components/Footer";
-import AnimatedSection from "./components/AnimatedSection";
+
 import CampusToCareer from "./components/CampusToCareer";
 import Navbar from "./components/Navbar";
 import CELTMSystem from "./components/CELTMSystem";
@@ -16,23 +15,18 @@ export default function Home() {
     <div>
       <Navbar />
       <LandingPage />
-      <CELTMSystem/>
-      <AnimatedSection delay={0.2}>
-        <CampusToCareer />
-      </AnimatedSection>
+      <CELTMSystem />
 
-      <AnimatedSection delay={0.4}>
-        <WhatWeDo />
-      </AnimatedSection>
-      <AnimatedSection delay={0.5}>
-        <WeBuilding />
-      </AnimatedSection>
-      <AnimatedSection delay={0.6}>
-        <Different />
-      </AnimatedSection>
-      <AnimatedSection delay={0.7}>
-        <WorkWith />
-      </AnimatedSection>
+      <CampusToCareer />
+
+      <WhatWeDo />
+
+      <WeBuilding />
+
+      <Different />
+
+      <WorkWith />
+
       <Footer />
     </div>
   );

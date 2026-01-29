@@ -76,7 +76,7 @@ const WeBuilding = () => {
             isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
           }`}
         >
-          <h1 className="text-3xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight font-['InterBold']">
+          <h1 className="text-3xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight ">
             The Future of Talent Discovery
           </h1>
 
@@ -124,14 +124,14 @@ const WeBuilding = () => {
                     </div>
 
                     <h3
-                      className={`text-2xl font-bold mb-4 bg-gradient-to-r ${item.gradient} bg-clip-text text-transparent group-hover:animate-pulse font-['InterRegular']`}
+                      className={`text-2xl font-bold mb-4 bg-gradient-to-r ${item.gradient} bg-clip-text text-transparent group-hover:animate-pulse `}
                     >
                       {item.title}
                     </h3>
                   </div>
 
                   {/* Description with typing effect simulation */}
-                  <p className="text-slate-600 leading-relaxed mb-6 relative z-10 group-hover:text-slate-700 transition-colors duration-300 font-['InterRegular']">
+                  <p className="text-slate-600 leading-relaxed mb-6 relative z-10 group-hover:text-slate-700 transition-colors duration-300 ">
                     {item.description}
                   </p>
 
