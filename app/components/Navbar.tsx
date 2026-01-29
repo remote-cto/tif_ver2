@@ -31,21 +31,22 @@ const Navbar = () => {
     <>
       {/* Navigation */}
       <nav
-        className={`fixed w-full z-40 transition-all duration-500 ${
+        className={`fixed w-full z-80 transition-all duration-500 ${
           isScrolled
-            ? "bg-white/95 backdrop-blur-lg shadow-lg border-b border-slate-200/50"
+            ? "bg-white/90 backdrop-blur-lg shadow-lg border-b border-slate-200/50"
             : "bg-transparent"
         }`}
       >
-        <div className="container mx-auto px-3">
+        <div className=" mx-auto px-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 group cursor-pointer">
               <Image
                 src="/images/CELTMLOGO.png"
                 alt="CELTM Logo"
-                width={128}
-                height={128}
-                className="text-white w-[120px] h-[75px] md:w-[200px] md:h-[130px]"
+                width={158}
+                height={40}
+                className="h-25 w-50 object-contain"
+                priority
               />
             </div>
 
@@ -89,7 +90,7 @@ const Navbar = () => {
                 Access
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></span>
               </Link>
-              
+
               <Link
                 href="/contact"
                 className={`relative transition-colors duration-300 group font-semibold text-base  ${
@@ -100,7 +101,6 @@ const Navbar = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></span>
               </Link>
 
-              
               {/* <button
                 onClick={scrollToCampusToCareer}
                 className={`cursor-pointer px-6 py-2 rounded-lg font-semibold text-base  transition-all duration-300 hover:scale-105 hover:shadow-lg ${
