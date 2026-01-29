@@ -1,15 +1,30 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
+import localFont from "next/font/local";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+
+
+
+
+const googlesansflex = localFont({
+  src: [
+    {
+      path: "../public/font/GoogleSansFlex_24pt-Medium.ttf",
+      weight: "400",
+      style: "normal",
+      
+    },
+    {
+      path: "../public/font/GoogleSansFlex_36pt-Bold.ttf",
+      weight: "700",
+      style: "normal",
+     
+    },
+   
+  ],
+  variable: "--font-googlesansflex",
 });
 
 export const metadata: Metadata = {
@@ -25,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${googlesansflex.variable} antialiased`}
       >
         {children}
       </body>

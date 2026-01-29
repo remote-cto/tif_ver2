@@ -131,7 +131,7 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
           </div>
 
           {/* Bottom Section */}
-          <div className="border-t border-gray-200 mt-8 pt-4 mb-4">
+          <div className="border-t border-gray-200 mt-8 pt-4">
             <p className="text-center text-sm text-gray-600">
               © 2026 CELTM, All Rights Reserved.
             </p>
