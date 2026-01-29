@@ -39,14 +39,14 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
   return (
     <>
       <footer className={`bg-white py-8 px-4 ${className}`}>
-        <div className="max-w-7xl mx-auto font-['Montserrat']">
+        <div className="max-w-7xl mx-auto ">
        
 
     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8">
       {/* Logo */}
       <div className="flex items-center mb-6 lg:mb-0">
         <Image
-          src="/images/CELTM.png"
+          src="/images/CELTMLOGO.png"
           alt="CELTM Logo"
           width={168}
           height={168}
@@ -114,11 +114,11 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
           {/* Bottom Section */}
           <div className="border-t border-gray-200 pt-6">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-              <p className="text-gray-600 text-sm text-center md:text-left font-['Montserrat']">
+              <p className="text-gray-600 text-sm text-center md:text-left ">
                 © 2026 CELTM, All Rights Reserved.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm font-['Montserrat']">
+              <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm ">
                 <button
                   onClick={openPrivacyModal}
                   className="text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"

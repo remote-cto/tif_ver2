@@ -15,7 +15,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ isOpen, onClose
       <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] w-full flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900 font-['Montserrat']">
+          <h2 className="text-2xl font-bold text-gray-900 ">
             Terms and Conditions
           </h2>
           <button
@@ -30,7 +30,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ isOpen, onClose
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6 font-['Montserrat']">
+        <div className="flex-1 overflow-y-auto p-6 ">
           <div className="prose max-w-none">
             <p className="text-sm text-gray-600 mb-4">
               <strong>Last Updated: 22-09-2025</strong>
@@ -157,7 +157,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ isOpen, onClose
         <div className="p-6 border-t border-gray-200 flex justify-end">
           <button
             onClick={onClose}
-            className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-['Montserrat']"
+            className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors "
           >
             Close
           </button>

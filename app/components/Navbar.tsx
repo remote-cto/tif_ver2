@@ -41,10 +41,10 @@ const Navbar = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 group cursor-pointer">
               <Image
-                src="/images/CELTM.png"
+                src="/images/CELTMLOGO.png"
                 alt="CELTM Logo"
-                width={178}
-                height={178}
+                width={128}
+                height={128}
                 className="text-white w-[120px] h-[75px] md:w-[200px] md:h-[130px]"
               />
             </div>
@@ -52,7 +52,7 @@ const Navbar = () => {
             <div className="hidden md:flex items-center space-x-8">
               <Link
                 href="/"
-                className={`relative transition-colors duration-300 group font-semibold text-base font-['Montserrat'] ${
+                className={`relative transition-colors duration-300 group font-semibold text-base  ${
                   isScrolled ? "text-black" : "text-white"
                 }`}
               >
@@ -62,7 +62,7 @@ const Navbar = () => {
 
               <Link
                 href="/model"
-                className={`relative transition-colors duration-300 group font-semibold text-base font-['Montserrat'] ${
+                className={`relative transition-colors duration-300 group font-semibold text-base  ${
                   isScrolled ? "text-black" : "text-white"
                 }`}
               >
@@ -71,18 +71,18 @@ const Navbar = () => {
               </Link>
 
               <Link
-                href="/readiness"
-                className={`relative transition-colors duration-300 group font-semibold text-base font-['Montserrat'] ${
+                href="/insideceltm"
+                className={`relative transition-colors duration-300 group font-semibold text-base  ${
                   isScrolled ? "text-black" : "text-white"
                 }`}
               >
-                Readiness
+                Inside CELTM
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></span>
               </Link>
 
               <Link
                 href="/access"
-                className={`relative transition-colors duration-300 group font-semibold text-base font-['Montserrat'] ${
+                className={`relative transition-colors duration-300 group font-semibold text-base  ${
                   isScrolled ? "text-black" : "text-white"
                 }`}
               >
@@ -92,7 +92,7 @@ const Navbar = () => {
               
               <Link
                 href="/contact"
-                className={`relative transition-colors duration-300 group font-semibold text-base font-['Montserrat'] ${
+                className={`relative transition-colors duration-300 group font-semibold text-base  ${
                   isScrolled ? "text-black" : "text-white"
                 }`}
               >
@@ -103,7 +103,7 @@ const Navbar = () => {
               
               {/* <button
                 onClick={scrollToCampusToCareer}
-                className={`cursor-pointer px-6 py-2 rounded-lg font-semibold text-base font-['Montserrat'] transition-all duration-300 hover:scale-105 hover:shadow-lg ${
+                className={`cursor-pointer px-6 py-2 rounded-lg font-semibold text-base  transition-all duration-300 hover:scale-105 hover:shadow-lg ${
                   isScrolled
                     ? "bg-blue-600 text-white hover:bg-blue-700"
                     : "bg-white text-blue-600 hover:bg-blue-50"
@@ -143,35 +143,35 @@ const Navbar = () => {
             <div className="flex flex-col items-center justify-center flex-1 space-y-6">
               <Link
                 href="/"
-                className="font-['Montserrat'] text-lg text-slate-800 hover:text-slate-900 transition-colors hover:scale-110 transform duration-300 font-semibold"
+                className=" text-lg text-slate-800 hover:text-slate-900 transition-colors hover:scale-110 transform duration-300 font-semibold"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Home
               </Link>
               <Link
                 href="/model"
-                className="font-['Montserrat'] text-lg text-slate-800 hover:text-slate-900 transition-colors hover:scale-110 transform duration-300 font-semibold"
+                className=" text-lg text-slate-800 hover:text-slate-900 transition-colors hover:scale-110 transform duration-300 font-semibold"
                 onClick={() => setIsMenuOpen(false)}
               >
                 The Model
               </Link>
               <Link
-                href="/readiness"
-                className="font-['Montserrat'] text-lg text-slate-800 hover:text-slate-900 transition-colors hover:scale-110 transform duration-300 font-semibold"
+                href="/insideceltm"
+                className=" text-lg text-slate-800 hover:text-slate-900 transition-colors hover:scale-110 transform duration-300 font-semibold"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Readiness
+                Inside CELTM
               </Link>
               <Link
                 href="/access"
-                className="font-['Montserrat'] text-lg text-slate-800 hover:text-slate-900 transition-colors hover:scale-110 transform duration-300 font-semibold"
+                className=" text-lg text-slate-800 hover:text-slate-900 transition-colors hover:scale-110 transform duration-300 font-semibold"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Access
               </Link>
               <Link
                 href="/contact"
-                className="font-['Montserrat'] text-lg text-slate-800 hover:text-slate-900 transition-colors hover:scale-110 transform duration-300 font-semibold"
+                className=" text-lg text-slate-800 hover:text-slate-900 transition-colors hover:scale-110 transform duration-300 font-semibold"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Let's Talk

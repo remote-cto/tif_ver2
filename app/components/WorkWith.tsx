@@ -11,7 +11,7 @@ const WorkWith: React.FC = () => {
           Who We Work With
         </h1>
 
-        <p className="max-w-2xl mx-auto text-gray-600 mb-14 font-['Inter']">
+        <p className="max-w-2xl mx-auto text-gray-600 mb-14 ">
           We collaborate with forward-thinking institutions and leaders shaping
           the future of education, employment, and skills.
         </p>
@@ -40,10 +40,10 @@ const WorkWith: React.FC = () => {
         </div>
 
         <div className="relative bg-white p-8 rounded-2xl shadow-sm border border-gray-100 max-w-3xl mx-auto">
-          <h3 className="text-xl md:text-2xl font-semibold text-indigo-700 mb-4 font-['Inter']">
+          <h3 className="text-xl md:text-2xl font-semibold text-indigo-700 mb-4 ">
             A Vision Beyond Logos
           </h3>
-          <p className="text-gray-700 text-base leading-relaxed font-['Inter']">
+          <p className="text-gray-700 text-base leading-relaxed ">
             We don’t just work with clients — we collaborate with{" "}
             <strong>educators</strong>, <strong>business leaders</strong>, and{" "}
             <strong>ecosystem builders</strong> who believe in transforming
@@ -52,7 +52,7 @@ const WorkWith: React.FC = () => {
         </div>
 
         {/* Disclaimer */}
-        <p className="text-xs text-gray-400 mt-6 font-['Inter']">
+        <p className="text-xs text-gray-400 mt-6 ">
           * References to being “first” or “pioneering” are based on CELTM
           Global Pvt Ltd’s internal research as of September 2025 and are not
           certified by any third party.
@@ -72,9 +72,9 @@ const Card: React.FC<{
       <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50 group-hover:bg-indigo-50 transition">
         {icon}
       </div>
-      <h4 className="font-semibold text-gray-900 font-['Inter']">{title}</h4>
+      <h4 className="font-semibold text-gray-900 ">{title}</h4>
     </div>
-    <p className="text-gray-600 text-sm leading-relaxed font-['Inter']">
+    <p className="text-gray-600 text-sm leading-relaxed ">
       {description}
     </p>
   </div>

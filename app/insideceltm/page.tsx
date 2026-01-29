@@ -5,24 +5,26 @@ import { Activity, Zap, TrendingUp } from "lucide-react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 
-
 const Page = () => {
   const cards = [
     {
       title: "Signal Mapping",
-      description: "We capture micro-patterns often lost in traditional assessments — to uncover latent potential.",
+      description:
+        "We capture micro-patterns often lost in traditional assessments — to uncover latent potential.",
       icon: Activity,
       color: "from-blue-500 to-cyan-500",
     },
     {
       title: "Alignment Engine",
-      description: "Our Readiness Model adapts to evolving industry thresholds — not yesterday's benchmarks.",
+      description:
+        "Our Readiness Model adapts to evolving industry thresholds — not yesterday's benchmarks.",
       icon: Zap,
       color: "from-purple-500 to-pink-500",
     },
     {
       title: "Beyond Scores",
-      description: "Readiness is not just measured ++. It's Manropepreted, calibrated, and forecasted — in real-time.",
+      description:
+        "Readiness is not just measured ++. It's Manropepreted, calibrated, and forecasted — in real-time.",
       icon: TrendingUp,
       color: "from-cyan-500 to-teal-500",
     },
@@ -30,7 +32,7 @@ const Page = () => {
 
   return (
     <section className="bg-white font-['Manrope']">
-     <Navbar/>
+      <Navbar />
 
       {/* === SECTION 1: Hero Section with Video Background === */}
       <section className="bg-gradient-to-br from-slate-50 via-white to-blue-50">
@@ -58,21 +60,27 @@ const Page = () => {
               <h1 className="text-3xl md:text-4xl lg:text-5xl text-white leading-relaxed font-['Manrope'] font-light mt-5">
                 THE READINESS INTELLIGENCE LAYER
               </h1>
-              <p className="text-lg md:text-xl text-white/90 leading-relaxed font-['Manrope'] font-light">
-                Every individual emits signals — patterns of skill, pace, and
-                potential. Most systems miss them.
+              <p className="text-lg md:text-xl text-white/90 leading-relaxed">
+                CELTM is not a single product or program. It is a system built
+                to understand how human capability forms, evolves, and becomes
+                meaningful in the real world.
               </p>
-              <p className="text-base md:text-lg text-white/80 leading-relaxed font-['Manrope'] font-light">
-                At <span className="font-bold text-yellow-300 font-['Manrope']">CELTM</span>,
-                readiness is not a score. It's a multi-dimensional alignment — of
-                cognition, adaptability, and industry signal resonance. We don't
-                just measure talent. We tune into it.
+              <p className="text-base md:text-lg text-white/80 leading-relaxed ">
+                At{" "}
+                <span className="font-bold text-yellow-300 ">
+                  CELTM
+                </span>
+                , readiness is not a score. It's a multi-dimensional alignment —
+                of cognition, adaptability, and industry signal resonance. We
+                don't just measure talent. We tune into it.
               </p>
-              <p className="text-base md:text-lg text-white/80 leading-relaxed font-['Manrope'] font-light">
-                Behind the radar lies a proprietary readiness engine — trained on
-                future-of-work indicators, calibrated with employer thresholds,
-                and constantly learning from behavioral flux. What you see is just
-                the surface.
+              <p className="text-base md:text-lg text-white/80 leading-relaxed">
+                Inside CELTM are a set of interconnected components — each
+                designed to observe, develop, validate, and translate capability
+                over time.
+              </p>
+               <p className="text-base md:text-lg text-white/80 leading-relaxed">
+                Together, they form a coherent intelligence layer beneath talent.
               </p>
             </div>
 

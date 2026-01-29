@@ -34,7 +34,7 @@ const NewHeader = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 group cursor-pointer">
               <Image
-                src="/images/CELTM.png"
+                src="/images/CELTMLOGO.png"
                 alt="CELTM Logo"
                 width={148}
                 height={148}
@@ -69,14 +69,14 @@ const NewHeader = () => {
               </Link>
 
               <Link
-                href="/readiness"
+                href="/insideceltm"
                 className={`relative transition-colors duration-300 group font-medium text-base px-3 py-2 rounded-lg hover:bg-slate-50/50 ${
                   isScrolled
                     ? "text-slate-800 hover:text-slate-900"
                     : "text-slate-800 hover:text-slate-900"
                 }`}
               >
-                Readiness
+                Inside CELTM
                 <span className="absolute -bottom-1 left-3 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-[calc(100%-24px)] transition-all duration-300"></span>
               </Link>
 
@@ -149,11 +149,11 @@ const NewHeader = () => {
               </Link>
 
               <Link
-                href="/readiness"
+                href="/insideceltm"
                 className="text-2xl text-slate-800 hover:text-slate-900 transition-colors hover:scale-105 transform duration-300 font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Readiness
+                Inside CELTM
               </Link>
 
               <Link

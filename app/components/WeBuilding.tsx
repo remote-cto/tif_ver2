@@ -68,7 +68,7 @@ const WeBuilding = () => {
   ];
 
   return (
-    <section className="relative  bg-gradient-to-br from-slate-50 via-white to-blue-50/30 overflow-hidden font-['Inter']">
+    <section className="relative  bg-gradient-to-br from-slate-50 via-white to-blue-50/30 overflow-hidden ">
       <div className="container mx-auto px-6 relative z-10">
         {/* Section Header */}
         <div
@@ -80,7 +80,7 @@ const WeBuilding = () => {
             The Future of Talent Discovery
           </h1>
 
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-['Inter']">
+          <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed ">
             We're not just imagining the future of talent intelligence. We're
             building it.
           </p>
