@@ -265,7 +265,7 @@ const Page = () => {
                     Email
                   </strong>
                   <a
-                    href="mailto:connect@CELTM.live"
+                    href="mailto:team@celtm.com"
                     className="text-blue-600 text-xl relative group
                     after:content-[''] after:absolute after:bottom-0 after:left-0
                     after:w-full after:h-0.5 after:bg-blue-400
@@ -274,7 +274,7 @@ const Page = () => {
                     group-hover:after:scale-x-100
                     hover:text-blue-800 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] font-['Manrope']"
                   >
-                    admin@celtm.com
+                    team@celtm.com
                   </a>
                 </div>
 
@@ -291,7 +291,7 @@ const Page = () => {
                     group-hover:after:scale-x-100
                     hover:text-blue-800 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] font-['Manrope']"
                   >
-                    <span>10, Shivani, Nr IIMA, Ambavadi, Ahmedabad</span>
+                    <span>E-704, Titanium City Center, Nr Income Tax office, Satellite, Ahmedabad - 380015</span>
                   </p>
                 </div>
               </div>
