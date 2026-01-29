@@ -410,7 +410,9 @@ const Page = () => {
           </div>
         </section>
 
-        <Footer />
+        <div className="mt-5">
+      <Footer />
+      </div>
       </section>
     </>
   );

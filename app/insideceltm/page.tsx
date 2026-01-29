@@ -115,8 +115,9 @@ const Page = () => {
           </div>
         </div>
       </section>
-
+<div className="mt-5">
       <Footer />
+      </div>
     </section>
   );
 };

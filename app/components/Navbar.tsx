@@ -39,13 +39,13 @@ const Navbar = () => {
       >
         <div className=" mx-auto px-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3 group cursor-pointer">
+            <div className="flex items-center space-x-3 cursor-pointer">
               <Image
                 src="/images/CELTMLOGO.png"
                 alt="CELTM Logo"
                 width={158}
                 height={40}
-                className="h-25 w-50 object-contain"
+                className="h-28 w-40 object-contain"
                 priority
               />
             </div>

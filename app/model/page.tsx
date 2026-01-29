@@ -168,7 +168,9 @@ const Page = () => {
 
       </section>
 
+      <div className="mt-5">
       <Footer />
+      </div>
     </>
   );
 };

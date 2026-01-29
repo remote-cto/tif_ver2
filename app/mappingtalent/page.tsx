@@ -170,7 +170,9 @@ const Page = () => {
           <div className="absolute top-1/2 right-20 w-8 h-8 bg-cyan-300 rounded-full opacity-15 animate-pulse delay-1000"></div>
         </div>
       </div>
-      <Footer/>
+      <div className="mt-5">
+      <Footer />
+      </div>
     </section>
   );
 };
