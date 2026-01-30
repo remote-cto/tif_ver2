@@ -12,9 +12,9 @@ const LandingPage = () => {
 
   return (
     <>
-      <div className=" min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 text-slate-900 overflow-hidden relative">
+      <div className=" md:min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 text-slate-900 overflow-hidden relative">
         {/* Hero Section with Video Background */}
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <section className="relative md:min-h-screen flex items-center justify-center overflow-hidden">
           {/* Background Video */}
           <video
             autoPlay
@@ -43,7 +43,7 @@ const LandingPage = () => {
                 <p className="text-base sm:text-lg md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed px-4 mb-4 drop-shadow-lg  font-bold">
                   We built the system that listens.
                 </p>
-                <p className="text-base sm:text-lg md:text-2xl text-gray-200 w-full text-center leading-relaxed px-4 drop-shadow-lg font-['Montserrat'] whitespace-nowrap font-bold">
+                <p className="text-base sm:text-lg md:text-2xl text-gray-200 w-full text-center leading-relaxed px-4 drop-shadow-lg  whitespace-nowrap font-bold">
                   CELTM is building INDIA'S First SKILL-BASED LLM<sup>*</sup> —
                   An AI engine that translates
                   <br />

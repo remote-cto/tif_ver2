@@ -63,7 +63,7 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
             <div className="text-sm text-gray-600 space-y-2 max-w-xl">
               <p className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
-                <span>+91 966-251-2899</span>
+                <span>+91 079-45930555</span>
               </p>
 
               <p className="flex items-center gap-2">

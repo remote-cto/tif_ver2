@@ -15,7 +15,7 @@ const Page = () => {
         "CELTM partners with academic institutions to move beyond degrees and towards real-world readiness, capability validation, and employability outcomes.",
       icon: GraduationCap,
       color: "from-blue-500 to-cyan-500",
-      cta: "Explore Institutional Engagement →",
+      // cta: "Explore Institutional Engagement →",
     },
     {
       title: "Organizations & Enterprises",
@@ -23,7 +23,7 @@ const Page = () => {
         "CELTM works with organizations as long-term learning and readiness partners — strengthening capability across roles, leadership levels, and future demands.",
       icon: Building2,
       color: "from-purple-500 to-pink-500",
-      cta: "Explore Organizational Engagement →",
+      // cta: "Explore Organizational Engagement →",
     },
     {
       title: "Talent & Professionals",
@@ -31,7 +31,7 @@ const Page = () => {
         "For individuals seeking clarity, direction, and long-horizon growth — understand readiness, build real capability, and grow with confidence.",
       icon: User,
       color: "from-green-500 to-emerald-500",
-      cta: "Explore Individual Engagement →",
+      // cta: "Explore Individual Engagement →",
     },
     {
       title: "Mentors & Collaborators",
@@ -39,7 +39,7 @@ const Page = () => {
         "CELTM collaborates with practitioners, educators, and domain experts who want to contribute perspective and help shape how capability is understood.",
       icon: Handshake,
       color: "from-yellow-500 to-orange-500",
-      cta: "Explore Collaboration →",
+      // cta: "Explore Collaboration →",
     },
   ];
 
@@ -123,9 +123,7 @@ const Page = () => {
                     {card.description}
                   </p>
 
-                  <span className="mt-auto text-sm font-medium text-white text-center underline underline-offset-4 cursor-pointer">
-                    {card.cta}
-                  </span>
+                  
                 </div>
               </div>
             ))}

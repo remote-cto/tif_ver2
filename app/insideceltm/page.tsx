@@ -59,7 +59,7 @@ const Page = () => {
             {/* Text Content - Left Side */}
             <div className="flex-1 space-y-6">
               <h1 className="text-3xl md:text-4xl lg:text-5xl text-white leading-relaxed  font-light mt-5">
-                THE READINESS INTELLIGENCE LAYER
+                THE CAPABILITY INTELLIGENCE LAYER
               </h1>
               <p className="text-lg md:text-xl text-white/90 leading-relaxed">
                 CELTM is not a single product or program. It is a system built
