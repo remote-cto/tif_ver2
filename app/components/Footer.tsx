@@ -22,27 +22,33 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
 
   return (
     <>
-      <footer className={`bg-white px-4 ${className}`}>
-        <div className="max-w-7xl mx-auto py-8">
-          {/* ================= TOP SECTION ================= */}
-          <div className="flex flex-col gap-6">
-            {/* Logo + Social Icons (Straight Line) */}
-            <div className="flex items-center gap-4">
+      <footer className={`bg-white border-t border-gray-200 ${className}`}>
+        <div className="max-w-7xl mx-auto px-6 py-12">
+          {/* ================= MAIN GRID ================= */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {/* ---------- Brand Column ---------- */}
+            <div className="space-y-4">
               <Image
                 src="/images/CELTMLOGO.png"
                 alt="CELTM Logo"
-                width={160}
+                width={170}
                 height={60}
                 priority
               />
 
-              <div className="flex gap-3">
+              <p className="text-sm text-gray-600 max-w-sm leading-relaxed">
+                CELTM works at the intersection of capability, readiness, and
+                opportunity — helping institutions, organizations, and
+                individuals engage with clarity and purpose.
+              </p>
+
+              <div className="flex gap-3 pt-2">
                 <a
                   href="https://www.linkedin.com/company/celtm"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-md bg-gray-200 hover:bg-gray-300 transition"
                   aria-label="LinkedIn"
+                  className="p-2 rounded-md bg-gray-100 hover:bg-gray-200 transition"
                 >
                   <Linkedin className="w-5 h-5 text-gray-700 hover:text-blue-600" />
                 </a>
@@ -51,80 +57,99 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
                   href="https://www.youtube.com/@CELTM"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-md bg-gray-200 hover:bg-gray-300 transition"
                   aria-label="YouTube"
+                  className="p-2 rounded-md bg-gray-100 hover:bg-gray-200 transition"
                 >
                   <Youtube className="w-5 h-5 text-gray-700 hover:text-red-600" />
                 </a>
               </div>
             </div>
 
-            {/* Contact Info (Left aligned below CELTM) */}
-            <div className="text-sm text-gray-600 space-y-2 max-w-xl">
-              <p className="flex items-center gap-2">
-                <Phone className="w-4 h-4" />
-                <span>+91 079-45930555</span>
-              </p>
+            {/* ---------- Contact Column ---------- */}
+            <div className="space-y-4">
+              <h4 className="text-sm font-semibold text-gray-900">
+                Contact Information
+              </h4>
 
-              <p className="flex items-center gap-2">
-                <Mail className="w-4 h-4" />
-                <a
-                  href="mailto:team@celtm.com"
-                  className="hover:text-gray-900 transition"
-                >
-                  team@celtm.com
-                </a>
-              </p>
+              <div className="space-y-3 text-sm text-gray-600">
+                <p className="flex items-center gap-2">
+                  <Phone className="w-4 h-4" />
+                  <span>+91 079-45930555</span>
+                </p>
 
-              <p className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 mt-0.5" />
-                <span>
-                  E-704, Titanium City Center, Nr Income Tax Office, Satellite,
-                  Ahmedabad – 380015
-                </span>
-              </p>
+                <p className="flex items-center gap-2">
+                  <Mail className="w-4 h-4" />
+                  <a
+                    href="mailto:team@celtm.com"
+                    className="hover:text-gray-900 transition"
+                  >
+                    team@celtm.com
+                  </a>
+                </p>
+
+                <p className="flex items-start gap-2">
+                  <MapPin className="w-4 h-4 mt-0.5" />
+                  <span>
+                    E-704, Titanium City Center,
+                    <br />
+                    Nr Income Tax Office, Satellite,
+                    <br />
+                    Ahmedabad – 380015
+                  </span>
+                </p>
+              </div>
             </div>
 
-            {/* Policy Links (Inline as before) */}
-            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-              <button
-                onClick={() => setIsPrivacyModalOpen(true)}
-                className="hover:text-gray-900"
-              >
-                Privacy Policy
-              </button>
-              <button
-                onClick={() => setIsTermsModalOpen(true)}
-                className="hover:text-gray-900"
-              >
-                Terms & Conditions
-              </button>
-              <button
-                onClick={() => setIsRefundModalOpen(true)}
-                className="hover:text-gray-900"
-              >
-                Refund & Cancellation Policy
-              </button>
-              <button
-                onClick={() => setIsDataPolicyModalOpen(true)}
-                className="hover:text-gray-900"
-              >
-                Data Policy
-              </button>
-              <button
-                onClick={() => setIsConductModalOpen(true)}
-                className="hover:text-gray-900"
-              >
-                Code of Conduct
-              </button>
+            {/* ---------- Policies Column ---------- */}
+            <div className="space-y-4">
+              <h4 className="text-sm font-semibold text-gray-900">
+                Policies & Governance
+              </h4>
+
+              <div className="flex flex-col gap-3 text-sm text-gray-600">
+                <button
+                  onClick={() => setIsPrivacyModalOpen(true)}
+                  className="text-left hover:text-gray-900 transition cursor-pointer"
+                >
+                  Privacy Policy
+                </button>
+
+                <button
+                  onClick={() => setIsTermsModalOpen(true)}
+                  className="text-left hover:text-gray-900 transition cursor-pointer"
+                >
+                  Terms & Conditions
+                </button>
+
+                <button
+                  onClick={() => setIsRefundModalOpen(true)}
+                  className="text-left hover:text-gray-900 transition cursor-pointer"
+                >
+                  Refund & Cancellation Policy
+                </button>
+
+                <button
+                  onClick={() => setIsDataPolicyModalOpen(true)}
+                  className="text-left hover:text-gray-900 transition cursor-pointer"
+                >
+                  Data Policy
+                </button>
+
+                <button
+                  onClick={() => setIsConductModalOpen(true)}
+                  className="text-left hover:text-gray-900 transition cursor-pointer"
+                >
+                  Code of Conduct
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* ================= BOTTOM SECTION ================= */}
-          <div className="border-t border-gray-200 mt-8 pt-4">
-            <div className="flex flex-col sm:flex-row justify-between items-center text-sm text-gray-600 gap-2">
-              <p>© 2026 CELTM</p>
-              <p>All Rights Reserved.</p>
+          {/* ================= BOTTOM BAR ================= */}
+          <div className="border-t border-gray-200 mt-10 pt-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between text-sm text-gray-600 gap-2">
+              <p>© 2026 CELTM. All rights reserved.</p>
+              <p>Designed for long-horizon capability systems.</p>
             </div>
           </div>
         </div>
