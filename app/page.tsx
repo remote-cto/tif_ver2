@@ -8,14 +8,14 @@ import Footer from "./components/Footer";
 
 import CampusToCareer from "./components/CampusToCareer";
 import Navbar from "./components/Navbar";
-import CELTMSystem from "./components/CELTMSystem";
+// import CELTMSystem from "./components/CELTMSystem";
 
 export default function Home() {
   return (
     <div>
       <Navbar />
       <LandingPage />
-      <CELTMSystem />
+      {/* <CELTMSystem /> */}
 
       <CampusToCareer />
 

@@ -1,5 +1,5 @@
-// /components/Footer.tsx
 "use client";
+
 import Image from "next/image";
 import React, { useState } from "react";
 import TermsAndConditions from "./TermsAndConditions";
@@ -7,7 +7,7 @@ import PrivacyPolicy from "./PrivacyPolicy";
 import RefundAndCancellationPolicy from "./RefundAndCancellationPolicy";
 import DataPolicy from "./DataPolicy";
 import CodeOfConduct from "./CodeOfConduct";
-import { Link, Linkedin, Mail, Youtube } from "lucide-react";
+import { Linkedin, Youtube, Mail, Phone, MapPin } from "lucide-react";
 
 interface FooterProps {
   className?: string;
@@ -18,84 +18,30 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
   const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
   const [isDataPolicyModalOpen, setIsDataPolicyModalOpen] = useState(false);
-
   const [isConductModalOpen, setIsConductModalOpen] = useState(false);
-
-  const openTermsModal = () => setIsTermsModalOpen(true);
-  const closeTermsModal = () => setIsTermsModalOpen(false);
-
-  const openPrivacyModal = () => setIsPrivacyModalOpen(true);
-  const closePrivacyModal = () => setIsPrivacyModalOpen(false);
-
-  const openRefundModal = () => setIsRefundModalOpen(true);
-  const closeRefundModal = () => setIsRefundModalOpen(false);
-
-  const openDataPolicyModal = () => setIsDataPolicyModalOpen(true);
-  const closeDataPolicyModal = () => setIsDataPolicyModalOpen(false);
-
-  const openConductModal = () => setIsConductModalOpen(true);
-  const closeConductModal = () => setIsConductModalOpen(false);
 
   return (
     <>
       <footer className={`bg-white px-4 ${className}`}>
-        <div className="max-w-7xl mx-auto">
-          {/* Top Section */}
-          <div className="flex flex-col lg:flex-row justify-between items-start gap-8">
-            {/* LEFT: Logo + Policy Links */}
-            <div className="flex flex-col items-start">
-              {/* Logo */}
+        <div className="max-w-7xl mx-auto py-8">
+          {/* ================= TOP SECTION ================= */}
+          <div className="flex flex-col gap-6">
+            {/* Logo + Social Icons (Straight Line) */}
+            <div className="flex items-center gap-4">
               <Image
                 src="/images/CELTMLOGO.png"
                 alt="CELTM Logo"
-                width={168}
-                height={168}
+                width={160}
+                height={60}
+                priority
               />
 
-              {/* Policy Links under logo */}
-              <div className="mt-4 flex flex-col sm:flex-row sm:flex-wrap gap-3 text-sm">
-                <button
-                  onClick={openPrivacyModal}
-                  className="text-gray-600 hover:text-gray-900 cursor-pointer"
-                >
-                  Privacy Policy
-                </button>
-                <button
-                  onClick={openTermsModal}
-                  className="text-gray-600 hover:text-gray-900 cursor-pointer"
-                >
-                  Terms & Conditions
-                </button>
-                <button
-                  onClick={openRefundModal}
-                  className="text-gray-600 hover:text-gray-900 cursor-pointer"
-                >
-                  Refund & Cancellation Policy
-                </button>
-                <button
-                  onClick={openDataPolicyModal}
-                  className="text-gray-600 hover:text-gray-900 cursor-pointer"
-                >
-                  Data Policy
-                </button>
-                <button
-                  onClick={openConductModal}
-                  className="text-gray-600 hover:text-gray-900 cursor-pointer"
-                >
-                  Code of Conduct
-                </button>
-              </div>
-            </div>
-
-            {/* RIGHT: Social + Contact Info */}
-            <div className="flex flex-col items-start lg:items-end gap-4">
-              {/* Social Icons */}
-              <div className="flex gap-4">
+              <div className="flex gap-3">
                 <a
                   href="https://www.linkedin.com/company/celtm"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-md bg-gray-300 hover:bg-gray-400"
+                  className="p-2 rounded-md bg-gray-200 hover:bg-gray-300 transition"
                   aria-label="LinkedIn"
                 >
                   <Linkedin className="w-5 h-5 text-gray-700 hover:text-blue-600" />
@@ -105,53 +51,106 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
                   href="https://www.youtube.com/@CELTM"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-md bg-gray-300 hover:bg-gray-400"
+                  className="p-2 rounded-md bg-gray-200 hover:bg-gray-300 transition"
                   aria-label="YouTube"
                 >
                   <Youtube className="w-5 h-5 text-gray-700 hover:text-red-600" />
                 </a>
               </div>
+            </div>
 
-              {/* Contact Info */}
-              <div className="text-sm text-gray-600 space-y-1 text-left lg:text-right">
-                <p>📞 +91 966-251-2899</p>
-                <p>
-                  ✉️{" "}
-                  <a
-                    href="mailto:team@celtm.com"
-                    className="text-gray-600 hover:text-gray-900 transition-colors"
-                  >
-                    team@celtm.com
-                  </a>
-                </p>
+            {/* Contact Info (Left aligned below CELTM) */}
+            <div className="text-sm text-gray-600 space-y-2 max-w-xl">
+              <p className="flex items-center gap-2">
+                <Phone className="w-4 h-4" />
+                <span>+91 966-251-2899</span>
+              </p>
 
-                <p>📍 E-704, Titanium City Center, Nr Income Tax office, Satellite, Ahmedabad - 380015</p>
-              </div>
+              <p className="flex items-center gap-2">
+                <Mail className="w-4 h-4" />
+                <a
+                  href="mailto:team@celtm.com"
+                  className="hover:text-gray-900 transition"
+                >
+                  team@celtm.com
+                </a>
+              </p>
+
+              <p className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 mt-0.5" />
+                <span>
+                  E-704, Titanium City Center, Nr Income Tax Office, Satellite,
+                  Ahmedabad – 380015
+                </span>
+              </p>
+            </div>
+
+            {/* Policy Links (Inline as before) */}
+            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+              <button
+                onClick={() => setIsPrivacyModalOpen(true)}
+                className="hover:text-gray-900"
+              >
+                Privacy Policy
+              </button>
+              <button
+                onClick={() => setIsTermsModalOpen(true)}
+                className="hover:text-gray-900"
+              >
+                Terms & Conditions
+              </button>
+              <button
+                onClick={() => setIsRefundModalOpen(true)}
+                className="hover:text-gray-900"
+              >
+                Refund & Cancellation Policy
+              </button>
+              <button
+                onClick={() => setIsDataPolicyModalOpen(true)}
+                className="hover:text-gray-900"
+              >
+                Data Policy
+              </button>
+              <button
+                onClick={() => setIsConductModalOpen(true)}
+                className="hover:text-gray-900"
+              >
+                Code of Conduct
+              </button>
             </div>
           </div>
 
-          {/* Bottom Section */}
+          {/* ================= BOTTOM SECTION ================= */}
           <div className="border-t border-gray-200 mt-8 pt-4">
-            <p className="text-center text-sm text-gray-600">
-              © 2026 CELTM, All Rights Reserved.
-            </p>
+            <div className="flex flex-col sm:flex-row justify-between items-center text-sm text-gray-600 gap-2">
+              <p>© 2026 CELTM</p>
+              <p>All Rights Reserved.</p>
+            </div>
           </div>
         </div>
       </footer>
 
-      {/* Modals */}
-      <TermsAndConditions isOpen={isTermsModalOpen} onClose={closeTermsModal} />
-      <PrivacyPolicy isOpen={isPrivacyModalOpen} onClose={closePrivacyModal} />
+      {/* ================= MODALS ================= */}
+      <TermsAndConditions
+        isOpen={isTermsModalOpen}
+        onClose={() => setIsTermsModalOpen(false)}
+      />
+      <PrivacyPolicy
+        isOpen={isPrivacyModalOpen}
+        onClose={() => setIsPrivacyModalOpen(false)}
+      />
       <RefundAndCancellationPolicy
         isOpen={isRefundModalOpen}
-        onClose={closeRefundModal}
+        onClose={() => setIsRefundModalOpen(false)}
       />
       <DataPolicy
         isOpen={isDataPolicyModalOpen}
-        onClose={closeDataPolicyModal}
+        onClose={() => setIsDataPolicyModalOpen(false)}
       />
-
-      <CodeOfConduct isOpen={isConductModalOpen} onClose={closeConductModal} />
+      <CodeOfConduct
+        isOpen={isConductModalOpen}
+        onClose={() => setIsConductModalOpen(false)}
+      />
     </>
   );
 };

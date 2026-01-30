@@ -4,6 +4,7 @@ import React from "react";
 import { Activity, Zap, TrendingUp } from "lucide-react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import CELTMSystem from "../components/CELTMSystem";
 
 const Page = () => {
   const cards = [
@@ -88,6 +89,9 @@ const Page = () => {
             <div className="flex-1 flex justify-center items-center"></div>
           </div>
         </div>
+        <section>
+          <CELTMSystem/>
+        </section>
 
         {/* Cards Section - Now outside the video background */}
         <div className="py-16 px-6 md:px-16 lg:px-24">

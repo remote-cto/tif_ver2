@@ -75,7 +75,9 @@ const CELTMSystem = () => {
             {[
               "Each component serves a specific role",
               "Each one feeds intelligence into the others",
-              "The system improves as a whole over time",
+              "Each Compoenent improves the system as a whole",
+              "Nothing here exists independently",
+              "Everything is connected by intent"
             ].map((text, i) => (
               <div key={i} className="flex items-center gap-4">
                 <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-r from-blue-500 to-purple-500" />
