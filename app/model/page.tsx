@@ -32,9 +32,9 @@ const Page = () => {
     <>
       <Navbar />
 
-      <section className="bg-gradient-to-br from-slate-50 via-white to-green-50">
+      <section className="  bg-gradient-to-br from-slate-50 via-white to-green-50">
         {/* Hero Section */}
-        <div className="relative py-24 px-6 md:px-16 lg:px-24 overflow-hidden">
+        <div className="md:min-h-[95vh] relative py-24 px-6 md:px-16 lg:px-24 overflow-hidden">
           <div className="absolute inset-0 z-0">
             <video
               autoPlay
@@ -49,7 +49,7 @@ const Page = () => {
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto mt-20">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl text-white font-light leading-relaxed">
+            <h1 className="text-3xl md:text-4xl text-white font-light leading-relaxed">
               THE INTELLIGENCE LAYER BENEATH TALENT
             </h1>
 

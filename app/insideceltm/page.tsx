@@ -37,7 +37,7 @@ const Page = () => {
 
       {/* === SECTION 1: Hero Section with Video Background === */}
       <section className="bg-gradient-to-br from-slate-50 via-white to-blue-50">
-        <div className="relative py-24 px-6 md:px-16 lg:px-24 overflow-hidden">
+        <div className="md:min-h-[95vh] relative py-24 px-6 md:px-16 lg:px-24 overflow-hidden">
           {/* Background Video */}
           <div className="absolute inset-0 z-0">
             <video
@@ -55,10 +55,10 @@ const Page = () => {
           </div>
 
           {/* Content */}
-          <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10 mt-20">
+          <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center  mt-20">
             {/* Text Content - Left Side */}
             <div className="flex-1 space-y-6">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl text-white leading-relaxed  font-light mt-5">
+              <h1 className="text-3xl md:text-4xl  text-white leading-relaxed  font-light">
                 THE CAPABILITY INTELLIGENCE LAYER
               </h1>
               <p className="text-lg md:text-xl text-white/90 leading-relaxed">
