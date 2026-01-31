@@ -93,7 +93,7 @@ const NewHeader = () => {
               </Link>
 
               {/* CTA Button for Let's Talk */}
-              <Link
+              {/* <Link
                 href="/contact"
                 className={`relative transition-colors duration-300 group font-medium text-base px-3 py-2 rounded-lg hover:bg-slate-50/50 ${
                   isScrolled
@@ -102,7 +102,7 @@ const NewHeader = () => {
                 }`}
               >
                 Let's Talk
-              </Link>
+              </Link> */}
             </div>
 
             <button
@@ -163,13 +163,13 @@ const NewHeader = () => {
               >
                 Engage
               </Link>
-              <Link
+              {/* <Link
                 href="/contact"
                 className="text-2xl text-slate-800 hover:text-slate-900 transition-colors hover:scale-105 transform duration-300 font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Let's Talk
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>

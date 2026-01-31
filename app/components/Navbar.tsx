@@ -32,9 +32,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <div
-              className={`transition-transform duration-300 ${
-                isScrolled ? "scale-90" : "scale-110"
-              }`}
+              className="transition-transform duration-300"
             >
               <Image
                 src="/images/CELTMLOGO.png"
@@ -54,13 +52,13 @@ const Navbar = () => {
               { name: "The Model", href: "/model" },
               { name: "Inside CELTM", href: "/insideceltm" },
               { name: "Engage", href: "/engage" },
-              { name: "Let's Talk", href: "/contact" },
+              // { name: "Let's Talk", href: "/contact" },
             ].map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
                 className={`relative font-semibold text-base transition-colors duration-300 group ${
-                  isScrolled ? "text-gray-900" : "text-white"
+                  isScrolled ? "text-[#222778]" : "text-white"
                 }`}
               >
                 {item.name}
@@ -93,7 +91,7 @@ const Navbar = () => {
                 { name: "The Model", href: "/model" },
                 { name: "Inside CELTM", href: "/insideceltm" },
                 { name: "Engage", href: "/engage" },
-                { name: "Let's Talk", href: "/contact" },
+                // { name: "Let's Talk", href: "/contact" },
               ].map((item) => (
                 <Link
                   key={item.name}

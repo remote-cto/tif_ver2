@@ -118,12 +118,12 @@ const CELTMSystem = () => {
                   {item.description}
                 </p>
 
-                <button className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 group-hover:text-indigo-600 transition-all">
+                {/* <button className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 group-hover:text-indigo-600 transition-all">
                   <span>Explore More</span>
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 group-hover:bg-indigo-50 transition-colors">
                     <ArrowRight className="h-4 w-4" />
                   </span>
-                </button>
+                </button> */}
               </div>
             </div>
           ))}
