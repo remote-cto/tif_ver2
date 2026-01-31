@@ -21,11 +21,10 @@ const Navbar = () => {
     <>
       {/* Navbar */}
       <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          isScrolled
-            ? "bg-white/90 backdrop-blur-lg shadow-md border-b border-slate-200/50"
-            : "bg-transparent"
-        }`}
+        className="fixed top-0 w-full z-50 transition-all duration-300
+           bg-white/90 backdrop-blur-lg shadow-md border-b border-slate-200/50"
+           
+       
       >
         {/* Fixed height container */}
         <div className="h-20 px-6 flex items-center justify-between max-w-8xl mx-auto">
@@ -57,9 +56,9 @@ const Navbar = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`relative font-semibold text-base transition-colors duration-300 group ${
-                  isScrolled ? "text-[#222778]" : "text-white"
-                }`}
+                className="relative font-semibold text-base transition-colors duration-300 group
+                 text-[#222778]" 
+                
               >
                 {item.name}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300" />
