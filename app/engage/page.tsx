@@ -132,8 +132,8 @@ const Page = () => {
 
         {/* How Engagement Begins */}
         <div className="py-20 px-6 md:px-16 lg:px-24">
-          <div className="max-w-4xl mx-auto text-center">
-            <h3 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-6">
+          <div className="max-w-4xl mx-auto ">
+            <h3 className="text-2xl md:text-3xl font-semibold text-center text-gray-900 mb-6">
               How Engagement Typically Begins
             </h3>
 
@@ -148,21 +148,18 @@ const Page = () => {
               <li>• Alignment of outcomes</li>
             </ul>
 
-            <p className="text-gray-700 leading-relaxed mb-8">
-              The structure follows clarity — not templates.
-            </p>
 
             <p className="text-gray-800 font-medium">
               Engagement with CELTM is about starting with clarity — not speed.
             </p>
-
+{/* 
             <div className="mt-10">
               <Link href="/contact">
               <span className="inline-block px-8 py-3 rounded-full bg-indigo-600 text-white font-medium cursor-pointer hover:bg-indigo-700 transition">
                 Begin a Conversation →
               </span>
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
