@@ -35,7 +35,6 @@ const Page = () => {
     <section className="bg-white ">
       <Navbar />
 
-      {/* === SECTION 1: Hero Section with Video Background === */}
       <section className="bg-gradient-to-br from-slate-50 via-white to-blue-50">
         <div className="md:min-h-[95vh] relative py-24 px-6 md:px-16 lg:px-24 overflow-hidden">
           {/* Background Video */}
@@ -54,9 +53,7 @@ const Page = () => {
             <div className="absolute inset-0 bg-black/40"></div>
           </div>
 
-          {/* Content */}
           <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center  mt-20">
-            {/* Text Content - Left Side */}
             <div className="flex-1 space-y-6">
               <h1 className="text-3xl md:text-4xl  text-white leading-relaxed  font-light">
                 THE CAPABILITY INTELLIGENCE LAYER
@@ -67,11 +64,8 @@ const Page = () => {
                 meaningful in the real world.
               </p>
               <p className="text-base md:text-lg text-white/80 leading-relaxed ">
-                At{" "}
-                <span className="font-bold text-yellow-300 ">
-                  CELTM
-                </span>
-                , readiness is not a score. It's a multi-dimensional alignment —
+                At <span className="font-bold text-yellow-300 ">CELTM</span>,
+                readiness is not a score. It's a multi-dimensional alignment —
                 of cognition, adaptability, and industry signal resonance. We
                 don't just measure talent. We tune into it.
               </p>
@@ -80,20 +74,19 @@ const Page = () => {
                 designed to observe, develop, validate, and translate capability
                 over time.
               </p>
-               <p className="text-base md:text-lg text-white/80 leading-relaxed">
-                Together, they form a coherent intelligence layer beneath talent.
+              <p className="text-base md:text-lg text-white/80 leading-relaxed">
+                Together, they form a coherent intelligence layer beneath
+                talent.
               </p>
             </div>
 
-            {/* Right Side - Empty space for video to show through */}
             <div className="flex-1 flex justify-center items-center"></div>
           </div>
         </div>
         <section>
-          <CELTMSystem/>
+          <CELTMSystem />
         </section>
 
-        {/* Cards Section - Now outside the video background */}
         <div className="py-16 px-6 md:px-16 lg:px-24">
           <div className="flex flex-wrap items-center justify-center gap-8 max-w-8xl mx-auto">
             {cards.map((card, index) => (
@@ -119,8 +112,8 @@ const Page = () => {
           </div>
         </div>
       </section>
-<div className="mt-5">
-      <Footer />
+      <div className="mt-5">
+        <Footer />
       </div>
     </section>
   );
