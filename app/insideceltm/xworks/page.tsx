@@ -1,18 +1,36 @@
 "use client";
 import Footer from "@/app/components/Footer";
 import Navbar from "@/app/components/Navbar";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const XworksPage = () => {
+    const router = useRouter();
   return (
     <>
     <Navbar/>
+    {/* Back Button Section */}
+      <div className="sticky top-20 z-40 bg-white/80 backdrop-blur-md">
+        <div className=" mx-auto px-3 py-4">
+          <button
+            onClick={() => router.back()}
+            className="inline-flex items-center gap-2 text-sm font-medium text-white 
+            bg-gradient-to-r from-blue-600 to-blue-700 
+            hover:from-blue-700 hover:to-blue-800
+            px-5 py-2.5 rounded-lg shadow-md 
+            transition-all duration-200 hover:shadow-lg cursor-pointer"
+          >
+            <span className="text-base">←</span>
+            Back
+          </button>
+        </div>
+      </div>
     <div className="bg-white text-slate-900 antialiased selection:bg-slate-900 selection:text-white">
       
       {/* Hero Section */}
       <section className="relative overflow-hidden border-b border-slate-200">
         <div className="absolute inset-0 bg-gradient-to-b from-slate-50 to-white" />
-        <div className="relative max-w-6xl mx-auto px-6 md:px-12 lg:px-20 py-28 md:py-36 text-center">
+        <div className="relative max-w-6xl mx-auto px-6 md:px-12 lg:px-20 py-25 text-center">
           
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight">
             XWORKS
