@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const components = [
   {
@@ -8,34 +9,39 @@ const components = [
     subtitle: "Readiness Layer",
     description:
       "Readiness, understood before outcomes exist. A context-aware assessment layer that senses preparedness, direction, and alignment — without labeling people too early.",
+    pageName: "celtmap",
   },
   {
     title: "CELTMind™",
     subtitle: "Intelligence Core",
     description:
       "The intelligence layer beneath the system. Connects signals from readiness, learning, and outcomes to continuously refine how capability is interpreted.",
+    pageName: "celtmind",
   },
   {
     title: "XWORKS",
     subtitle: "Capability Formation",
     description:
       "Applied learning environments where real-world constraints shape skills, thinking, and adaptability through guided effort.",
+    pageName: "xworks",
   },
   {
     title: "Vetta",
     subtitle: "Credibility Engine",
     description:
       "Validates talent based on observed performance and demonstrated readiness — creating signals institutions and industry can trust.",
+    pageName: "vetta",
   },
-  {
-    title: "CELTM Talent Pool",
-    subtitle: "Opportunity Network",
-    description:
-      "A curated network of validated, future-ready individuals connected to organizations through evidence-based capability mapping.",
-  },
+
 ];
 
+
 const CELTMSystem = () => {
+  const router = useRouter();
+
+  const handleReadMore = (pageName: string) => {
+    router.push(`/insideceltm/${pageName}`);
+  };
   return (
     <section className="relative py-32 overflow-hidden bg-gradient-to-b from-white via-slate-50 to-white">
       {/* Animated ambient background */}
@@ -118,12 +124,13 @@ const CELTMSystem = () => {
                   {item.description}
                 </p>
 
-                {/* <button className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 group-hover:text-indigo-600 transition-all">
-                  <span>Explore More</span>
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 group-hover:bg-indigo-50 transition-colors">
-                    <ArrowRight className="h-4 w-4" />
-                  </span>
-                </button> */}
+                 <button
+                  onClick={() => handleReadMore(item.pageName)}
+                  className="flex items-center text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5 cursor-pointer"
+                >
+                  <span>Read More</span>
+                  <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                </button>
               </div>
             </div>
           ))}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import localFont from "next/font/local";
+import Footer from "./components/Footer";
 
 
 
@@ -44,6 +45,7 @@ export default function RootLayout({
       >
         {children}
       </body>
+  
     </html>
   );
 }
