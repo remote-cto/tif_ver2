@@ -12,8 +12,8 @@ const CeltMindPage = () => {
       <Navbar />
 
       {/* Back Button */}
-      <div className="sticky top-20 z-40 backdrop-blur-xl bg-slate-950/70 border-b border-slate-800">
-        <div className=" mx-auto px-6 py-4">
+      <div className="sticky top-20 z-40 backdrop-blur-xl bg-white/80 border-b border-slate-200">
+        <div className="mx-auto px-6 py-4">
           <button
             onClick={() => router.back()}
             className="inline-flex items-center gap-2 text-sm font-medium text-white
@@ -27,39 +27,40 @@ const CeltMindPage = () => {
         </div>
       </div>
 
-      <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-200 selection:bg-blue-500 selection:text-white">
+      <div className="bg-gradient-to-br from-white via-blue-50 to-indigo-100 text-slate-800 selection:bg-blue-100 selection:text-blue-900">
+        
         {/* HERO */}
-        <section className="relative overflow-hidden border-b border-slate-800">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(59,130,246,0.12),transparent_40%),radial-gradient(circle_at_75%_30%,rgba(99,102,241,0.12),transparent_40%)]" />
+        <section className="relative overflow-hidden border-b border-slate-200">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(59,130,246,0.08),transparent_40%),radial-gradient(circle_at_75%_30%,rgba(99,102,241,0.08),transparent_40%)]" />
 
-          <div className="relative max-w-6xl mx-auto px-6 md:px-12 py-25 grid md:grid-cols-2 gap-12 items-center">
+          <div className="relative max-w-6xl mx-auto px-6 md:px-12 py-24 grid md:grid-cols-2 gap-12 items-center">
+            
             {/* Left */}
             <div>
               <h1
                 className="text-5xl md:text-6xl font-bold tracking-tight
-              bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400
-              bg-clip-text text-transparent"
+                bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600
+                bg-clip-text text-transparent"
               >
                 CELTMind™
               </h1>
 
-              <p className="mt-6 text-xl text-slate-300">
+              <p className="mt-6 text-xl text-slate-600">
                 The Cognitive Intelligence Layer
               </p>
 
-              <p className="mt-4 text-lg text-white font-medium">
+              <p className="mt-4 text-lg text-slate-900 font-medium">
                 Beyond Information. Toward Intelligence.
               </p>
             </div>
 
             {/* Right */}
-            <div className="text-slate-400 leading-relaxed space-y-4">
+            <div className="text-slate-600 leading-relaxed space-y-4">
               <p>
                 In a world flooded with content, the real differentiator is not
                 access to knowledge —
-                <span className="text-white font-medium">
-                  {" "}
-                  it is structured cognition.
+                <span className="text-slate-900 font-medium">
+                  {" "}it is structured cognition.
                 </span>
               </p>
 
@@ -72,16 +73,16 @@ const CeltMindPage = () => {
         </section>
 
         {/* WHY */}
-        <section className="border-b border-slate-800">
+        <section className="border-b border-slate-200 bg-white">
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-10">
               Why CELTMind™ Exists
             </h2>
 
-            <div className="text-slate-400 max-w-2xl mx-auto space-y-4 mb-12">
+            <div className="text-slate-600 max-w-2xl mx-auto space-y-4 mb-12">
               <p>Traditional systems focus on content delivery.</p>
               <p>Modern AI tools focus on prompt-response automation.</p>
-              <p className="text-white font-medium">
+              <p className="text-slate-900 font-medium">
                 Neither guarantees structured thinking or deployment readiness.
               </p>
             </div>
@@ -96,11 +97,11 @@ const CeltMindPage = () => {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="bg-slate-900/50 border border-slate-800
+                  className="bg-white border border-slate-200
                   rounded-xl p-6 transition-all duration-300
-                  hover:-translate-y-1 hover:border-blue-500/40 hover:shadow-lg"
+                  hover:-translate-y-1 hover:border-blue-300 hover:shadow-md"
                 >
-                  <p className="text-slate-300">{item}</p>
+                  <p className="text-slate-700">{item}</p>
                 </div>
               ))}
             </div>
@@ -108,9 +109,9 @@ const CeltMindPage = () => {
         </section>
 
         {/* WHAT IT DOES */}
-        <section className="border-b border-slate-800 bg-slate-950/40">
+        <section className="border-b border-slate-200 bg-gradient-to-b from-white to-blue-50">
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-12">
               What CELTMind™ Does
             </h2>
 
@@ -135,28 +136,28 @@ const CeltMindPage = () => {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="bg-slate-900/50 border border-slate-800
+                  className="bg-white border border-slate-200
                   rounded-xl p-6 transition-all duration-300
-                  hover:-translate-y-1 hover:border-indigo-500/40 hover:shadow-lg"
+                  hover:-translate-y-1 hover:border-indigo-300 hover:shadow-md"
                 >
-                  <h3 className="text-lg font-semibold text-white mb-3">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-3">
                     {item.title}
                   </h3>
-                  <p className="text-slate-400 leading-relaxed">{item.text}</p>
+                  <p className="text-slate-600 leading-relaxed">{item.text}</p>
                 </div>
               ))}
             </div>
 
-            <p className="mt-12 text-slate-300 max-w-2xl mx-auto">
+            <p className="mt-12 text-slate-700 max-w-2xl mx-auto">
               It augments human capability — it does not replace it.
             </p>
           </div>
         </section>
 
         {/* ARCHITECTURE */}
-        <section className="border-b border-slate-800">
+        <section className="border-b border-slate-200 bg-white">
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-12">
               Architecture Philosophy
             </h2>
 
@@ -168,16 +169,16 @@ const CeltMindPage = () => {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="bg-slate-900/50 border border-slate-800
+                  className="bg-white border border-slate-200
                   rounded-xl p-6 transition-all duration-300
-                  hover:-translate-y-1 hover:border-cyan-500/40 hover:shadow-lg"
+                  hover:-translate-y-1 hover:border-cyan-300 hover:shadow-md"
                 >
-                  <p className="text-white font-medium">{item}</p>
+                  <p className="text-slate-900 font-medium">{item}</p>
                 </div>
               ))}
             </div>
 
-            <p className="mt-12 text-slate-400 max-w-2xl mx-auto">
+            <p className="mt-12 text-slate-600 max-w-2xl mx-auto">
               It integrates seamlessly into CELTM’s capability ecosystem —
               assess, build, calibrate, and align.
             </p>
@@ -185,14 +186,12 @@ const CeltMindPage = () => {
         </section>
 
         {/* STRATEGIC ADVANTAGE */}
-        <section className="relative">
-          <div className="absolute inset-0 bg-gradient-to-t from-blue-900/10 via-transparent to-transparent" />
-
-          <div className="relative max-w-6xl mx-auto px-6 md:px-12 py-20 text-center">
+        <section className="relative bg-gradient-to-br from-white via-blue-50 to-indigo-100">
+          <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 text-center">
             <h2
               className="text-3xl md:text-4xl font-bold mb-10
-            bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400
-            bg-clip-text text-transparent"
+              bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600
+              bg-clip-text text-transparent"
             >
               The Strategic Advantage
             </h2>
@@ -206,27 +205,27 @@ const CeltMindPage = () => {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="bg-slate-900/50 border border-slate-800
+                  className="bg-white border border-slate-200
                   rounded-xl p-6 transition-all duration-300
-                  hover:-translate-y-1 hover:border-indigo-500/40 hover:shadow-lg"
+                  hover:-translate-y-1 hover:border-indigo-300 hover:shadow-md"
                 >
-                  <p className="text-slate-300">{item}</p>
+                  <p className="text-slate-700">{item}</p>
                 </div>
               ))}
             </div>
 
-            <p className="mt-16 text-white font-semibold text-lg">
+            <p className="mt-16 text-slate-900 font-semibold text-lg">
               The future belongs not to those who access AI —
             </p>
-            <p className="text-white font-semibold text-lg">
+            <p className="text-slate-900 font-semibold text-lg">
               but to those who structure intelligence.
             </p>
 
-            <h3 className="mt-16 text-2xl font-semibold text-white">
+            <h3 className="mt-16 text-2xl font-semibold text-slate-900">
               CELTMind™
             </h3>
 
-            <p className="mt-2 text-slate-400">
+            <p className="mt-2 text-slate-600">
               Cognitive Infrastructure for the Capability Era.
             </p>
           </div>

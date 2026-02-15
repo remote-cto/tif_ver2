@@ -12,8 +12,8 @@ const XworksPage = () => {
       <Navbar />
 
       {/* Back Button */}
-      <div className="sticky top-20 z-40 backdrop-blur-xl bg-slate-950/70 border-b border-slate-800">
-        <div className=" mx-auto px-6 py-4">
+      <div className="sticky top-20 z-40 backdrop-blur-xl bg-white/80 border-b border-slate-200">
+        <div className="mx-auto px-6 py-4">
           <button
             onClick={() => router.back()}
             className="inline-flex items-center gap-2 text-sm font-medium text-white
@@ -27,27 +27,31 @@ const XworksPage = () => {
         </div>
       </div>
 
-      <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-200 selection:bg-blue-500 selection:text-white">
+      <div className="bg-gradient-to-br from-white via-blue-50 to-indigo-100 text-slate-800 selection:bg-blue-100 selection:text-blue-900">
+        
         {/* HERO */}
-        <section className="relative overflow-hidden border-b border-slate-800">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.12),transparent_40%),radial-gradient(circle_at_80%_30%,rgba(99,102,241,0.12),transparent_40%)]" />
+        <section className="relative overflow-hidden border-b border-slate-200">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.08),transparent_40%),radial-gradient(circle_at_80%_30%,rgba(99,102,241,0.08),transparent_40%)]" />
 
-          <div className="relative max-w-6xl mx-auto px-6 md:px-12 py-25 grid md:grid-cols-2 gap-12 items-center">
+          <div className="relative max-w-6xl mx-auto px-6 md:px-12 py-24 grid md:grid-cols-2 gap-12 items-center">
+            
             <div>
-              <h1 className="text-5xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+              <h1 className="text-5xl md:text-6xl font-bold tracking-tight 
+              bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 
+              bg-clip-text text-transparent">
                 XWORKS
               </h1>
 
-              <p className="mt-6 text-xl text-slate-300">
+              <p className="mt-6 text-xl text-slate-600">
                 Programs & Workshops Across Disciplines
               </p>
 
-              <p className="mt-4 text-lg text-white font-medium">
+              <p className="mt-4 text-lg text-slate-900 font-medium">
                 Built for Real-World Capability.
               </p>
             </div>
 
-            <div className="text-slate-400 leading-relaxed space-y-4">
+            <div className="text-slate-600 leading-relaxed space-y-4">
               <p>
                 XWORKS is CELTM’s upskilling and capability-building vertical —
                 delivering structured programs and workshops across disciplines
@@ -56,7 +60,7 @@ const XworksPage = () => {
 
               <p>
                 Not hype. Not theory.{" "}
-                <span className="text-white font-medium">
+                <span className="text-slate-900 font-medium">
                   Measurable capability.
                 </span>
               </p>
@@ -64,9 +68,10 @@ const XworksPage = () => {
           </div>
         </section>
 
-        <section className="border-b border-slate-800">
+        {/* WHAT WE DELIVER */}
+        <section className="border-b border-slate-200 bg-white">
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-12">
               What We Deliver
             </h2>
 
@@ -91,23 +96,26 @@ const XworksPage = () => {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="bg-slate-900/50 border border-slate-800 rounded-xl p-6
+                  className="bg-white border border-slate-200 rounded-xl p-6
                   transition-all duration-300 hover:-translate-y-1
-                  hover:border-blue-500/40 hover:shadow-lg"
+                  hover:border-blue-300 hover:shadow-md"
                 >
-                  <h3 className="text-lg font-semibold text-white mb-3">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-3">
                     {item.title}
                   </h3>
-                  <p className="text-slate-400 leading-relaxed">{item.text}</p>
+                  <p className="text-slate-600 leading-relaxed">{item.text}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="border-b border-slate-800 bg-slate-950/40">
+        {/* WHAT MAKES DIFFERENT */}
+        <section className="border-b border-slate-200 bg-gradient-to-b from-white to-blue-50">
           <div className="max-w-5xl mx-auto px-6 md:px-12 py-20 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-10 bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+            <h2 className="text-3xl md:text-4xl font-bold mb-10
+            bg-gradient-to-r from-blue-600 to-indigo-600
+            bg-clip-text text-transparent">
               What Makes XWORKS Different
             </h2>
 
@@ -121,24 +129,26 @@ const XworksPage = () => {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="bg-slate-900/50 border border-slate-800 rounded-xl p-5"
+                  className="bg-white border border-slate-200 rounded-xl p-5
+                  transition-all duration-300 hover:-translate-y-1
+                  hover:border-indigo-300 hover:shadow-md"
                 >
-                  <p className="text-slate-300">{item}</p>
+                  <p className="text-slate-700">{item}</p>
                 </div>
               ))}
             </div>
 
-            <p className="mt-12 text-slate-400">We don’t just teach tools.</p>
-            <p className="mt-2 text-white font-semibold text-lg">
+            <p className="mt-12 text-slate-600">We don’t just teach tools.</p>
+            <p className="mt-2 text-slate-900 font-semibold text-lg">
               We build judgement.
             </p>
           </div>
         </section>
 
         {/* WHO WE SERVE */}
-        <section className="border-b border-slate-800">
+        <section className="border-b border-slate-200 bg-white">
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-12">
               Who We Serve
             </h2>
 
@@ -159,14 +169,14 @@ const XworksPage = () => {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="bg-slate-900/50 border border-slate-800 rounded-xl p-6
+                  className="bg-white border border-slate-200 rounded-xl p-6
                   transition-all duration-300 hover:-translate-y-1
-                  hover:border-indigo-500/40 hover:shadow-lg"
+                  hover:border-indigo-300 hover:shadow-md"
                 >
-                  <h3 className="font-semibold text-white mb-3">
+                  <h3 className="font-semibold text-slate-900 mb-3">
                     {item.title}
                   </h3>
-                  <p className="text-slate-400 leading-relaxed">{item.text}</p>
+                  <p className="text-slate-600 leading-relaxed">{item.text}</p>
                 </div>
               ))}
             </div>
@@ -174,11 +184,11 @@ const XworksPage = () => {
         </section>
 
         {/* CTA */}
-        <section className="relative">
-          <div className="absolute inset-0 bg-gradient-to-t from-blue-900/10 via-transparent to-transparent" />
-
-          <div className="relative max-w-6xl mx-auto px-6 md:px-12 py-20 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+        <section className="relative bg-gradient-to-br from-white via-blue-50 to-indigo-100">
+          <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6
+            bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600
+            bg-clip-text text-transparent">
               Capability Building. Delivered with Structure.
             </h2>
           </div>
