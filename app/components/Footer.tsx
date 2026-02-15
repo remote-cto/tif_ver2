@@ -8,12 +8,14 @@ import RefundAndCancellationPolicy from "./RefundAndCancellationPolicy";
 import DataPolicy from "./DataPolicy";
 import CodeOfConduct from "./CodeOfConduct";
 import { Linkedin, Youtube, Mail, Phone, MapPin } from "lucide-react";
+import dayjs from "dayjs";
 
 interface FooterProps {
   className?: string;
 }
 
 const Footer: React.FC<FooterProps> = ({ className = "" }) => {
+  const year = dayjs().year();
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
   const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
@@ -24,9 +26,7 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
     <>
       <footer className={`bg-white border-t border-gray-200 ${className}`}>
         <div className="max-w-7xl mx-auto px-6 py-12">
-          {/* ================= MAIN GRID ================= */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {/* ---------- Brand Column ---------- */}
             <div className="space-y-4">
               <Image
                 src="/images/CELTMLOGO.png"
@@ -148,7 +148,10 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
           {/* ================= BOTTOM BAR ================= */}
           <div className="border-t border-gray-200 mt-10 pt-6">
             <div className="flex flex-col sm:flex-row items-center justify-between text-sm text-gray-600 gap-2">
-              <p>© 2026 CELTM. All rights reserved.</p>
+              <p>
+                © {dayjs().year()} CELTM Global Pvt Ltd. All rights reserved.
+              </p>
+
               <p>Designed for long-horizon capability systems.</p>
             </div>
           </div>

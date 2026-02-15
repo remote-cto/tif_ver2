@@ -172,7 +172,7 @@ const CELTMSystem = () => {
                   opacity="1"
                 />
 
-                {/* Arrow from CELTMind to XWORKS (center) */}
+                
                 <path
                     d="M 600 150 Q 600 75, 600 0"
 
