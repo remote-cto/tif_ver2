@@ -1,4 +1,5 @@
 "use client";
+
 import Footer from "@/app/components/Footer";
 import Navbar from "@/app/components/Navbar";
 import { useRouter } from "next/navigation";
@@ -12,14 +13,14 @@ const VettaPage = () => {
 
       {/* Back Button */}
       <div className="sticky top-20 z-40 backdrop-blur-xl bg-slate-950/70 border-b border-slate-800">
-        <div className="px-6 py-4">
+        <div className=" mx-auto px-6 py-4">
           <button
             onClick={() => router.back()}
-            className="inline-flex items-center gap-2 text-sm font-medium text-white 
+            className="inline-flex items-center gap-2 text-sm font-medium text-white
             bg-gradient-to-r from-blue-600 to-indigo-600
             hover:from-blue-500 hover:to-indigo-500
-            px-6 py-3 rounded-xl shadow-lg 
-            transition-all duration-300 hover:scale-105 cursor-pointer"
+            px-5 py-2.5 rounded-lg shadow-md
+            transition-all duration-300 hover:scale-105"
           >
             ← Back
           </button>
@@ -27,115 +28,135 @@ const VettaPage = () => {
       </div>
 
       <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-200 selection:bg-blue-500 selection:text-white">
-
         {/* HERO */}
         <section className="relative overflow-hidden border-b border-slate-800">
-          
-          {/* Soft lighting */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.15),transparent_40%),radial-gradient(circle_at_80%_30%,rgba(99,102,241,0.15),transparent_40%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.12),transparent_40%),radial-gradient(circle_at_80%_30%,rgba(99,102,241,0.12),transparent_40%)]" />
 
-          <div className="relative max-w-6xl mx-auto px-6 md:px-12 py-32 text-center animate-fadeUp">
-            
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight 
-            bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 
-            bg-clip-text text-transparent">
-              VETTA™
-            </h1>
+          <div className="relative max-w-6xl mx-auto px-6 md:px-12 py-25 grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h1
+                className="text-5xl md:text-6xl font-bold tracking-tight 
+              bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 
+              bg-clip-text text-transparent"
+              >
+                VETTA™
+              </h1>
 
-            <p className="mt-8 text-xl text-slate-400">
-              Enterprise-Grade Capability Network
-            </p>
+              <p className="mt-6 text-xl text-slate-300">
+                Enterprise-Grade Capability Network
+              </p>
 
-            <p className="mt-12 text-lg text-slate-400 max-w-2xl mx-auto">
-              Validated talent. Structured readiness. Reduced hiring risk.
-            </p>
+              <p className="mt-4 text-lg text-white font-medium">
+                Validated talent. Structured readiness.
+              </p>
+            </div>
 
+            <div className="text-slate-400 leading-relaxed space-y-4">
+              <p>
+                VETTA™ bridges the gap between claimed skill, demonstrated
+                capability, and enterprise deployment readiness.
+              </p>
+
+              <p>
+                Reduced hiring risk. Faster deployment.{" "}
+                <span className="text-white font-medium">
+                  Measurable performance alignment.
+                </span>
+              </p>
+            </div>
           </div>
         </section>
 
         {/* ENTERPRISE CHALLENGE */}
         <section className="border-b border-slate-800">
-          <div className="max-w-6xl mx-auto px-6 md:px-12 py-28 text-center animate-fadeUp delay-1">
-            
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-12">
+          <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
               The Enterprise Challenge
             </h2>
 
-            <p className="text-slate-400 max-w-3xl mx-auto mb-12">
-              Organizations face a widening gap between claimed skill,
-              demonstrated capability, and deployment readiness.
+            <p className="text-slate-400 max-w-2xl mx-auto mb-10">
+              Organizations face widening gaps between hiring claims and
+              operational performance.
             </p>
 
-            <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 
-            rounded-2xl p-10 shadow-xl max-w-3xl mx-auto">
-              <ul className="space-y-4 text-slate-300">
-                <li>• Slower hiring cycles</li>
-                <li>• Increased evaluation cost</li>
-                <li>• Deployment risk</li>
-                <li>• Capability mismatch</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* WHAT IS VETTA */}
-        <section className="border-b border-slate-800 bg-slate-950/40">
-          <div className="max-w-6xl mx-auto px-6 md:px-12 py-28 text-center animate-fadeUp delay-2">
-            
-            <h2 className="text-4xl md:text-5xl font-bold mb-12 
-            bg-gradient-to-r from-blue-400 to-indigo-400 
-            bg-clip-text text-transparent">
-              What is VETTA™
-            </h2>
-
-            <p className="text-slate-400 max-w-3xl mx-auto mb-12">
-              A curated, multi-sector capability network built on structured
-              validation frameworks.
-            </p>
-
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto text-left">
               {[
-                "Capability assessment",
-                "Functional benchmarking",
-                "Applied evaluation",
-                "Readiness scoring"
+                "Slower hiring cycles",
+                "Increased evaluation cost",
+                "Deployment risk",
+                "Capability mismatch",
               ].map((item, i) => (
                 <div
                   key={i}
-                  className="bg-slate-900/60 backdrop-blur-lg border border-slate-800 
-                  rounded-2xl p-8 shadow-lg 
-                  transition-all duration-300 hover:-translate-y-2 
-                  hover:shadow-blue-500/20"
+                  className="bg-slate-900/50 border border-slate-800 rounded-xl p-6
+                  transition-all duration-300 hover:-translate-y-1
+                  hover:border-blue-500/40 hover:shadow-lg"
                 >
-                  {item}
+                  <p className="text-slate-300">{item}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* DIMENSIONS */}
+        {/* WHAT IS VETTA */}
+        <section className="border-b border-slate-800 bg-slate-950/40">
+          <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 text-center">
+            <h2
+              className="text-3xl md:text-4xl font-bold mb-8 
+            bg-gradient-to-r from-blue-400 to-indigo-400 
+            bg-clip-text text-transparent"
+            >
+              What is VETTA™
+            </h2>
+
+            <p className="text-slate-400 max-w-2xl mx-auto mb-12">
+              A curated, multi-sector capability network built on structured
+              validation frameworks.
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left">
+              {[
+                "Capability assessment",
+                "Functional benchmarking",
+                "Applied evaluation",
+                "Readiness scoring",
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="bg-slate-900/50 border border-slate-800 
+                  rounded-xl p-6 shadow-md
+                  transition-all duration-300 hover:-translate-y-1 
+                  hover:border-indigo-500/40 hover:shadow-lg"
+                >
+                  <p className="text-slate-300">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* MEASURABLE DIMENSIONS */}
         <section className="border-b border-slate-800">
-          <div className="max-w-6xl mx-auto px-6 md:px-12 py-28 text-center animate-fadeUp delay-3">
-            
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-16">
+          <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-12">
               Measurable Dimensions
             </h2>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-3 gap-6 text-left">
               {[
                 "Technical depth",
                 "Applied problem-solving",
                 "Systems thinking",
                 "Contextual judgment",
-                "Industry alignment"
+                "Industry alignment",
               ].map((item, i) => (
                 <div
                   key={i}
-                  className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 
-                  rounded-2xl p-8 text-slate-300
-                  shadow-lg transition-all duration-300 
-                  hover:-translate-y-2 hover:shadow-indigo-500/20"
+                  className="bg-slate-900/50 border border-slate-800 
+                  rounded-xl p-6 text-slate-300
+                  transition-all duration-300 
+                  hover:-translate-y-1 hover:border-cyan-500/40 hover:shadow-lg"
                 >
                   {item}
                 </div>
@@ -147,19 +168,20 @@ const VettaPage = () => {
         {/* FINAL CTA */}
         <section className="relative">
           <div className="absolute inset-0 bg-gradient-to-t from-blue-900/10 via-transparent to-transparent" />
-          <div className="relative max-w-6xl mx-auto px-6 md:px-12 py-32 text-center animate-fadeUp delay-4">
-            
-            <h2 className="text-4xl md:text-5xl font-bold mb-8 
+
+          <div className="relative max-w-6xl mx-auto px-6 md:px-12 py-20 text-center">
+            <h2
+              className="text-3xl md:text-4xl font-bold mb-6 
             bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 
-            bg-clip-text text-transparent">
+            bg-clip-text text-transparent"
+            >
               Where Validated Capability Meets Enterprise Demand
             </h2>
 
-            <p className="text-slate-400 mb-12">
-              Enterprise Partnerships · Institutional Collaboration · Select Talent Admission
+            <p className="text-slate-400 mb-3">
+              Enterprise Partnerships · Institutional Collaboration · Select
+              Talent Admission
             </p>
-
-          
           </div>
         </section>
 
