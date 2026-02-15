@@ -20,14 +20,14 @@ const components = [
     pageName: "xworks",
   },
   {
-    title: "Vetta",
+    title: "VETTA",
     subtitle: "Credibility Engine",
     description:
       "Validates talent based on observed performance and demonstrated readiness — creating signals institutions and industry can trust.",
     pageName: "vetta",
   },
   {
-    title: "CELTMind™",
+    title: "CELTMIND™",
     subtitle: "Intelligence Core",
     description:
       "The intelligence layer beneath the system. Connects signals from readiness, learning, and outcomes to continuously refine how capability is interpreted.",

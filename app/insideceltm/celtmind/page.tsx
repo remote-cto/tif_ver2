@@ -42,7 +42,7 @@ const CeltMindPage = () => {
                 bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600
                 bg-clip-text text-transparent"
               >
-                CELTMind™
+                CELTMIND™
               </h1>
 
               <p className="mt-6 text-xl text-slate-600">
@@ -76,7 +76,7 @@ const CeltMindPage = () => {
         <section className="border-b border-slate-200 bg-white">
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-10">
-              Why CELTMind™ Exists
+              Why CELTMIND™ Exists
             </h2>
 
             <div className="text-slate-600 max-w-2xl mx-auto space-y-4 mb-12">
@@ -112,7 +112,7 @@ const CeltMindPage = () => {
         <section className="border-b border-slate-200 bg-gradient-to-b from-white to-blue-50">
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-12">
-              What CELTMind™ Does
+              What CELTMIND™ Does
             </h2>
 
             <div className="grid md:grid-cols-2 gap-8 text-left max-w-5xl mx-auto">
@@ -222,7 +222,7 @@ const CeltMindPage = () => {
             </p>
 
             <h3 className="mt-16 text-2xl font-semibold text-slate-900">
-              CELTMind™
+              CELTMIND™
             </h3>
 
             <p className="mt-2 text-slate-600">
