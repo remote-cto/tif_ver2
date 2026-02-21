@@ -145,7 +145,6 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
             </div>
           </div>
 
-          {/* ================= BOTTOM BAR ================= */}
           <div className="border-t border-gray-200 mt-10 pt-6">
             <div className="flex flex-col sm:flex-row items-center justify-between text-sm text-gray-600 gap-2">
               <p>
